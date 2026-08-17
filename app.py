@@ -4,6 +4,13 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
+# Optional import for OpenAI DALL-E
+try:
+    from openai import OpenAI
+    OPENAI_AVAILABLE = True
+except ImportError:
+    OPENAI_AVAILABLE = False
+
 # 1. Page Configuration & Mobile Viewport Support
 st.set_page_config(
     page_title="Metaverse AI - Gemini Edition",
@@ -86,19 +93,24 @@ if not is_logged_in:
 
 # 4. Secure API Key Configuration
 try:
-    API_KEY = st.secrets["GEMINI_API_KEY"]
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 except Exception:
-    API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY")
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_GEMINI_API_KEY")
 
-if not API_KEY or API_KEY == "YOUR_ACTUAL_API_KEY":
+try:
+    OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
+except Exception:
+    OPENAI_API_KEY = ""
+
+if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_ACTUAL_GEMINI_API_KEY":
     st.error("⚠️ Please configure your GEMINI_API_KEY in Streamlit Secrets.")
     st.stop()
 else:
     @st.cache_resource
-    def get_client(api_key):
+    def get_gemini_client(api_key):
         return genai.Client(api_key=api_key)
 
-    client = get_client(API_KEY)
+    client = get_gemini_client(GEMINI_API_KEY)
 
     # 5. Multi-Chat Session Storage Initialization
     if "sessions" not in st.session_state:
@@ -169,7 +181,7 @@ else:
     st.sidebar.markdown("---")
     app_mode = st.sidebar.radio("Core Engine Mode", [
         "💬 Gemini Neural Chat", 
-        "🍌 Nano Banana Art Studio", 
+        "🍌 Multi-AI Art Studio", 
         "👁️ Vision Analyzer"
     ])
 
@@ -211,71 +223,87 @@ else:
                     current_session["messages"].append({"role": "assistant", "content": reply})
             st.rerun()
 
-    # --- MODE 2: NANO BANANA ART STUDIO ---
-    elif app_mode == "🍌 Nano Banana Art Studio":
-        st.title("🍌 Nano Banana: AI Art & Image Studio")
-        st.caption("Powered by Nano Banana Image Generation Core (gemini-2.5-flash-image).")
+    # --- MODE 2: MULTI-AI ART STUDIO (Nano Banana & ChatGPT DALL-E) ---
+    elif app_mode == "🍌 Multi-AI Art Studio":
+        st.title("🍌 Multi-AI Art Studio")
+        st.caption("Generate stunning visuals using either Google Nano Banana or ChatGPT DALL-E 3.")
 
-        tab_type = st.radio("Select Operation", ["🎨 Text-to-Image Generation", "🔄 Image-to-Image / Conversational Edit"], horizontal=True)
+        art_engine = st.selectbox("Choose Image Engine", ["🍌 Nano Banana (Gemini)", "🤖 ChatGPT (DALL-E 3)"])
 
-        if tab_type == "🎨 Text-to-Image Generation":
-            img_prompt = st.text_area("Describe your visual concept:", placeholder="e.g., A stylish 3D caricature of a cyberpunk tiger, expressive features, neon lighting...")
-            
-            if st.button("Generate Nano Banana Art", use_container_width=True):
-                if img_prompt:
-                    with st.spinner("Synthesizing pixels with Nano Banana engine..."):
+        if art_engine == "🍌 Nano Banana (Gemini)":
+            tab_type = st.radio("Operation", ["🎨 Text-to-Image", "🔄 Image-to-Image Edit"], horizontal=True)
+
+            if tab_type == "🎨 Text-to-Image":
+                img_prompt = st.text_area("Describe your concept for Nano Banana:", placeholder="e.g., A futuristic cyberpunk street in Tokyo, neon lights...")
+                if st.button("Generate with Nano Banana", use_container_width=True):
+                    if img_prompt:
+                        with st.spinner("Synthesizing pixels with Nano Banana..."):
+                            try:
+                                result = client.models.generate_content(
+                                    model='gemini-2.5-flash-image',
+                                    contents=img_prompt
+                                )
+                                rendered_image = False
+                                if hasattr(result, 'candidates') and result.candidates:
+                                    for part in result.candidates[0].content.parts:
+                                        if hasattr(part, 'inline_data') and part.inline_data:
+                                            st.image(part.inline_data.data, caption=img_prompt, use_container_width=True)
+                                            rendered_image = True
+                                if not rendered_image and hasattr(result, 'text'):
+                                    st.markdown(result.text)
+                            except Exception as e:
+                                st.error(f"Generation error (Quota or Limit): {e}")
+                    else:
+                        st.warning("Please enter a prompt.")
+            else:
+                uploaded_file = st.file_uploader("Upload reference image", type=["jpg", "jpeg", "png", "webp"])
+                edit_prompt = st.text_input("Describe style transformation:")
+                if uploaded_file and st.button("Transform Image", use_container_width=True):
+                    with st.spinner("Processing reference with Nano Banana..."):
                         try:
-                            result = client.models.generate_content(
-                                model='gemini-2.5-flash-image',
-                                contents=img_prompt
-                            )
-                            
-                            rendered_image = False
-                            if hasattr(result, 'candidates') and result.candidates:
-                                for part in result.candidates[0].content.parts:
-                                    if hasattr(part, 'inline_data') and part.inline_data:
-                                        st.image(part.inline_data.data, caption=img_prompt, use_container_width=True)
-                                        rendered_image = True
-                            
-                            if not rendered_image and hasattr(result, 'text'):
-                                st.markdown(result.text)
-                                
-                        except Exception as e:
-                            st.error(f"Generation error: {e}")
-                else:
-                    st.warning("Please enter a prompt description.")
-
-        else: 
-            uploaded_file = st.file_uploader("Upload reference image(s) [Up to 5]", type=["jpg", "jpeg", "png", "webp"], accept_multiple_files=True)
-            edit_prompt = st.text_input("Describe how to transform or edit the image:", placeholder="e.g., Turn this into a hand-drawn cartoon anime style...")
-
-            if uploaded_file:
-                st.write(f"Loaded {len(uploaded_file)} reference specimen(s).")
-                if st.button("Transform with Nano Banana", use_container_width=True):
-                    with st.spinner("Processing multi-image context & style transfer..."):
-                        try:
-                            content_payload = [edit_prompt]
-                            for f in uploaded_file:
-                                content_payload.append(types.Part.from_bytes(data=f.getvalue(), mime_type=f.type))
-                            
                             resp = client.models.generate_content(
                                 model="gemini-2.5-flash-image",
-                                contents=content_payload
+                                contents=[edit_prompt, types.Part.from_bytes(data=uploaded_file.getvalue(), mime_type=uploaded_file.type)]
                             )
-                            
                             rendered_image = False
                             if hasattr(resp, 'candidates') and resp.candidates:
                                 for part in resp.candidates[0].content.parts:
                                     if hasattr(part, 'inline_data') and part.inline_data:
                                         st.image(part.inline_data.data, caption=edit_prompt, use_container_width=True)
                                         rendered_image = True
-                            
                             if not rendered_image and hasattr(resp, 'text'):
-                                st.markdown("### Nano Banana Studio Result:")
                                 st.markdown(resp.text)
-                                
                         except Exception as e:
                             st.error(f"Editing error: {e}")
+
+        else: # ChatGPT DALL-E 3 Mode
+            st.markdown("### 🤖 ChatGPT DALL-E 3 Studio")
+            dall_e_prompt = st.text_area("Describe your artwork for ChatGPT DALL-E 3:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
+            dall_e_quality = st.selectbox("Quality", ["standard", "hd"])
+            dall_e_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
+
+            if st.button("🎨 Generate with ChatGPT DALL-E 3", use_container_width=True):
+                if not OPENAI_API_KEY:
+                    st.error("⚠️ Please configure your `OPENAI_API_KEY` in Streamlit Secrets to use DALL-E 3.")
+                elif not OPENAI_AVAILABLE:
+                    st.error("⚠️ The `openai` library is missing from `requirements.txt`.")
+                elif dall_e_prompt:
+                    with st.spinner("Painting artwork with ChatGPT DALL-E 3..."):
+                        try:
+                            openai_client = OpenAI(api_key=OPENAI_API_KEY)
+                            response = openai_client.images.generate(
+                                model="dall-e-3",
+                                prompt=dall_e_prompt,
+                                size=dall_e_size,
+                                quality=dall_e_quality,
+                                n=1,
+                            )
+                            image_url = response.data[0].url
+                            st.image(image_url, caption=dall_e_prompt, use_container_width=True)
+                        except Exception as e:
+                            st.error(f"ChatGPT DALL-E Error: {e}")
+                else:
+                    st.warning("Please enter a prompt description.")
 
     # --- MODE 3: VISION ANALYZER ---
     elif app_mode == "👁️ Vision Analyzer":
