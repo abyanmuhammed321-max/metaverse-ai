@@ -154,7 +154,7 @@ with st.sidebar:
         st.rerun()
 
     # --- LANGUAGE SELECTOR ---
-    languages = ["English", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
+    languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
     lang_choice = st.selectbox(
         "Response Language",
         languages,
