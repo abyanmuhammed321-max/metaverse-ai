@@ -1,12 +1,10 @@
-import streamlit as st
 import os
 import uuid
-from io import BytesIO
+import streamlit as st
 from google import genai
 from google.genai import types
-from PIL import Image
 
-# Page configuration
+# 1. Page Configuration & Mobile Viewport Support
 st.set_page_config(
     page_title="Metaverse AI - Gemini Edition",
     page_icon="✨",
@@ -14,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# UI Styling
+# 2. Neon Gemini UI Styling & Mobile Responsive CSS Injection
 st.markdown("""
     <style>
     .stApp {
@@ -38,6 +36,8 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
     }
+    
+    /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
     @media screen and (max-width: 768px) {
         .main .block-container {
             padding: 1rem 0.75rem !important;
@@ -46,11 +46,45 @@ st.markdown("""
         h1 {
             font-size: 1.6rem !important;
         }
+        .stTextInput input, .stTextArea textarea, .stSelectbox {
+            font-size: 16px !important;
+        }
+        div[data-testid="stHorizontalBlock"] {
+            flex-direction: column !important;
+        }
+        div[data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
 
-# API Key Configuration
+# 3. Google Sign-In Gate
+is_logged_in = True
+user_name = "Matrix Creator"
+
+try:
+    is_logged_in = st.user.is_logged_in
+    user_name = getattr(st.user, "name", "User")
+except Exception:
+    pass 
+
+if not is_logged_in:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.title("✨ Welcome to Metaverse AI")
+        st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
+        try:
+            if st.button("🔐 Log in with Google", use_container_width=True):
+                st.login()
+        except Exception:
+            st.error("Google OAuth is not configured in your Streamlit secrets block.")
+    st.stop()
+
+# 4. Secure API Key Configuration
 api_key = ""
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -70,62 +104,89 @@ except Exception as e:
     st.error(f"Failed to initialize Gemini Client: {e}")
     client = None
 
-# Initialize session state for multi-chat support
+# 5. Multi-Chat Session Storage Initialization
 if "sessions" not in st.session_state:
+    init_id = str(uuid.uuid4())
     st.session_state.sessions = {
-        "Default Chat": {
-            "title": "Default Chat",
+        init_id: {
+            "title": "New Chat",
             "messages": []
         }
     }
+    st.session_state.active_session = init_id
 
 if "active_session" not in st.session_state or st.session_state.active_session not in st.session_state.sessions:
     st.session_state.active_session = list(st.session_state.sessions.keys())[0]
 
-# Sidebar Navigation & Features
-with st.sidebar:
-    st.title("✨ Metaverse AI")
-    st.markdown("---")
-    
-    if st.button("➕ New Chat", use_container_width=True):
-        new_title = f"Chat {len(st.session_state.sessions) + 1}"
-        st.session_state.sessions[new_title] = {"title": new_title, "messages": []}
-        st.session_state.active_session = new_title
-        st.rerun()
-        
-    st.subheader("💬 Conversations")
-    session_keys = list(st.session_state.sessions.keys())
-    if st.session_state.active_session not in session_keys:
-        st.session_state.active_session = session_keys[0]
-        
-    safe_index = session_keys.index(st.session_state.active_session)
-    selected_chat = st.radio(
-        "Select Chat",
-        session_keys,
-        index=safe_index,
-        label_visibility="collapsed"
-    )
-    
-    if selected_chat != st.session_state.active_session:
-        st.session_state.active_session = selected_chat
-        st.rerun()
+# --- SIDEBAR NAVIGATION & CHAT MANAGEMENT ---
+st.sidebar.title("✨ Metaverse AI")
+st.sidebar.markdown(f"👤 **User:** {user_name}")
 
-    st.markdown("---")
-    app_mode = st.sidebar.radio("Core Engine Mode", [
-        "💬 Gemini Neural Chat", 
-        "🍌 Nano Banana Art Studio", 
-        "👁️ Vision Analyzer"
-    ])
+try:
+    if st.sidebar.button("🚪 Log out", use_container_width=True):
+        st.logout()
+except Exception:
+    pass
 
-# Main application routing based on selected mode
+st.sidebar.markdown("---")
+
+# New Chat Action
+if st.sidebar.button("➕ New Chat", use_container_width=True):
+    new_id = str(uuid.uuid4())
+    st.session_state.sessions[new_id] = {
+        "title": "New Chat",
+        "messages": []
+    }
+    st.session_state.active_session = new_id
+    st.rerun()
+
+st.sidebar.markdown("### 💬 Recent Chats")
+
+# Chat List with Selection and Deletion Controls
+sessions_to_delete = []
+for s_id, s_data in list(st.session_state.sessions.items()):
+    col_chat, col_del = st.sidebar.columns([4, 1])
+    label = f"💬 {s_data['title']}"
+    if s_id == st.session_state.active_session:
+        label = f"👉 {s_data['title']}"
+
+    with col_chat:
+        if st.button(label, key=f"select_{s_id}", use_container_width=True):
+            st.session_state.active_session = s_id
+            st.rerun()
+    with col_del:
+        if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
+            sessions_to_delete.append(s_id)
+
+# Safely Handle Chat Deletion logic
+if sessions_to_delete:
+    for s_id in sessions_to_delete:
+        del st.session_state.sessions[s_id]
+    if len(st.session_state.sessions) == 0:
+        fallback_id = str(uuid.uuid4())
+        st.session_state.sessions[fallback_id] = {
+            "title": "New Chat",
+            "messages": []
+        }
+        st.session_state.active_session = fallback_id
+    else:
+        st.session_state.active_session = list(st.session_state.sessions.keys())[0]
+    st.rerun()
+
+st.sidebar.markdown("---")
+app_mode = st.sidebar.radio("Core Engine Mode", [
+    "💬 Gemini Neural Chat", 
+    "👁️ Vision Analyzer"
+])
+
 if not api_key:
-    st.error("⚠️ Please provide your `GEMINI_API_KEY` in Streamlit Secrets or via the sidebar.")
+    st.error("⚠️ Please configure your `GEMINI_API_KEY` in Streamlit Secrets or via the sidebar.")
     st.stop()
 
 # --- MODE 1: GEMINI NEURAL CHAT ---
 if app_mode == "💬 Gemini Neural Chat":
     current_session = st.session_state.sessions[st.session_state.active_session]
-    st.title(f"✨ Metaverse AI: Gemini Core")
+    st.title("✨ Metaverse AI: Gemini Core")
     st.caption(f"Active Session: {current_session['title']}")
 
     for msg in current_session["messages"]:
@@ -137,7 +198,7 @@ if app_mode == "💬 Gemini Neural Chat":
         with st.chat_message("user"):
             st.markdown(prompt)
 
-        if current_session["title"] == "Default Chat" or current_session["title"].startswith("Chat "):
+        if current_session["title"] == "New Chat":
             current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
 
         with st.chat_message("assistant"):
@@ -162,63 +223,7 @@ if app_mode == "💬 Gemini Neural Chat":
                     st.error(f"⚠️ API Error: {e}")
         st.rerun()
 
-# --- MODE 2: NANO BANANA ART STUDIO ---
-elif app_mode == "🍌 Nano Banana Art Studio":
-    st.title("🍌 Nano Banana Art Studio")
-    st.caption("Generate stunning visuals and edit assets using Gemini's native media engine.")
-
-    tab_type = st.radio("Operation", ["🎨 Text-to-Image", "🔄 Image-to-Image Edit"], horizontal=True)
-
-    if tab_type == "🎨 Text-to-Image":
-        img_prompt = st.text_area("Describe your concept for Nano Banana:", placeholder="e.g., A futuristic cyberpunk street in Tokyo, neon lights...")
-        if st.button("Generate with Nano Banana", use_container_width=True):
-            if img_prompt:
-                with st.spinner("Synthesizing pixels with Nano Banana..."):
-                    try:
-                        result = client.models.generate_content(
-                            model='gemini-3.1-flash-image',
-                            contents=img_prompt,
-                            config=types.GenerateContentConfig(
-                                response_modalities=["TEXT", "IMAGE"]
-                            )
-                        )
-                        rendered_image = False
-                        if hasattr(result, 'candidates') and result.candidates:
-                            for part in result.candidates[0].content.parts:
-                                if hasattr(part, 'inline_data') and part.inline_data:
-                                    st.image(part.inline_data.data, caption=img_prompt, use_container_width=True)
-                                    rendered_image = True
-                        if not rendered_image and hasattr(result, 'text'):
-                            st.markdown(result.text)
-                    except Exception as e:
-                        st.error(f"Generation error: {e}")
-            else:
-                st.warning("Please enter a prompt.")
-    else:
-        uploaded_file = st.file_uploader("Upload reference image", type=["jpg", "jpeg", "png", "webp"])
-        edit_prompt = st.text_input("Describe style transformation:")
-        if uploaded_file and st.button("Transform Image", use_container_width=True):
-            with st.spinner("Processing reference with Nano Banana..."):
-                try:
-                    resp = client.models.generate_content(
-                        model="gemini-3.1-flash-image",
-                        contents=[edit_prompt, types.Part.from_bytes(data=uploaded_file.getvalue(), mime_type=uploaded_file.type)],
-                        config=types.GenerateContentConfig(
-                            response_modalities=["TEXT", "IMAGE"]
-                        )
-                    )
-                    rendered_image = False
-                    if hasattr(resp, 'candidates') and resp.candidates:
-                        for part in resp.candidates[0].content.parts:
-                            if hasattr(part, 'inline_data') and part.inline_data:
-                                st.image(part.inline_data.data, caption=edit_prompt, use_container_width=True)
-                                rendered_image = True
-                    if not rendered_image and hasattr(resp, 'text'):
-                        st.markdown(resp.text)
-                except Exception as e:
-                    st.error(f"Editing error: {e}")
-
-# --- MODE 3: VISION ANALYZER ---
+# --- MODE 2: VISION ANALYZER ---
 elif app_mode == "👁️ Vision Analyzer":
     st.title("👁️ Vision Matrix")
     st.caption("Upload visual specimens for deep multi-modal analysis.")
