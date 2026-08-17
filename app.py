@@ -5,7 +5,7 @@ from google.genai import errors
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Gemini Clone",
+    page_title="Metaverse-AI",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="expanded"
