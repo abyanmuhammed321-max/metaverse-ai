@@ -4,47 +4,54 @@ from google.genai import errors
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Gemini Clone",
+    page_title="Gemini Clone with Google Login",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="expanded"
 )
 
-# 2. Securely Load API Key (Checks Streamlit Secrets first, then Environment Variables)
-api_key = None
-try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-except Exception:
-    import os
-    api_key = os.environ.get("GEMINI_API_KEY")
+# Load Gemini API Key from secrets
+api_key = st.secrets.get("GEMINI_API_KEY")
 
-# 3. Inject Custom CSS to Match Gemini's Dark UI Style
+# 2. Handle Authentication Flow
+if not st.user.is_logged_in:
+    # --- LOGIN SCREEN ---
+    st.markdown("""
+    <style>
+        .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        .login-box { text-align: center; margin-top: 20vh; }
+        .gemini-login-header {
+            background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3rem;
+            font-weight: 700;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    st.markdown('<div class="login-box">', unsafe_allow_html=True)
+    st.markdown('<p class="gemini-login-header">Gemini AI</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: #8e918f; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
+    
+    if st.button("🔵 Sign in with Google", use_container_width=True):
+        st.login() # Triggers native Google OAuth login flow
+        
+    st.markdown('</div>', unsafe_allow_html=True)
+    st.stop()
+
+# 3. Inject UI Styles for Main App
 st.markdown("""
 <style>
-    .stApp {
-        background-color: #131314;
-        color: #e3e3e3;
-        font-family: 'Inter', sans-serif;
-    }
+    .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
     header {visibility: hidden;}
     footer {visibility: hidden;}
-    .stChatMessage {
-        background-color: transparent !important;
-        border-radius: 12px;
-        padding: 10px;
-        margin-bottom: 10px;
-    }
-    [data-testid="stChatMessage"]:nth-child(odd) {
-        background-color: #1e1f20 !important;
-        border: 1px solid #333537;
-    }
-    .stChatInput input {
-        color: #e3e3e3 !important;
-    }
-    [data-testid="stSidebar"] {
-        background-color: #1e1f20;
-        border-right: 1px solid #333537;
-    }
+    .stChatMessage { background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; }
+    [data-testid="stChatMessage"]:nth-child(odd) { background-color: #1e1f20 !important; border: 1px solid #333537; }
+    .stChatInput input { color: #e3e3e3 !important; }
+    [data-testid="stSidebar"] { background-color: #1e1f20; border-right: 1px solid #333537; }
     .gemini-header {
         text-align: center;
         background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
@@ -54,52 +61,53 @@ st.markdown("""
         font-weight: 700;
         margin-bottom: 0px;
     }
-    .gemini-subheader {
-        text-align: center;
-        color: #8e918f;
-        font-size: 1.2rem;
-        margin-bottom: 30px;
-    }
+    .gemini-subheader { text-align: center; color: #8e918f; font-size: 1.2rem; margin-bottom: 30px; }
 </style>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Configuration
+# 4. Sidebar Configuration (Displays Authenticated User Info & Controls)
 with st.sidebar:
-    st.markdown("### ⚙️ Settings")
+    st.markdown("### 👤 User Profile")
+    if hasattr(st.user, "picture") and st.user.picture:
+        st.image(st.user.picture, width=50)
+    st.write(f"**{getattr(st.user, 'name', 'User')}**")
+    st.write(f"<span style='font-size: 0.8rem; color: #8e918f;'>{getattr(st.user, 'email', '')}</span>", unsafe_allow_html=True)
     
-    # Updated to latest active model IDs
+    st.markdown("---")
+    st.markdown("### ⚙️ Settings")
     selected_model = st.selectbox(
         "Choose Model",
         ["gemini-3.6-flash", "gemini-3.1-pro-preview"],
         index=0
     )
     
-    st.markdown("---")
     if st.button("🗑️ Clear Chat History", use_container_width=True):
         st.session_state.messages = []
         st.rerun()
         
     st.markdown("---")
-    st.markdown("<p style='text-align: center; color: #8e918f; font-size: 0.8rem;'>Built with Python & Google GenAI SDK</p>", unsafe_allow_html=True)
+    if st.button("🚪 Sign Out", use_container_width=True):
+        st.logout() # Clears session cookie and logs out
 
 # 5. Main UI Layout
-st.markdown('<p class="gemini-header">Hello, human</p>', unsafe_allow_html=True)
+user_first_name = getattr(st.user, 'name', 'human').split()[0]
+st.markdown(f'<p class="gemini-header">Hello, {user_first_name}</p>', unsafe_allow_html=True)
 st.markdown('<p class="gemini-subheader">How can I help you today?</p>', unsafe_allow_html=True)
 
 if not api_key:
-    st.error("⚠️ GEMINI_API_KEY is missing! Please set it in your local environment variables or Streamlit secrets.")
+    st.error("⚠️ GEMINI_API_KEY is missing! Please configure it in your secrets.")
     st.stop()
 
-# Initialize Session State for Chat History
+# Initialize Chat History State
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display prior chat messages onto the UI
+# Display Prior Chat Messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 6. Handle User Input & API Generation
+# 6. Handle Prompt Submission & Streaming
 if prompt := st.chat_input("Enter a prompt here..."):
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
