@@ -76,7 +76,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Secure API Key Configuration (Supports Streamlit Secrets & Environment Variables)
+# 3. Google Sign-In Gate (Native Streamlit Authentication)
+if not st.experimental_user.is_logged_in:
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.title("✨ Welcome to Metaverse AI")
+        st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
+        if st.button("🔐 Log in with Google", use_container_width=True):
+            st.login()
+    st.stop() # Halts app execution here until the user successfully logs in
+
+# 4. Secure API Key Configuration
 API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY"))
 
 if API_KEY == "YOUR_ACTUAL_API_KEY":
@@ -88,7 +99,7 @@ else:
 
     client = get_client(API_KEY)
 
-    # 4. Multi-Chat Session Storage Initialization
+    # 5. Multi-Chat Session Storage Initialization
     if "sessions" not in st.session_state:
         st.session_state.sessions = {}
     if "current_session_id" not in st.session_state:
@@ -100,8 +111,13 @@ else:
         }
         st.session_state.current_session_id = init_id
 
-    # --- SIDEBAR NAVIGATION & CHAT HISTORY ---
+    # --- SIDEBAR NAVIGATION & USER INFO ---
     st.sidebar.title("✨ Metaverse AI")
+    st.sidebar.markdown(f"👤 **User:** {st.experimental_user.name}")
+    if st.sidebar.button("🚪 Log out", use_container_width=True):
+        st.logout()
+
+    st.sidebar.markdown("---")
     
     # New Chat Button
     if st.sidebar.button("➕ New Chat", use_container_width=True):
@@ -114,18 +130,44 @@ else:
         st.session_state.current_session_id = new_id
         st.rerun()
 
-    st.sidebar.markdown("---")
     st.sidebar.markdown("### 💬 Recent Chats")
 
-    # Render previous chat history list
+    # Render previous chat history list & Delete options
+    sessions_to_delete = []
     for s_id, s_data in list(st.session_state.sessions.items()):
+        col_chat, col_del = st.sidebar.columns([4, 1])
+        
         label = f"💬 {s_data['title']}"
         if s_id == st.session_state.current_session_id:
             label = f"👉 {s_data['title']}"
         
-        if st.sidebar.button(label, key=f"session_{s_id}", use_container_width=True):
-            st.session_state.current_session_id = s_id
-            st.rerun()
+        with col_chat:
+            if st.button(label, key=f"select_{s_id}", use_container_width=True):
+                st.session_state.current_session_id = s_id
+                st.rerun()
+        
+        with col_del:
+            # Delete chat button next to each chat item
+            if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
+                sessions_to_delete.append(s_id)
+
+    # Handle chat deletions safely
+    if sessions_to_delete:
+        for s_id in sessions_to_delete:
+            del st.session_state.sessions[s_id]
+        
+        # If active chat was deleted, create or jump to another session
+        if len(st.session_state.sessions) == 0:
+            fallback_id = str(uuid.uuid4())
+            st.session_state.sessions[fallback_id] = {
+                "title": "New Chat",
+                "messages": [],
+                "chat_obj": client.chats.create(model="gemini-3.5-flash")
+            }
+            st.session_state.current_session_id = fallback_id
+        else:
+            st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
+        st.rerun()
 
     st.sidebar.markdown("---")
     app_mode = st.sidebar.radio("Core Engine Mode", ["💬 Gemini Neural Chat", "🎨 Imagen Art Studio", "👁️ Vision Analyzer"])
@@ -142,7 +184,7 @@ else:
     # --- MODE 1: GEMINI NEURAL CHAT ---
     if app_mode == "💬 Gemini Neural Chat":
         st.title("✨ Metaverse AI: Gemini Core")
-        st.caption("Multi-turn contextual intelligence with conversation history memory.")
+        st.caption(f"Active Session: {current_session['title']}")
 
         # Display history of current session
         for msg in current_session["messages"]:
@@ -157,7 +199,7 @@ else:
 
             # Auto-name chat session based on first prompt
             if current_session["title"] == "New Chat":
-                current_session["title"] = prompt[:25] + ("..." if len(prompt) > 25 else "")
+                current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
 
             with st.chat_message("assistant"):
                 with st.spinner("Thinking through neural pathways..."):
@@ -171,6 +213,7 @@ else:
 
                     st.markdown(reply)
                     current_session["messages"].append({"role": "assistant", "content": reply})
+            st.rerun()
 
     # --- MODE 2: IMAGEN ART STUDIO ---
     elif app_mode == "🎨 Imagen Art Studio":
