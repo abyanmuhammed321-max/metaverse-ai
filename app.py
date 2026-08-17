@@ -289,10 +289,10 @@ else:
                     st.error("⚠️ The `openai` library is missing from `requirements.txt`.")
                 elif dall_e_prompt:
                     with st.spinner("Painting artwork with ChatGPT DALL-E 3..."):
-                        try:
+                       try:
                             openai_client = OpenAI(api_key=OPENAI_API_KEY)
                             response = openai_client.images.generate(
-                                model="dall-e-3",
+                                model="gpt-image-2",  # Updated to OpenAI's current model
                                 prompt=dall_e_prompt,
                                 size=dall_e_size,
                                 quality=dall_e_quality,
@@ -301,7 +301,7 @@ else:
                             image_url = response.data[0].url
                             st.image(image_url, caption=dall_e_prompt, use_container_width=True)
                         except Exception as e:
-                            st.error(f"ChatGPT DALL-E Error: {e}")
+                            st.error(f"ChatGPT Image Generation Error: {e}")
                 else:
                     st.warning("Please enter a prompt description.")
 
