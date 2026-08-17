@@ -46,7 +46,7 @@ try:
     is_logged_in = st.user.is_logged_in
     user_name = getattr(st.user, "name", "User")
 except Exception:
-    pass # Bypasses safely if [auth] secrets are not added yet
+    pass 
 
 if not is_logged_in:
     st.markdown("<br><br>", unsafe_allow_html=True)
@@ -191,29 +191,34 @@ else:
     # --- MODE 2: NANO BANANA ART STUDIO ---
     elif app_mode == "🍌 Nano Banana Art Studio":
         st.title("🍌 Nano Banana: AI Art & Image Studio")
-        st.caption("Powered by Gemini 2.5 Flash Image & Nano Banana Generation Core.")
+        st.caption("Powered by Nano Banana Image Generation Core (gemini-2.5-flash-image).")
 
         tab_type = st.radio("Select Operation", ["🎨 Text-to-Image Generation", "🔄 Image-to-Image / Conversational Edit"], horizontal=True)
 
         if tab_type == "🎨 Text-to-Image Generation":
             img_prompt = st.text_area("Describe your visual concept:", placeholder="e.g., A stylish 3D caricature of a cyberpunk tiger, expressive features, neon lighting...")
-            aspect_ratio = st.selectbox("Aspect Ratio", ["1:1", "16:9", "4:3", "9:16"])
             
             if st.button("Generate Nano Banana Art", use_container_width=True):
                 if img_prompt:
                     with st.spinner("Synthesizing pixels with Nano Banana engine..."):
                         try:
-                            result = client.models.generate_images(
-                                model='imagen-3.0-generate-002',
-                                prompt=img_prompt,
-                                config=types.GenerateImagesConfig(
-                                    number_of_images=1,
-                                    output_mime_type="image/jpeg",
-                                    aspect_ratio=aspect_ratio,
-                                )
+                            # Using gemini-2.5-flash-image (Nano Banana) for direct native image generation
+                            result = client.models.generate_content(
+                                model='gemini-2.5-flash-image',
+                                contents=img_prompt
                             )
-                            for generated in result.generated_images:
-                                st.image(generated.image.image_bytes, caption=img_prompt, use_container_width=True)
+                            
+                            # Render returned image parts natively
+                            rendered_image = False
+                            if hasattr(result, 'candidates') and result.candidates:
+                                for part in result.candidates[0].content.parts:
+                                    if hasattr(part, 'inline_data') and part.inline_data:
+                                        st.image(part.inline_data.data, caption=img_prompt, use_container_width=True)
+                                        rendered_image = True
+                            
+                            if not rendered_image and hasattr(result, 'text'):
+                                st.markdown(result.text)
+                                
                         except Exception as e:
                             st.error(f"Generation error: {e}")
                 else:
@@ -233,11 +238,21 @@ else:
                                 content_payload.append(types.Part.from_bytes(data=f.getvalue(), mime_type=f.type))
                             
                             resp = client.models.generate_content(
-                                model="gemini-2.5-flash",
+                                model="gemini-2.5-flash-image",
                                 contents=content_payload
                             )
-                            st.markdown("### Nano Banana Studio Result:")
-                            st.markdown(resp.text)
+                            
+                            rendered_image = False
+                            if hasattr(resp, 'candidates') and resp.candidates:
+                                for part in resp.candidates[0].content.parts:
+                                    if hasattr(part, 'inline_data') and part.inline_data:
+                                        st.image(part.inline_data.data, caption=edit_prompt, use_container_width=True)
+                                        rendered_image = True
+                            
+                            if not rendered_image and hasattr(resp, 'text'):
+                                st.markdown("### Nano Banana Studio Result:")
+                                st.markdown(resp.text)
+                                
                         except Exception as e:
                             st.error(f"Editing error: {e}")
 
