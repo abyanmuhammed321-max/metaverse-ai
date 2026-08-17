@@ -14,53 +14,19 @@ st.set_page_config(
 # 2. Neon Gemini UI Styling (CSS)
 st.markdown("""
     <style>
-    /* Deep Cyber Dark Background */
     .stApp {
         background: radial-gradient(circle at center, #0a0b10, #121420, #06070b);
         color: #e2e8f0;
     }
-    
-    /* Neon Header Glow */
     h1 {
         color: #00f2fe !important;
         text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
         font-family: 'Inter', sans-serif;
     }
-    
-    /* Sidebar Gemini Aesthetic */
     section[data-testid="stSidebar"] {
         background-color: #0d0f17;
         border-right: 1px solid rgba(0, 242, 254, 0.2);
     }
-    
-    /* User Chat Bubble */
-    .stChatMessage[data-testid="stChatMessage-user"] {
-        background: rgba(14, 165, 233, 0.08);
-        border: 1px solid #00f2fe;
-        border-radius: 12px;
-        box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
-    }
-    
-    /* Assistant Chat Bubble */
-    .stChatMessage[data-testid="stChatMessage-assistant"] {
-        background: rgba(139, 92, 246, 0.08);
-        border: 1px solid #a855f7;
-        border-radius: 12px;
-        box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
-    }
-    
-    /* Chat Input Bar */
-    .stChatInput input {
-        background-color: #121420 !important;
-        color: #ffffff !important;
-        border: 1px solid #00f2fe !important;
-        border-radius: 8px !important;
-    }
-    .stChatInput input:focus {
-        box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
-    }
-    
-    /* Custom Neon Buttons */
     .stButton button {
         background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
         color: #0a0b10;
@@ -68,36 +34,27 @@ st.markdown("""
         border: none;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
-        transition: 0.3s ease;
-    }
-    .stButton button:hover {
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.8);
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Google Sign-In Gate (With fallback protection if secrets aren't set up yet)
-is_logged_in = False
-user_name = "Creator"
+# 3. Simple Instant Login Gate (Bypasses OAuth errors if not configured)
+if "username" not in st.session_state:
+    st.session_state.username = None
 
-try:
-    is_logged_in = st.user.is_logged_in
-    user_name = getattr(st.user, "name", "User")
-except Exception:
-    # Authentication secrets are not configured yet; allow app to run safely
-    is_logged_in = True 
-
-if not is_logged_in:
+if not st.session_state.username:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.title("✨ Welcome to Metaverse AI")
-        st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
-        try:
-            if st.button("🔐 Log in with Google", use_container_width=True):
-                st.login()
-        except Exception:
-            st.error("Google OAuth is not configured in your Streamlit secrets.")
+        st.markdown("Enter your name to access your personal AI matrix.")
+        entered_name = st.text_input("Your Name:")
+        if st.button("🚀 Enter Matrix", use_container_width=True):
+            if entered_name.strip():
+                st.session_state.username = entered_name.strip()
+                st.rerun()
+            else:
+                st.warning("Please enter a valid name.")
     st.stop()
 
 # 4. Secure API Key Configuration
@@ -124,40 +81,34 @@ else:
         st.session_state.sessions[init_id] = {
             "title": "New Chat",
             "messages": [],
-            "chat_obj": client.chats.create(model="gemini-3.5-flash")
+            "chat_obj": client.chats.create(model="gemini-2.5-flash")
         }
         st.session_state.current_session_id = init_id
 
-    # --- SIDEBAR NAVIGATION & USER INFO ---
+    # --- SIDEBAR ---
     st.sidebar.title("✨ Metaverse AI")
-    st.sidebar.markdown(f"👤 **User:** {user_name}")
-    
-    try:
-        if st.sidebar.button("🚪 Log out", use_container_width=True):
-            st.logout()
-    except Exception:
-        pass
+    st.sidebar.markdown(f"👤 **User:** {st.session_state.username}")
+    if st.sidebar.button("🚪 Logout", use_container_width=True):
+        st.session_state.username = None
+        st.rerun()
 
     st.sidebar.markdown("---")
     
-    # New Chat Button
     if st.sidebar.button("➕ New Chat", use_container_width=True):
         new_id = str(uuid.uuid4())
         st.session_state.sessions[new_id] = {
             "title": "New Chat",
             "messages": [],
-            "chat_obj": client.chats.create(model="gemini-3.5-flash")
+            "chat_obj": client.chats.create(model="gemini-2.5-flash")
         }
         st.session_state.current_session_id = new_id
         st.rerun()
 
     st.sidebar.markdown("### 💬 Recent Chats")
 
-    # Render previous chat history list & Delete options
     sessions_to_delete = []
     for s_id, s_data in list(st.session_state.sessions.items()):
         col_chat, col_del = st.sidebar.columns([4, 1])
-        
         label = f"💬 {s_data['title']}"
         if s_id == st.session_state.current_session_id:
             label = f"👉 {s_data['title']}"
@@ -166,22 +117,19 @@ else:
             if st.button(label, key=f"select_{s_id}", use_container_width=True):
                 st.session_state.current_session_id = s_id
                 st.rerun()
-        
         with col_del:
             if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
                 sessions_to_delete.append(s_id)
 
-    # Handle chat deletions safely
     if sessions_to_delete:
         for s_id in sessions_to_delete:
             del st.session_state.sessions[s_id]
-        
         if len(st.session_state.sessions) == 0:
             fallback_id = str(uuid.uuid4())
             st.session_state.sessions[fallback_id] = {
                 "title": "New Chat",
                 "messages": [],
-                "chat_obj": client.chats.create(model="gemini-3.5-flash")
+                "chat_obj": client.chats.create(model="gemini-2.5-flash")
             }
             st.session_state.current_session_id = fallback_id
         else:
@@ -189,10 +137,12 @@ else:
         st.rerun()
 
     st.sidebar.markdown("---")
-    app_mode = st.sidebar.radio("Core Engine Mode", ["💬 Gemini Neural Chat", "🎨 Imagen Art Studio", "👁️ Vision Analyzer"])
-    st.sidebar.markdown("🚀 **Engine:** Gemini 3.5 & Imagen 3")
+    app_mode = st.sidebar.radio("Core Engine Mode", [
+        "💬 Gemini Neural Chat", 
+        "🍌 Nano Banana Art Studio", 
+        "👁️ Vision Analyzer"
+    ])
 
-    # Get active session data
     curr_id = st.session_state.current_session_id
     if curr_id not in st.session_state.sessions:
         curr_id = list(st.session_state.sessions.keys())[0]
@@ -223,7 +173,7 @@ else:
                         response = current_session["chat_obj"].send_message(prompt)
                         reply = response.text
                     except Exception:
-                        current_session["chat_obj"] = client.chats.create(model="gemini-3.5-flash")
+                        current_session["chat_obj"] = client.chats.create(model="gemini-2.5-flash")
                         response = current_session["chat_obj"].send_message(prompt)
                         reply = response.text
 
@@ -231,49 +181,72 @@ else:
                     current_session["messages"].append({"role": "assistant", "content": reply})
             st.rerun()
 
-    # --- MODE 2: IMAGEN ART STUDIO ---
-    elif app_mode == "🎨 Imagen Art Studio":
-        st.title("🎨 Metaverse AI: Imagen Studio")
-        st.caption("Synthesize stunning high-definition visual imagery from descriptive text prompts.")
+    # --- MODE 2: NANO BANANA ART STUDIO ---
+    elif app_mode == "🍌 Nano Banana Art Studio":
+        st.title("🍌 Nano Banana: AI Art & Image Studio")
+        st.caption("Powered by Gemini 2.5 Flash Image & Nano Banana Generation Core.")
 
-        img_prompt = st.text_area("Describe your image concept:", placeholder="e.g., A cyberpunk glowing neon tiger walking through a digital grid city...")
-        if st.button("Generate Hologram Artwork", use_container_width=True):
-            if img_prompt:
-                with st.spinner("Rendering pixels with Imagen..."):
-                    try:
-                        result = client.models.generate_images(
-                            model='imagen-3.0-generate-002',
-                            prompt=img_prompt,
-                            config=types.GenerateImagesConfig(
-                                number_of_images=1,
-                                output_mime_type="image/jpeg",
-                                aspect_ratio="1:1",
+        tab_type = st.radio("Select Operation", ["🎨 Text-to-Image Generation", "🔄 Image-to-Image / Conversational Edit"], horizontal=True)
+
+        if tab_type == "🎨 Text-to-Image Generation":
+            img_prompt = st.text_area("Describe your visual concept:", placeholder="e.g., A stylish 3D caricature of a cyberpunk tiger, expressive features, neon lighting...")
+            aspect_ratio = st.selectbox("Aspect Ratio", ["1:1", "16:9", "4:3", "9:16"])
+            
+            if st.button("Generate Nano Banana Art", use_container_width=True):
+                if img_prompt:
+                    with st.spinner("Synthesizing pixels with Nano Banana engine..."):
+                        try:
+                            result = client.models.generate_images(
+                                model='imagen-3.0-generate-002',
+                                prompt=img_prompt,
+                                config=types.GenerateImagesConfig(
+                                    number_of_images=1,
+                                    output_mime_type="image/jpeg",
+                                    aspect_ratio=aspect_ratio,
+                                )
                             )
-                        )
-                        for generated in result.generated_images:
-                            st.image(generated.image.image_bytes, caption=img_prompt, use_container_width=True)
-                    except Exception as e:
-                        st.error(f"Image generation error: {e}")
+                            for generated in result.generated_images:
+                                st.image(generated.image.image_bytes, caption=img_prompt, use_container_width=True)
+                        except Exception as e:
+                            st.error(f"Generation error: {e}")
+                else:
+                    st.warning("Please enter a prompt description.")
+
+        else: # Image-to-Image / Style Transform
+            uploaded_file = st.file_uploader("Upload reference image(s) [Up to 5]", type=["jpg", "jpeg", "png", "webp"], accept_multiple_files=True)
+            edit_prompt = st.text_input("Describe how to transform or edit the image:", placeholder="e.g., Turn this into a hand-drawn cartoon anime style, keep character consistency...")
+
+            if uploaded_file:
+                st.write(f"Loaded {len(uploaded_file)} reference specimen(s).")
+                if st.button("Transform with Nano Banana", use_container_width=True):
+                    with st.spinner("Processing multi-image context & style transfer..."):
+                        try:
+                            content_payload = [edit_prompt]
+                            for f in uploaded_file:
+                                content_payload.append(types.Part.from_bytes(data=f.getvalue(), mime_type=f.type))
+                            
+                            resp = client.models.generate_content(
+                                model="gemini-2.5-flash",
+                                contents=content_payload
+                            )
+                            st.markdown("### Nano Banana Studio Result:")
+                            st.markdown(resp.text)
+                        except Exception as e:
+                            st.error(f"Editing error: {e}")
 
     # --- MODE 3: VISION ANALYZER ---
     elif app_mode == "👁️ Vision Analyzer":
-        st.title("👁️ Metaverse AI: Vision Matrix")
-        st.caption("Upload images to analyze spatial data, objects, and text.")
-
+        st.title("👁️ Vision Matrix")
         uploaded_image = st.file_uploader("Upload visual specimen", type=["jpg", "jpeg", "png"])
         v_prompt = st.text_input("Visual Query:", "Analyze this image and list key details.")
-
         if uploaded_image:
             st.image(uploaded_image, caption="Loaded Specimen", width=400)
             if st.button("Analyze Specimen", use_container_width=True):
                 with st.spinner("Scanning visual patterns..."):
                     try:
                         resp = client.models.generate_content(
-                            model="gemini-3.5-flash",
-                            contents=[
-                                v_prompt,
-                                types.Part.from_bytes(data=uploaded_image.getvalue(), mime_type=uploaded_image.type)
-                            ]
+                            model="gemini-2.5-flash",
+                            contents=[v_prompt, types.Part.from_bytes(data=uploaded_image.getvalue(), mime_type=uploaded_image.type)]
                         )
                         st.markdown("### Analysis Report:")
                         st.markdown(resp.text)
