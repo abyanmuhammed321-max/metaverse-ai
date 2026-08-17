@@ -4,14 +4,15 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-# 1. Page Configuration
+# 1. Page Configuration & Mobile Viewport Support
 st.set_page_config(
     page_title="Metaverse AI - Gemini Edition",
     page_icon="✨",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="auto"
 )
 
-# 2. Neon Gemini UI Styling (CSS)
+# 2. Neon Gemini UI Styling & Mobile Responsive CSS Injection
 st.markdown("""
     <style>
     .stApp {
@@ -34,6 +35,28 @@ st.markdown("""
         border: none;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+    }
+    
+    /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
+    @media screen and (max-width: 768px) {
+        .main .block-container {
+            padding: 1rem 0.75rem !important;
+            max-width: 100% !important;
+        }
+        h1 {
+            font-size: 1.6rem !important;
+        }
+        .stTextInput input, .stTextArea textarea, .stSelectbox {
+            font-size: 16px !important; /* Prevents auto-zoom on iOS */
+        }
+        div[data-testid="stHorizontalBlock"] {
+            flex-direction: column !important;
+        }
+        div[data-testid="column"] {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+            min-width: 100% !important;
+        }
     }
     </style>
 """, unsafe_allow_html=True)
@@ -202,13 +225,11 @@ else:
                 if img_prompt:
                     with st.spinner("Synthesizing pixels with Nano Banana engine..."):
                         try:
-                            # Using gemini-2.5-flash-image (Nano Banana) for direct native image generation
                             result = client.models.generate_content(
                                 model='gemini-2.5-flash-image',
                                 contents=img_prompt
                             )
                             
-                            # Render returned image parts natively
                             rendered_image = False
                             if hasattr(result, 'candidates') and result.candidates:
                                 for part in result.candidates[0].content.parts:
