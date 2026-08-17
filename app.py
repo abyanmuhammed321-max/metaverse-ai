@@ -204,23 +204,32 @@ if app_mode == "💬 Gemini Neural Chat":
         with st.chat_message("assistant"):
             with st.spinner("Thinking through neural pathways..."):
                 try:
+                    # Sanitize and build alternating history format required by Gemini API
+                    raw_messages = current_session["messages"]
                     formatted_contents = []
-                    for m in current_session["messages"]:
-                        role = "user" if m["role"] == "user" else "model"
-                        formatted_contents.append({
-                            "role": role,
-                            "parts": [{"text": m["content"]}]
-                        })
+                    last_role = None
 
+                    for m in raw_messages:
+                        role = "user" if m["role"] == "user" else "model"
+                        # Prevent consecutive duplicate roles which throw API validation errors
+                        if role != last_role:
+                            formatted_contents.append({
+                                "role": role,
+                                "parts": [{"text": m["content"]}]
+                            })
+                            last_role = role
+
+                    # Ensure the sequence ends with a user prompt or handles trailing messages safely
                     response = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-2.0-flash",
                         contents=formatted_contents
                     )
+                    
                     reply = response.text if hasattr(response, 'text') and response.text else "No response generated."
                     st.markdown(reply)
                     current_session["messages"].append({"role": "assistant", "content": reply})
                 except Exception as e:
-                    st.error(f"⚠️ API Error: {e}")
+                    st.error(f"⚠️ API Error Details: {str(e)}")
         st.rerun()
 
 # --- MODE 2: VISION ANALYZER ---
@@ -235,7 +244,7 @@ elif app_mode == "👁️ Vision Analyzer":
             with st.spinner("Scanning visual patterns..."):
                 try:
                     resp = client.models.generate_content(
-                        model="gemini-2.5-flash",
+                        model="gemini-2.0-flash",
                         contents=[v_prompt, types.Part.from_bytes(data=uploaded_image.getvalue(), mime_type=uploaded_image.type)]
                     )
                     st.markdown("### Analysis Report:")
