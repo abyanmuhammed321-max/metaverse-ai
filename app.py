@@ -54,7 +54,7 @@ st.markdown("""
             font-size: 1.6rem !important;
         }
         .stTextInput input, .stTextArea textarea, .stSelectbox {
-            font-size: 16px !important; /* Prevents auto-zoom on iOS */
+            font-size: 16px !important;
         }
         div[data-testid="stHorizontalBlock"] {
             flex-direction: column !important;
@@ -226,9 +226,9 @@ else:
     # --- MODE 2: MULTI-AI ART STUDIO (Nano Banana & ChatGPT DALL-E) ---
     elif app_mode == "🍌 Multi-AI Art Studio":
         st.title("🍌 Multi-AI Art Studio")
-        st.caption("Generate stunning visuals using either Google Nano Banana or ChatGPT DALL-E 3.")
+        st.caption("Generate stunning visuals using either Google Nano Banana or ChatGPT.")
 
-        art_engine = st.selectbox("Choose Image Engine", ["🍌 Nano Banana (Gemini)", "🤖 ChatGPT (DALL-E 3)"])
+        art_engine = st.selectbox("Choose Image Engine", ["🍌 Nano Banana (Gemini)", "🤖 ChatGPT (GPT Image)"])
 
         if art_engine == "🍌 Nano Banana (Gemini)":
             tab_type = st.radio("Operation", ["🎨 Text-to-Image", "🔄 Image-to-Image Edit"], horizontal=True)
@@ -276,30 +276,30 @@ else:
                         except Exception as e:
                             st.error(f"Editing error: {e}")
 
-        else: # ChatGPT DALL-E 3 Mode
-            st.markdown("### 🤖 ChatGPT DALL-E 3 Studio")
-            dall_e_prompt = st.text_area("Describe your artwork for ChatGPT DALL-E 3:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
-            dall_e_quality = st.selectbox("Quality", ["standard", "hd"])
-            dall_e_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
+        else: 
+            st.markdown("### 🤖 ChatGPT Image Generation Studio")
+            gpt_prompt = st.text_area("Describe your artwork for ChatGPT:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
+            gpt_quality = st.selectbox("Quality", ["standard", "hd"])
+            gpt_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
 
-            if st.button("🎨 Generate with ChatGPT DALL-E 3", use_container_width=True):
+            if st.button("🎨 Generate with ChatGPT", use_container_width=True):
                 if not OPENAI_API_KEY:
-                    st.error("⚠️ Please configure your `OPENAI_API_KEY` in Streamlit Secrets to use DALL-E 3.")
+                    st.error("⚠️ Please configure your `OPENAI_API_KEY` in Streamlit Secrets.")
                 elif not OPENAI_AVAILABLE:
                     st.error("⚠️ The `openai` library is missing from `requirements.txt`.")
-                elif dall_e_prompt:
-                    with st.spinner("Painting artwork with ChatGPT DALL-E 3..."):
-                       try:
+                elif gpt_prompt:
+                    with st.spinner("Painting artwork with ChatGPT..."):
+                        try:
                             openai_client = OpenAI(api_key=OPENAI_API_KEY)
                             response = openai_client.images.generate(
-                                model="gpt-image-2",  # Updated to OpenAI's current model
-                                prompt=dall_e_prompt,
-                                size=dall_e_size,
-                                quality=dall_e_quality,
+                                model="gpt-image-2",
+                                prompt=gpt_prompt,
+                                size=gpt_size,
+                                quality=gpt_quality,
                                 n=1,
                             )
                             image_url = response.data[0].url
-                            st.image(image_url, caption=dall_e_prompt, use_container_width=True)
+                            st.image(image_url, caption=gpt_prompt, use_container_width=True)
                         except Exception as e:
                             st.error(f"ChatGPT Image Generation Error: {e}")
                 else:
