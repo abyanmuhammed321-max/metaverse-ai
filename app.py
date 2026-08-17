@@ -9,7 +9,7 @@ if "sidebar_state" not in st.session_state:
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Gemini Clone",
+    page_title="Metaverse-AI",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state=st.session_state.sidebar_state
