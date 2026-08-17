@@ -1,248 +1,156 @@
-import os
-import uuid
 import streamlit as st
 from google import genai
-from google.genai import types
+from google.genai import errors
 
-# 1. Page Configuration & Mobile Support
+# 1. Page Configuration (Must be the first Streamlit command)
 st.set_page_config(
-    page_title="Metaverse AI - Gemini Pro Edition",
-    page_icon="🧠",
-    layout="wide",
-    initial_sidebar_state="auto"
+    page_title="Gemini Clone",
+    page_icon="✨",
+    layout="centered",
+    initial_sidebar_state="expanded"
 )
 
-# 2. Neon Gemini Pro UI Styling & Mobile Responsiveness
+# 2. Inject Custom CSS to Match Gemini's Dark UI Style
 st.markdown("""
-    <style>
+<style>
+    /* Main background & font styling */
     .stApp {
-        background: radial-gradient(circle at center, #070913, #0f1225, #040508);
-        color: #e2e8f0;
-    }
-    h1 {
-        color: #a78bfa !important;
-        text-shadow: 0 0 15px rgba(167, 139, 250, 0.5);
+        background-color: #131314;
+        color: #e3e3e3;
         font-family: 'Inter', sans-serif;
     }
-    section[data-testid="stSidebar"] {
-        background-color: #090b14;
-        border-right: 1px solid rgba(167, 139, 250, 0.2);
+    
+    /* Hide default Streamlit header/footer elements */
+    header {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Style chat message bubbles */
+    .stChatMessage {
+        background-color: transparent !important;
+        border-radius: 12px;
+        padding: 10px;
+        margin-bottom: 10px;
     }
-    .stButton button {
-        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-        color: #ffffff;
-        font-weight: bold;
-        border: none;
-        border-radius: 8px;
-        box-shadow: 0 0 12px rgba(139, 92, 246, 0.4);
+    
+    /* User prompt box styling */
+    [data-testid="stChatMessage"]:nth-child(odd) {
+        background-color: #1e1f20 !important;
+        border: 1px solid #333537;
     }
-    @media screen and (max-width: 768px) {
-        .main .block-container {
-            padding: 1rem 0.75rem !important;
-            max-width: 100% !important;
-        }
-        h1 {
-            font-size: 1.5rem !important;
-        }
+
+    /* Fix text color in chat input area */
+    .stChatInput input {
+        color: #e3e3e3 !important;
     }
-    </style>
+    
+    /* Custom Sidebar styling */
+    [data-testid="stSidebar"] {
+        background-color: #1e1f20;
+        border-right: 1px solid #333537;
+    }
+    
+    /* Center title header styling */
+    .gemini-header {
+        text-align: center;
+        background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0px;
+    }
+    .gemini-subheader {
+        text-align: center;
+        color: #8e918f;
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# 3. Google Sign-In Gate
-is_logged_in = True
-user_name = "Pro Matrix Creator"
-
-try:
-    is_logged_in = st.user.is_logged_in
-    user_name = getattr(st.user, "name", "User")
-except Exception:
-    pass 
-
-if not is_logged_in:
-    st.markdown("<br><br>", unsafe_allow_html=True)
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.title("🧠 Metaverse AI: Gemini Pro")
-        st.markdown("Sign in securely with your Google account to access advanced reasoning and deep context analysis.")
-        try:
-            if st.button("🔐 Log in with Google", use_container_width=True):
-                st.login()
-        except Exception:
-            st.error("Google OAuth is not configured in your Streamlit secrets block.")
-    st.stop()
-
-# 4. API Key Configuration
-api_key = ""
-try:
-    api_key = st.secrets["GEMINI_API_KEY"]
-except Exception:
-    api_key = os.getenv("GEMINI_API_KEY", "")
-
-if not api_key:
-    with st.sidebar:
-        st.subheader("🔑 Authentication Required")
-        api_key = st.text_input("Enter your Gemini API Key", type="password")
-        if api_key:
-            os.environ["GEMINI_API_KEY"] = api_key
-
-try:
-    client = genai.Client(api_key=api_key) if api_key else genai.Client()
-except Exception as e:
-    st.error(f"Failed to initialize Gemini Client: {e}")
-    client = None
-
-# 5. Multi-Chat Session State Initialization
-if "sessions" not in st.session_state:
-    init_id = str(uuid.uuid4())
-    st.session_state.sessions = {
-        init_id: {
-            "title": "New Pro Chat",
-            "messages": []
-        }
-    }
-    st.session_state.active_session = init_id
-
-if "active_session" not in st.session_state or st.session_state.active_session not in st.session_state.sessions:
-    st.session_state.active_session = list(st.session_state.sessions.keys())[0]
-
-# --- SIDEBAR: NAVIGATION & CHAT MANAGEMENT ---
-st.sidebar.title("🧠 Metaverse AI")
-st.sidebar.markdown(f"👤 **User:** {user_name}")
-st.sidebar.caption("Engine: Gemini 2.5 Pro")
-
-try:
-    if st.sidebar.button("🚪 Log out", use_container_width=True):
-        st.logout()
-except Exception:
-    pass
-
-st.sidebar.markdown("---")
-
-# New Chat Button
-if st.sidebar.button("➕ New Pro Chat", use_container_width=True):
-    new_id = str(uuid.uuid4())
-    st.session_state.sessions[new_id] = {
-        "title": "New Pro Chat",
-        "messages": []
-    }
-    st.session_state.active_session = new_id
-    st.rerun()
-
-st.sidebar.markdown("### 💬 Conversations")
-
-# Chat List & Deletion Logic
-sessions_to_delete = []
-for s_id, s_data in list(st.session_state.sessions.items()):
-    col_chat, col_del = st.sidebar.columns([4, 1])
-    label = f"💬 {s_data['title']}"
-    if s_id == st.session_state.active_session:
-        label = f"👉 {s_data['title']}"
-
-    with col_chat:
-        if st.button(label, key=f"select_{s_id}", use_container_width=True):
-            st.session_state.active_session = s_id
-            st.rerun()
-    with col_del:
-        if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
-            sessions_to_delete.append(s_id)
-
-# Handle Deletions Safely
-if sessions_to_delete:
-    for s_id in sessions_to_delete:
-        del st.session_state.sessions[s_id]
-    if len(st.session_state.sessions) == 0:
-        fallback_id = str(uuid.uuid4())
-        st.session_state.sessions[fallback_id] = {
-            "title": "New Pro Chat",
-            "messages": []
-        }
-        st.session_state.active_session = fallback_id
-    else:
-        st.session_state.active_session = list(st.session_state.sessions.keys())[0]
-    st.rerun()
-
-st.sidebar.markdown("---")
-app_mode = st.sidebar.radio("Core Engine Mode", [
-    "🧠 Gemini Pro Neural Chat", 
-    "👁️ Vision Analyzer Pro"
-])
-
-if not api_key:
-    st.error("⚠️ Please configure your `GEMINI_API_KEY` in Streamlit Secrets or via the sidebar.")
-    st.stop()
-
-# --- MODE 1: GEMINI PRO NEURAL CHAT ---
-if app_mode == "🧠 Gemini Pro Neural Chat":
-    current_session = st.session_state.sessions[st.session_state.active_session]
-    st.title("🧠 Metaverse AI: Gemini Pro Brain")
-    st.caption(f"Active Session: {current_session['title']} (Powered by Gemini 2.5 Pro)")
-
-    # Render chat history on screen
-    for msg in current_session["messages"]:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-
-    # Handle user prompt input
-    if prompt := st.chat_input("Ask Gemini Pro anything (coding, math, reasoning)..."):
-        # 1. Append user message to state
-        current_session["messages"].append({"role": "user", "content": prompt})
-        with st.chat_message("user"):
-            st.markdown(prompt)
-
-        # Set automatic title based on first message
-        if current_session["title"] == "New Pro Chat":
-            current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
-
-        # 2. Generate response securely using Gemini Pro model & stateless history formatting
-        with st.chat_message("assistant"):
-            with st.spinner("Processing deep reasoning pathways with Gemini Pro..."):
-                try:
-                    formatted_contents = []
-                    for m in current_session["messages"]:
-                        role = "user" if m["role"] == "user" else "model"
-                        formatted_contents.append({
-                            "role": role,
-                            "parts": [{"text": m["content"]}]
-                        })
-
-                    response = client.models.generate_content(
-                        model="gemini-2.5-pro",
-                        contents=formatted_contents
-                    )
-                    
-                    reply = response.text if hasattr(response, 'text') and response.text else "No response generated."
-                    st.markdown(reply)
-                    
-                    # Append assistant reply to history
-                    current_session["messages"].append({"role": "assistant", "content": reply})
-                except Exception as e:
-                    st.error(f"⚠️ Gemini Pro API Error: {str(e)}")
+# 3. Sidebar Configuration
+with st.sidebar:
+    st.markdown("### ⚙️ Settings")
+    api_key_input = st.text_input("Gemini API Key", type="password", help="Enter your Google AI Studio API Key")
+    
+    selected_model = st.selectbox(
+        "Choose Model",
+        ["gemini-2.5-flash", "gemini-2.5-pro"],
+        index=0
+    )
+    
+    st.markdown("---")
+    if st.button("🗑️ Clear Chat History", use_container_width=True):
+        st.session_state.messages = []
         st.rerun()
+        
+    st.markdown("---")
+    st.markdown("<p style='text-align: center; color: #8e918f; font-size: 0.8rem;'>Built with Python & Google GenAI SDK</p>", unsafe_allow_html=True)
 
-# --- MODE 2: VISION ANALYZER PRO ---
-elif app_mode == "👁️ Vision Analyzer Pro":
-    st.title("👁️ Vision Matrix Pro")
-    st.caption("Upload images or diagrams for high-precision multimodal analysis via Gemini Pro.")
+# 4. Main UI Layout
+st.markdown('<p class="gemini-header">Hello, human</p>', unsafe_allow_html=True)
+st.markdown('<p class="gemini-subheader">How can I help you today?</p>', unsafe_allow_html=True)
+
+# Initialize Session State for Chat History
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display prior chat messages onto the UI
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# 5. Handle User Input & API Generation
+if prompt := st.chat_input("Enter a prompt here..."):
+    # Check if API key is supplied
+    if not api_key_input and not "GEMINI_API_KEY" in st.secrets:
+        st.error("⚠️ Please enter your Gemini API Key in the sidebar settings to proceed.")
+        st.stop()
     
-    uploaded_image = st.file_uploader("Upload visual specimen", type=["jpg", "jpeg", "png", "webp"])
-    v_prompt = st.text_input("Visual Query:", "Perform an in-depth analytical breakdown of this image.")
-    
-    if uploaded_image:
-        st.image(uploaded_image, caption="Loaded Specimen", width=450)
-        if st.button("Analyze with Gemini Pro", use_container_width=True):
-            with st.spinner("Scanning visual patterns and running multi-modal reasoning..."):
-                try:
-                    resp = client.models.generate_content(
-                        model="gemini-2.5-pro",
-                        contents=[
-                            v_prompt, 
-                            types.Part.from_bytes(
-                                data=uploaded_image.getvalue(), 
-                                mime_type=uploaded_image.type
-                            )
-                        ]
-                    )
-                    st.markdown("### Pro Analysis Report:")
-                    st.markdown(resp.text)
-                except Exception as e:
-                    st.error(f"Vision error: {e}")
+    # Resolve API Key source (sidebar input or deployment secrets)
+    active_api_key = api_key_input if api_key_input else st.secrets.get("GEMINI_API_KEY")
+
+    # Append and display user message
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    with st.chat_message("user"):
+        st.markdown(prompt)
+
+    # Generate Assistant response with Gemini
+    with st.chat_message("assistant"):
+        message_placeholder = st.empty()
+        full_response = ""
+        
+        try:
+            # Initialize official GenAI client
+            client = genai.Client(api_key=active_api_key)
+            
+            # Convert previous messages into the history structure required by the SDK if needed,
+            # or use simple stateless/stream generation. Here we format contents for the stream call:
+            chat_history_formatted = [
+                {"role": m["role"], "parts": [{"text": m["content"]}]} 
+                for m in st.session_state.messages
+            ]
+            
+            # Request streaming content from Gemini model
+            response_stream = client.models.generate_content_stream(
+                model=selected_model,
+                contents=chat_history_formatted
+            )
+            
+            # Stream chunks dynamically into the UI box
+            for chunk in response_stream:
+                if chunk.text:
+                    full_response += chunk.text
+                    message_placeholder.markdown(full_response + "▌")
+            
+            message_placeholder.markdown(full_response)
+            
+        except errors.APIError as e:
+            full_response = f"❌ **API Error:** {e}"
+            message_placeholder.markdown(full_response)
+        except Exception as e:
+            full_response = f"❌ **Error:** {str(e)}"
+            message_placeholder.markdown(full_response)
+
+        # Append model response to session state history
+        st.session_state.messages.append({"role": "model", "content": full_response})
