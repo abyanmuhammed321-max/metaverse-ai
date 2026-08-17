@@ -229,7 +229,7 @@ else:
 
         with st.chat_message("assistant"):
             live_placeholder = st.empty()
-            live_response = ""
+            live_response = [""]  # Mutable list container to prevent scope errors
             
             async def run_live_session():
                 client = genai.Client(api_key=api_key)
@@ -242,15 +242,14 @@ else:
                         if response.server_content and response.server_content.model_turn:
                             for part in response.server_content.model_turn.parts:
                                 if part.text:
-                                    nonlocal live_response
-                                    live_response += part.text
-                                    live_placeholder.markdown(live_response + "▌")
+                                    live_response[0] += part.text
+                                    live_placeholder.markdown(live_response[0] + "▌")
 
             try:
                 asyncio.run(run_live_session())
-                live_placeholder.markdown(live_response)
+                live_placeholder.markdown(live_response[0])
             except Exception as ex:
-                live_response = f"❌ **Live Session Error:** {str(ex)}"
-                live_placeholder.markdown(live_response)
+                live_response[0] = f"❌ **Live Session Error:** {str(ex)}"
+                live_placeholder.markdown(live_response[0])
 
-            st.session_state.live_messages.append({"role": "model", "content": live_response})
+            st.session_state.live_messages.append({"role": "model", "content": live_response[0]})
