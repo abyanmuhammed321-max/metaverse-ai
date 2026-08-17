@@ -4,13 +4,6 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-# Optional import for OpenAI
-try:
-    from openai import OpenAI
-    OPENAI_AVAILABLE = True
-except ImportError:
-    OPENAI_AVAILABLE = False
-
 # 1. Page Configuration & Mobile Viewport Support
 st.set_page_config(
     page_title="Metaverse AI - Gemini Edition",
@@ -97,11 +90,6 @@ try:
 except Exception:
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_GEMINI_API_KEY")
 
-try:
-    OPENAI_API_KEY = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY", ""))
-except Exception:
-    OPENAI_API_KEY = ""
-
 if not GEMINI_API_KEY or GEMINI_API_KEY == "YOUR_ACTUAL_GEMINI_API_KEY":
     st.error("⚠️ Please configure your GEMINI_API_KEY in Streamlit Secrets.")
     st.stop()
@@ -181,7 +169,6 @@ else:
     st.sidebar.markdown("---")
     app_mode = st.sidebar.radio("Core Engine Mode", [
         "💬 Gemini Neural Chat", 
-        "🍌 Multi-AI Art Studio", 
         "👁️ Vision Analyzer"
     ])
 
@@ -223,89 +210,7 @@ else:
                     current_session["messages"].append({"role": "assistant", "content": reply})
             st.rerun()
 
-    # --- MODE 2: MULTI-AI ART STUDIO ---
-    elif app_mode == "🍌 Multi-AI Art Studio":
-        st.title("🍌 Multi-AI Art Studio")
-        st.caption("Generate stunning visuals using either Google Nano Banana or ChatGPT.")
-
-        art_engine = st.selectbox("Choose Image Engine", ["🍌 Nano Banana (Gemini)", "🤖 ChatGPT (GPT Image)"])
-
-        if art_engine == "🍌 Nano Banana (Gemini)":
-            tab_type = st.radio("Operation", ["🎨 Text-to-Image", "🔄 Image-to-Image Edit"], horizontal=True)
-
-            if tab_type == "🎨 Text-to-Image":
-                img_prompt = st.text_area("Describe your concept for Nano Banana:", placeholder="e.g., A futuristic cyberpunk street in Tokyo, neon lights...")
-                if st.button("Generate with Nano Banana", use_container_width=True):
-                    if img_prompt:
-                        with st.spinner("Synthesizing pixels with Nano Banana..."):
-                            try:
-                                result = client.models.generate_content(
-                                    model='gemini-2.5-flash-image',
-                                    contents=img_prompt
-                                )
-                                rendered_image = False
-                                if hasattr(result, 'candidates') and result.candidates:
-                                    for part in result.candidates[0].content.parts:
-                                        if hasattr(part, 'inline_data') and part.inline_data:
-                                            st.image(part.inline_data.data, caption=img_prompt, use_container_width=True)
-                                            rendered_image = True
-                                if not rendered_image and hasattr(result, 'text'):
-                                    st.markdown(result.text)
-                            except Exception as e:
-                                st.error(f"Generation error (Quota or Limit): {e}")
-                    else:
-                        st.warning("Please enter a prompt.")
-            else:
-                uploaded_file = st.file_uploader("Upload reference image", type=["jpg", "jpeg", "png", "webp"])
-                edit_prompt = st.text_input("Describe style transformation:")
-                if uploaded_file and st.button("Transform Image", use_container_width=True):
-                    with st.spinner("Processing reference with Nano Banana..."):
-                        try:
-                            resp = client.models.generate_content(
-                                model="gemini-2.5-flash-image",
-                                contents=[edit_prompt, types.Part.from_bytes(data=uploaded_file.getvalue(), mime_type=uploaded_file.type)]
-                            )
-                            rendered_image = False
-                            if hasattr(resp, 'candidates') and resp.candidates:
-                                for part in resp.candidates[0].content.parts:
-                                    if hasattr(part, 'inline_data') and part.inline_data:
-                                        st.image(part.inline_data.data, caption=edit_prompt, use_container_width=True)
-                                        rendered_image = True
-                            if not rendered_image and hasattr(resp, 'text'):
-                                st.markdown(resp.text)
-                        except Exception as e:
-                            st.error(f"Editing error: {e}")
-
-        else: 
-            st.markdown("### 🤖 ChatGPT Image Generation Studio")
-            gpt_prompt = st.text_area("Describe your artwork for ChatGPT:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
-            gpt_quality = st.selectbox("Quality", ["auto", "low", "medium", "high"])
-            gpt_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
-
-            if st.button("🎨 Generate with ChatGPT", use_container_width=True):
-                if not OPENAI_API_KEY:
-                    st.error("⚠️ Please configure your `OPENAI_API_KEY` in Streamlit Secrets.")
-                elif not OPENAI_AVAILABLE:
-                    st.error("⚠️ The `openai` library is missing from `requirements.txt`.")
-                elif gpt_prompt:
-                    with st.spinner("Painting artwork with ChatGPT..."):
-                        try:
-                            openai_client = OpenAI(api_key=OPENAI_API_KEY)
-                            response = openai_client.images.generate(
-                                model="gpt-image-2",
-                                prompt=gpt_prompt,
-                                size=gpt_size,
-                                quality=gpt_quality,
-                                n=1,
-                            )
-                            image_url = response.data[0].url
-                            st.image(image_url, caption=gpt_prompt, use_container_width=True)
-                        except Exception as e:
-                            st.error(f"ChatGPT Image Generation Error: {e}")
-                else:
-                    st.warning("Please enter a prompt description.")
-
-    # --- MODE 3: VISION ANALYZER ---
+    # --- MODE 2: VISION ANALYZER ---
     elif app_mode == "👁️ Vision Analyzer":
         st.title("👁️ Vision Matrix")
         uploaded_image = st.file_uploader("Upload visual specimen", type=["jpg", "jpeg", "png"])
