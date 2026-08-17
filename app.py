@@ -3,12 +3,16 @@ import streamlit as st
 from google import genai
 from google.genai import errors
 
+# Initialize sidebar state session variable before set_page_config
+if "sidebar_state" not in st.session_state:
+    st.session_state.sidebar_state = "expanded"
+
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Metaverse-AI",
+    page_title="Gemini Clone",
     page_icon="✨",
     layout="centered",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state=st.session_state.sidebar_state
 )
 
 # Load Gemini API Key from secrets
@@ -76,6 +80,12 @@ if st.session_state.current_session_id not in st.session_state.sessions:
 
 # 4. Sidebar Configuration
 with st.sidebar:
+    # --- CLOSE SIDEBAR BUTTON ---
+    if st.button("◀ Close Sidebar", use_container_width=True):
+        st.session_state.sidebar_state = "collapsed"
+        st.rerun()
+        
+    st.markdown("---")
     st.markdown("### 👤 User Profile")
     if hasattr(st.user, "picture") and st.user.picture:
         st.image(st.user.picture, width=50)
@@ -128,6 +138,12 @@ with st.sidebar:
 if not api_key:
     st.error("⚠️ GEMINI_API_KEY is missing! Please configure it in your secrets.")
     st.stop()
+
+# --- OPEN SIDEBAR BUTTON (Shown on main screen when sidebar is collapsed) ---
+if st.session_state.sidebar_state == "collapsed":
+    if st.button("▶ Open Sidebar"):
+        st.session_state.sidebar_state = "expanded"
+        st.rerun()
 
 # 5. Main UI Layout
 user_first_name = getattr(st.user, 'name', 'human').split()[0]
