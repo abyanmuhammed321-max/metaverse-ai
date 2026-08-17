@@ -101,10 +101,14 @@ if not is_logged_in:
     st.stop()
 
 # 4. Secure API Key Configuration
-API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY"))
+try:
+    API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY")
 
-if API_KEY == "YOUR_ACTUAL_API_KEY":
-    st.error("⚠️ Please configure your GEMINI_API_KEY in Streamlit Secrets or environment variables.")
+if not API_KEY or API_KEY == "YOUR_ACTUAL_API_KEY":
+    st.error("⚠️ Please configure your GEMINI_API_KEY in Streamlit Secrets.")
+    st.stop()
 else:
     @st.cache_resource
     def get_client(api_key):
