@@ -1,196 +1,222 @@
 import os
+import uuid
 import streamlit as st
 from google import genai
 from google.genai import types
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Metaverse AI - Ultimate Intelligence",
-    page_icon="🌌",
+    page_title="Metaverse AI - Gemini Edition",
+    page_icon="✨",
     layout="wide"
 )
 
-# 2. Cyber Neon UI Theme (CSS)
+# 2. Neon Gemini UI Styling (CSS)
 st.markdown("""
     <style>
-    /* Deep Space Cyber Background */
+    /* Deep Cyber Dark Background */
     .stApp {
-        background: radial-gradient(circle at center, #070514, #120d2a, #030208);
+        background: radial-gradient(circle at center, #0a0b10, #121420, #06070b);
         color: #e2e8f0;
     }
     
     /* Neon Header Glow */
     h1 {
-        color: #00ffff !important;
-        text-shadow: 0 0 10px rgba(0, 255, 255, 0.7), 0 0 20px rgba(0, 255, 255, 0.4);
-        font-family: 'Courier New', monospace;
-        letter-spacing: 2px;
+        color: #00f2fe !important;
+        text-shadow: 0 0 12px rgba(0, 242, 254, 0.6);
+        font-family: 'Inter', sans-serif;
     }
     
-    /* Sidebar Styling */
+    /* Sidebar Gemini Aesthetic */
     section[data-testid="stSidebar"] {
-        background-color: #05040a;
-        border-right: 1px solid #00ffff;
-        box-shadow: 5px 0 15px rgba(0, 255, 255, 0.15);
+        background-color: #0d0f17;
+        border-right: 1px solid rgba(0, 242, 254, 0.2);
     }
     
     /* User Chat Bubble */
     .stChatMessage[data-testid="stChatMessage-user"] {
-        background: rgba(0, 255, 255, 0.05);
-        border: 1px solid #00ffff;
+        background: rgba(14, 165, 233, 0.08);
+        border: 1px solid #00f2fe;
         border-radius: 12px;
-        box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.15);
     }
     
     /* Assistant Chat Bubble */
     .stChatMessage[data-testid="stChatMessage-assistant"] {
-        background: rgba(255, 0, 127, 0.05);
-        border: 1px solid #ff007f;
+        background: rgba(139, 92, 246, 0.08);
+        border: 1px solid #a855f7;
         border-radius: 12px;
-        box-shadow: 0 0 10px rgba(255, 0, 127, 0.2);
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
     }
     
-    /* Chat Input Field */
+    /* Chat Input Bar */
     .stChatInput input {
-        background-color: #0b091a !important;
-        color: #00ffff !important;
-        border: 1px solid #00ffff !important;
+        background-color: #121420 !important;
+        color: #ffffff !important;
+        border: 1px solid #00f2fe !important;
         border-radius: 8px !important;
     }
     .stChatInput input:focus {
-        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6) !important;
+        box-shadow: 0 0 15px rgba(0, 242, 254, 0.4) !important;
     }
     
-    /* Action Buttons */
+    /* Custom Neon Buttons */
     .stButton button {
-        background: linear-gradient(45deg, #00ffff, #7928ca);
-        color: #05040a;
+        background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+        color: #0a0b10;
         font-weight: bold;
         border: none;
         border-radius: 8px;
-        box-shadow: 0 0 12px rgba(0, 255, 255, 0.5);
+        box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
         transition: 0.3s ease;
     }
     .stButton button:hover {
-        box-shadow: 0 0 22px rgba(255, 0, 127, 0.8);
-        color: #ffffff;
+        box-shadow: 0 0 20px rgba(0, 242, 254, 0.8);
     }
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Sidebar Navigation
-st.sidebar.title("🌌 Metaverse Controls")
-app_mode = st.sidebar.radio("Select AI Module", [
-    "🧠 Gemini Neural Core (Chat)", 
-    "🎨 Holographic Image Synthesizer", 
-    "👁️ Vision Analysis Matrix"
-])
-st.sidebar.markdown("---")
-st.sidebar.markdown("✨ **Status:** Fully Synchronized")
-st.sidebar.markdown("🚀 **Intelligence:** Gemini Flash Core")
-
-# 4. API Key Configuration
-API_KEY = os.getenv("GEMINI_API_KEY", "")
+# 3. Secure API Key Configuration (Supports Streamlit Secrets & Environment Variables)
+API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY"))
 
 if API_KEY == "YOUR_ACTUAL_API_KEY":
-    st.error("⚠️ Please insert your valid Google AI Studio API key into app.py to activate Metaverse AI.")
+    st.error("⚠️ Please configure your GEMINI_API_KEY in Streamlit Secrets or environment variables.")
 else:
     @st.cache_resource
-    def get_genai_client(api_key):
+    def get_client(api_key):
         return genai.Client(api_key=api_key)
 
-    client = get_genai_client(API_KEY)
+    client = get_client(API_KEY)
 
-    # --- MODULE 1: NEURAL CORE CHAT ---
-    if app_mode == "🧠 Gemini Neural Core (Chat)":
-        st.title("🧠 Metaverse: Neural Core")
-        st.caption("Powered by deep contextual intelligence, multi-turn reasoning, and complex coding capability.")
+    # 4. Multi-Chat Session Storage Initialization
+    if "sessions" not in st.session_state:
+        st.session_state.sessions = {}
+    if "current_session_id" not in st.session_state:
+        init_id = str(uuid.uuid4())
+        st.session_state.sessions[init_id] = {
+            "title": "New Chat",
+            "messages": [],
+            "chat_obj": client.chats.create(model="gemini-3.5-flash")
+        }
+        st.session_state.current_session_id = init_id
 
-        if "messages" not in st.session_state:
-            st.session_state.messages = []
+    # --- SIDEBAR NAVIGATION & CHAT HISTORY ---
+    st.sidebar.title("✨ Metaverse AI")
+    
+    # New Chat Button
+    if st.sidebar.button("➕ New Chat", use_container_width=True):
+        new_id = str(uuid.uuid4())
+        st.session_state.sessions[new_id] = {
+            "title": "New Chat",
+            "messages": [],
+            "chat_obj": client.chats.create(model="gemini-3.5-flash")
+        }
+        st.session_state.current_session_id = new_id
+        st.rerun()
 
-        if "chat_session" not in st.session_state:
-            st.session_state.chat_session = client.chats.create(model="gemini-3.5-flash")
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("### 💬 Recent Chats")
 
-        # Display history
-        for message in st.session_state.messages:
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+    # Render previous chat history list
+    for s_id, s_data in list(st.session_state.sessions.items()):
+        label = f"💬 {s_data['title']}"
+        if s_id == st.session_state.current_session_id:
+            label = f"👉 {s_data['title']}"
+        
+        if st.sidebar.button(label, key=f"session_{s_id}", use_container_width=True):
+            st.session_state.current_session_id = s_id
+            st.rerun()
 
-        # Input handler
-        if user_prompt := st.chat_input("Query the Neural Core..."):
-            st.session_state.messages.append({"role": "user", "content": user_prompt})
+    st.sidebar.markdown("---")
+    app_mode = st.sidebar.radio("Core Engine Mode", ["💬 Gemini Neural Chat", "🎨 Imagen Art Studio", "👁️ Vision Analyzer"])
+    st.sidebar.markdown("🚀 **Engine:** Gemini 3.5 & Imagen 3")
+
+    # Get active session data
+    curr_id = st.session_state.current_session_id
+    if curr_id not in st.session_state.sessions:
+        curr_id = list(st.session_state.sessions.keys())[0]
+        st.session_state.current_session_id = curr_id
+
+    current_session = st.session_state.sessions[curr_id]
+
+    # --- MODE 1: GEMINI NEURAL CHAT ---
+    if app_mode == "💬 Gemini Neural Chat":
+        st.title("✨ Metaverse AI: Gemini Core")
+        st.caption("Multi-turn contextual intelligence with conversation history memory.")
+
+        # Display history of current session
+        for msg in current_session["messages"]:
+            with st.chat_message(msg["role"]):
+                st.markdown(msg["content"])
+
+        # Input Prompt Handler
+        if prompt := st.chat_input("Ask your neon AI anything..."):
+            current_session["messages"].append({"role": "user", "content": prompt})
             with st.chat_message("user"):
-                st.markdown(user_prompt)
+                st.markdown(prompt)
+
+            # Auto-name chat session based on first prompt
+            if current_session["title"] == "New Chat":
+                current_session["title"] = prompt[:25] + ("..." if len(prompt) > 25 else "")
 
             with st.chat_message("assistant"):
-                with st.spinner("Computing through neural pathways..."):
+                with st.spinner("Thinking through neural pathways..."):
                     try:
-                        response = st.session_state.chat_session.send_message(user_prompt)
-                        bot_reply = response.text
+                        response = current_session["chat_obj"].send_message(prompt)
+                        reply = response.text
                     except Exception:
-                        st.session_state.chat_session = client.chats.create(model="gemini-3.5-flash")
-                        response = st.session_state.chat_session.send_message(user_prompt)
-                        bot_reply = response.text
+                        current_session["chat_obj"] = client.chats.create(model="gemini-3.5-flash")
+                        response = current_session["chat_obj"].send_message(prompt)
+                        reply = response.text
 
-                    st.markdown(bot_reply)
-                    st.session_state.messages.append({"role": "assistant", "content": bot_reply})
+                    st.markdown(reply)
+                    current_session["messages"].append({"role": "assistant", "content": reply})
 
-    # --- MODULE 2: HOLOGRAPHIC IMAGE SYNTHESIZER ---
-    elif app_mode == "🎨 Holographic Image Synthesizer":
-        st.title("🎨 Metaverse: Image Synthesizer")
-        st.caption("Generate high-definition digital imagery and neon artwork via advanced text prompts.")
+    # --- MODE 2: IMAGEN ART STUDIO ---
+    elif app_mode == "🎨 Imagen Art Studio":
+        st.title("🎨 Metaverse AI: Imagen Studio")
+        st.caption("Synthesize stunning high-definition visual imagery from descriptive text prompts.")
 
-        image_prompt = st.text_area("Hologram Prompt:", placeholder="e.g., A cybernetic samurai standing on a neon-lit Tokyo rooftop during a rainstorm, cinematic...")
-        
-        col1, col2 = st.columns([1, 4])
-        with col1:
-            gen_btn = st.button("Synthesize Hologram")
-
-        if gen_btn and image_prompt:
-            with st.spinner("Rendering pixels from the matrix..."):
-                try:
-                    result = client.models.generate_images(
-                        model='imagen-3.0-generate-002',
-                        prompt=image_prompt,
-                        config=types.GenerateImagesConfig(
-                            number_of_images=1,
-                            output_mime_type="image/jpeg",
-                            aspect_ratio="1:1",
-                        )
-                    )
-                    for img in result.generated_images:
-                        st.image(img.image.image_bytes, caption=f"Prompt: {image_prompt}", use_container_width=True)
-                except Exception as e:
-                    st.error(f"Image generation error: {e}")
-
-    # --- MODULE 3: VISION ANALYSIS MATRIX ---
-    elif app_mode == "👁️ Vision Analysis Matrix":
-        st.title("👁️ Metaverse: Vision Matrix")
-        st.caption("Upload images to let Gemini analyze, decode, and extract data from visual patterns.")
-
-        uploaded_file = st.file_uploader("Upload an Image file", type=["jpg", "jpeg", "png"])
-        vision_prompt = st.text_input("What would you like Gemini to analyze about this image?", "Describe this image in detail.")
-
-        if uploaded_file is not None:
-            st.image(uploaded_file, caption="Uploaded Specimen", width=400)
-            if st.button("Analyze Specimen"):
-                with st.spinner("Analyzing visual spectrum..."):
+        img_prompt = st.text_area("Describe your image concept:", placeholder="e.g., A cyberpunk glowing neon tiger walking through a digital grid city...")
+        if st.button("Generate Hologram Artwork", use_container_width=True):
+            if img_prompt:
+                with st.spinner("Rendering pixels with Imagen..."):
                     try:
-                        # Read uploaded image bytes
-                        image_bytes = uploaded_file.getvalue()
-                        
-                        response = client.models.generate_content(
+                        result = client.models.generate_images(
+                            model='imagen-3.0-generate-002',
+                            prompt=img_prompt,
+                            config=types.GenerateImagesConfig(
+                                number_of_images=1,
+                                output_mime_type="image/jpeg",
+                                aspect_ratio="1:1",
+                            )
+                        )
+                        for generated in result.generated_images:
+                            st.image(generated.image.image_bytes, caption=img_prompt, use_container_width=True)
+                    except Exception as e:
+                        st.error(f"Image generation error: {e}")
+
+    # --- MODE 3: VISION ANALYZER ---
+    elif app_mode == "👁️ Vision Analyzer":
+        st.title("👁️ Metaverse AI: Vision Matrix")
+        st.caption("Upload images to analyze spatial data, objects, and text.")
+
+        uploaded_image = st.file_uploader("Upload visual specimen", type=["jpg", "jpeg", "png"])
+        v_prompt = st.text_input("Visual Query:", "Analyze this image and list key details.")
+
+        if uploaded_image:
+            st.image(uploaded_image, caption="Loaded Specimen", width=400)
+            if st.button("Analyze Specimen", use_container_width=True):
+                with st.spinner("Scanning visual patterns..."):
+                    try:
+                        resp = client.models.generate_content(
                             model="gemini-3.5-flash",
                             contents=[
-                                vision_prompt,
-                                types.Part.from_bytes(
-                                    data=image_bytes,
-                                    mime_type=uploaded_file.type,
-                                ),
-                            ],
+                                v_prompt,
+                                types.Part.from_bytes(data=uploaded_image.getvalue(), mime_type=uploaded_image.type)
+                            ]
                         )
-                        st.markdown("### Analysis Result:")
-                        st.markdown(response.text)
+                        st.markdown("### Analysis Report:")
+                        st.markdown(resp.text)
                     except Exception as e:
-                        st.error(f"Vision analysis error: {e}")
+                        st.error(f"Vision error: {e}")
