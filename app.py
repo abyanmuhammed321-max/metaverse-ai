@@ -2,14 +2,21 @@ import uuid
 import streamlit as st
 from google import genai
 from google.genai import errors
+from google.genai import types
 
-# Initialize sidebar state session variable before set_page_config
+# Initialize session state variables before set_page_config
 if "sidebar_state" not in st.session_state:
     st.session_state.sidebar_state = "expanded"
 
+if "theme" not in st.session_state:
+    st.session_state.theme = "Dark"
+
+if "language" not in st.session_state:
+    st.session_state.language = "English"
+
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Metaverse-AI",
+    page_title="Gemini Clone",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state=st.session_state.sidebar_state
@@ -46,17 +53,32 @@ if not st.user.is_logged_in:
     st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
-# 3. Inject UI Styles for Main App
-st.markdown("""
+# 3. Dynamic Theme Styling (Dark vs Light Mode)
+if st.session_state.theme == "Dark":
+    bg_color = "#131314"
+    text_color = "#e3e3e3"
+    sidebar_bg = "#1e1f20"
+    user_bubble_bg = "#1e1f20"
+    border_col = "#333537"
+    sub_text = "#8e918f"
+else:
+    bg_color = "#ffffff"
+    text_color = "#1f1f1f"
+    sidebar_bg = "#f0f4f9"
+    user_bubble_bg = "#f8f9fa"
+    border_col = "#d1d5db"
+    sub_text = "#5f6368"
+
+st.markdown(f"""
 <style>
-    .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
-    header {visibility: hidden;}
-    footer {visibility: hidden;}
-    .stChatMessage { background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; }
-    [data-testid="stChatMessage"]:nth-child(odd) { background-color: #1e1f20 !important; border: 1px solid #333537; }
-    .stChatInput input { color: #e3e3e3 !important; }
-    [data-testid="stSidebar"] { background-color: #1e1f20; border-right: 1px solid #333537; }
-    .gemini-header {
+    .stApp {{ background-color: {bg_color}; color: {text_color}; font-family: 'Inter', sans-serif; }}
+    header {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    .stChatMessage {{ background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; color: {text_color}; }}
+    [data-testid="stChatMessage"]:nth-child(odd) {{ background-color: {user_bubble_bg} !important; border: 1px solid {border_col}; }}
+    .stChatInput input {{ color: {text_color} !important; }}
+    [data-testid="stSidebar"] {{ background-color: {sidebar_bg}; border-right: 1px solid {border_col}; }}
+    .gemini-header {{
         text-align: center;
         background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
         -webkit-background-clip: text;
@@ -64,8 +86,8 @@ st.markdown("""
         font-size: 2.5rem;
         font-weight: 700;
         margin-bottom: 0px;
-    }
-    .gemini-subheader { text-align: center; color: #8e918f; font-size: 1.2rem; margin-bottom: 30px; }
+    }}
+    .gemini-subheader {{ text-align: center; color: {sub_text}; font-size: 1.2rem; margin-bottom: 30px; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -90,7 +112,7 @@ with st.sidebar:
     if hasattr(st.user, "picture") and st.user.picture:
         st.image(st.user.picture, width=50)
     st.write(f"**{getattr(st.user, 'name', 'User')}**")
-    st.write(f"<span style='font-size: 0.8rem; color: #8e918f;'>{getattr(st.user, 'email', '')}</span>", unsafe_allow_html=True)
+    st.write(f"<span style='font-size: 0.8rem; color: {sub_text};'>{getattr(st.user, 'email', '')}</span>", unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -125,11 +147,33 @@ with st.sidebar:
 
     st.markdown("---")
     st.markdown("### ⚙️ Settings")
+    
     selected_model = st.selectbox(
         "Choose Model",
         ["gemini-3.6-flash", "gemini-3.1-pro-preview"],
         index=0
     )
+    
+    # --- THEME SWITCHER ---
+    theme_choice = st.selectbox(
+        "Theme",
+        ["Dark", "Light"],
+        index=0 if st.session_state.theme == "Dark" else 1
+    )
+    if theme_choice != st.session_state.theme:
+        st.session_state.theme = theme_choice
+        st.rerun()
+
+    # --- LANGUAGE SELECTOR ---
+    languages = ["English", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
+    lang_choice = st.selectbox(
+        "Response Language",
+        languages,
+        index=languages.index(st.session_state.language) if st.session_state.language in languages else 0
+    )
+    if lang_choice != st.session_state.language:
+        st.session_state.language = lang_choice
+        st.rerun()
     
     st.markdown("---")
     if st.button("🚪 Sign Out", use_container_width=True):
@@ -148,7 +192,7 @@ if st.session_state.sidebar_state == "collapsed":
 # 5. Main UI Layout
 user_first_name = getattr(st.user, 'name', 'human').split()[0]
 st.markdown(f'<p class="gemini-header">Hello, {user_first_name}</p>', unsafe_allow_html=True)
-st.markdown('<p class="gemini-subheader">How can I help you today?</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="gemini-subheader">How can I help you today? (Language: {st.session_state.language})</p>', unsafe_allow_html=True)
 
 current_sid = st.session_state.current_session_id
 current_messages = st.session_state.sessions[current_sid]["messages"]
@@ -179,9 +223,16 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 for m in current_messages
             ]
             
+            # Configure Gemini to respond in the user's selected language
+            system_instruction = f"You are a helpful AI assistant. Always respond in {st.session_state.language}."
+            config = types.GenerateContentConfig(
+                system_instruction=system_instruction
+            )
+            
             response_stream = client.models.generate_content_stream(
                 model=selected_model,
-                contents=chat_history_formatted
+                contents=chat_history_formatted,
+                config=config
             )
             
             for chunk in response_stream:
