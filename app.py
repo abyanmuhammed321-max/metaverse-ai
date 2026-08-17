@@ -4,7 +4,7 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-# Optional import for OpenAI DALL-E
+# Optional import for OpenAI
 try:
     from openai import OpenAI
     OPENAI_AVAILABLE = True
@@ -68,7 +68,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Google Sign-In Gate (with fallback safety if secrets aren't linked yet)
+# 3. Google Sign-In Gate
 is_logged_in = True
 user_name = "Matrix Creator"
 
@@ -223,7 +223,7 @@ else:
                     current_session["messages"].append({"role": "assistant", "content": reply})
             st.rerun()
 
-    # --- MODE 2: MULTI-AI ART STUDIO (Nano Banana & ChatGPT DALL-E) ---
+    # --- MODE 2: MULTI-AI ART STUDIO ---
     elif app_mode == "🍌 Multi-AI Art Studio":
         st.title("🍌 Multi-AI Art Studio")
         st.caption("Generate stunning visuals using either Google Nano Banana or ChatGPT.")
@@ -276,11 +276,9 @@ else:
                         except Exception as e:
                             st.error(f"Editing error: {e}")
 
-  else: 
+        else: 
             st.markdown("### 🤖 ChatGPT Image Generation Studio")
             gpt_prompt = st.text_area("Describe your artwork for ChatGPT:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
-            
-            # Updated quality options for gpt-image-2
             gpt_quality = st.selectbox("Quality", ["auto", "low", "medium", "high"])
             gpt_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
 
@@ -297,7 +295,7 @@ else:
                                 model="gpt-image-2",
                                 prompt=gpt_prompt,
                                 size=gpt_size,
-                                quality=gpt_quality,  # Now passes low, medium, high, or auto
+                                quality=gpt_quality,
                                 n=1,
                             )
                             image_url = response.data[0].url
