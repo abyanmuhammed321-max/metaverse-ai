@@ -4,7 +4,7 @@ import streamlit as st
 from google import genai
 from google.genai import types
 
-# 1. Page Configuration & Mobile Viewport Support
+# 1. Page Configuration & Mobile Support
 st.set_page_config(
     page_title="Metaverse AI - Gemini Edition",
     page_icon="✨",
@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# 2. Neon Gemini UI Styling & Mobile Responsive CSS Injection
+# 2. Modern Neon Styling & Mobile Responsiveness
 st.markdown("""
     <style>
     .stApp {
@@ -36,8 +36,6 @@ st.markdown("""
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
     }
-    
-    /* --- MOBILE RESPONSIVE MEDIA QUERIES --- */
     @media screen and (max-width: 768px) {
         .main .block-container {
             padding: 1rem 0.75rem !important;
@@ -45,17 +43,6 @@ st.markdown("""
         }
         h1 {
             font-size: 1.6rem !important;
-        }
-        .stTextInput input, .stTextArea textarea, .stSelectbox {
-            font-size: 16px !important;
-        }
-        div[data-testid="stHorizontalBlock"] {
-            flex-direction: column !important;
-        }
-        div[data-testid="column"] {
-            width: 100% !important;
-            flex: 1 1 100% !important;
-            min-width: 100% !important;
         }
     }
     </style>
@@ -84,7 +71,7 @@ if not is_logged_in:
             st.error("Google OAuth is not configured in your Streamlit secrets block.")
     st.stop()
 
-# 4. Secure API Key Configuration
+# 4. API Key Configuration
 api_key = ""
 try:
     api_key = st.secrets["GEMINI_API_KEY"]
@@ -104,7 +91,7 @@ except Exception as e:
     st.error(f"Failed to initialize Gemini Client: {e}")
     client = None
 
-# 5. Multi-Chat Session Storage Initialization
+# 5. Multi-Chat Session State Initialization
 if "sessions" not in st.session_state:
     init_id = str(uuid.uuid4())
     st.session_state.sessions = {
@@ -118,7 +105,7 @@ if "sessions" not in st.session_state:
 if "active_session" not in st.session_state or st.session_state.active_session not in st.session_state.sessions:
     st.session_state.active_session = list(st.session_state.sessions.keys())[0]
 
-# --- SIDEBAR NAVIGATION & CHAT MANAGEMENT ---
+# --- SIDEBAR: NAVIGATION & CHAT MANAGEMENT ---
 st.sidebar.title("✨ Metaverse AI")
 st.sidebar.markdown(f"👤 **User:** {user_name}")
 
@@ -130,7 +117,7 @@ except Exception:
 
 st.sidebar.markdown("---")
 
-# New Chat Action
+# New Chat Button
 if st.sidebar.button("➕ New Chat", use_container_width=True):
     new_id = str(uuid.uuid4())
     st.session_state.sessions[new_id] = {
@@ -142,7 +129,7 @@ if st.sidebar.button("➕ New Chat", use_container_width=True):
 
 st.sidebar.markdown("### 💬 Recent Chats")
 
-# Chat List with Selection and Deletion Controls
+# Chat List & Deletion Logic
 sessions_to_delete = []
 for s_id, s_data in list(st.session_state.sessions.items()):
     col_chat, col_del = st.sidebar.columns([4, 1])
@@ -158,7 +145,7 @@ for s_id, s_data in list(st.session_state.sessions.items()):
         if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
             sessions_to_delete.append(s_id)
 
-# Safely Handle Chat Deletion logic
+# Handle Deletions Safely
 if sessions_to_delete:
     for s_id in sessions_to_delete:
         del st.session_state.sessions[s_id]
@@ -189,42 +176,49 @@ if app_mode == "💬 Gemini Neural Chat":
     st.title("✨ Metaverse AI: Gemini Core")
     st.caption(f"Active Session: {current_session['title']}")
 
+    # Render chat history on screen
     for msg in current_session["messages"]:
         with st.chat_message(msg["role"]):
             st.markdown(msg["content"])
 
+    # Handle user prompt input
     if prompt := st.chat_input("Ask your neon AI anything..."):
+        # 1. Append user message to state
         current_session["messages"].append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
+        # Set automatic title based on first message
         if current_session["title"] == "New Chat":
             current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
 
+        # 2. Generate response securely using fresh chat session creation
         with st.chat_message("assistant"):
             with st.spinner("Thinking through neural pathways..."):
                 try:
-                    # Build history dynamically to prevent session state object corruption
+                    # Build history up to the latest prompt
                     history = []
-                    for m in current_session["messages"][:-1]:  # Exclude current prompt
+                    for m in current_session["messages"][:-1]:
                         role = "user" if m["role"] == "user" else "model"
                         history.append({
                             "role": role,
                             "parts": [{"text": m["content"]}]
                         })
                     
-                    # Create a fresh chat session on the fly with the history
-                    chat_session = client.chats.create(
+                    # Create a fresh chat session and send message
+                    chat = client.chats.create(
                         model="gemini-2.5-flash",
                         history=history
                     )
-                    response = chat_session.send_message(prompt)
+                    response = chat.send_message(prompt)
                     
                     reply = response.text if hasattr(response, 'text') and response.text else "No response generated."
                     st.markdown(reply)
+                    
+                    # Append assistant reply to history
                     current_session["messages"].append({"role": "assistant", "content": reply})
                 except Exception as e:
-                    st.error(f"⚠️ API Error Details: {str(e)}")
+                    st.error(f"⚠️ API Error: {str(e)}")
         st.rerun()
 
 # --- MODE 2: VISION ANALYZER ---
