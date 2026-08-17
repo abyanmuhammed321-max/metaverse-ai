@@ -276,10 +276,12 @@ else:
                         except Exception as e:
                             st.error(f"Editing error: {e}")
 
-        else: 
+  else: 
             st.markdown("### 🤖 ChatGPT Image Generation Studio")
             gpt_prompt = st.text_area("Describe your artwork for ChatGPT:", placeholder="e.g., An oil painting of a cosmic cat floating in a galaxy...")
-            gpt_quality = st.selectbox("Quality", ["standard", "hd"])
+            
+            # Updated quality options for gpt-image-2
+            gpt_quality = st.selectbox("Quality", ["auto", "low", "medium", "high"])
             gpt_size = st.selectbox("Image Size", ["1024x1024", "1024x1792", "1792x1024"])
 
             if st.button("🎨 Generate with ChatGPT", use_container_width=True):
@@ -295,7 +297,7 @@ else:
                                 model="gpt-image-2",
                                 prompt=gpt_prompt,
                                 size=gpt_size,
-                                quality=gpt_quality,
+                                quality=gpt_quality,  # Now passes low, medium, high, or auto
                                 n=1,
                             )
                             image_url = response.data[0].url
