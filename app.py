@@ -4,36 +4,32 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# Initialize session state variables before set_page_config
-if "sidebar_state" not in st.session_state:
-    st.session_state.sidebar_state = "expanded"
+# 1. Page Configuration
+st.set_page_config(
+    page_title="Metaverse_AI",
+    page_icon="✨",
+    layout="centered",
+    initial_sidebar_state="expanded"
+)
 
+# Load Gemini API Key from secrets
+api_key = st.secrets.get("GEMINI_API_KEY")
+
+# Initialize session state variables for settings
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
 
-# 1. Page Configuration
-st.set_page_config(
-    page_title="Gemini Clone",
-    page_icon="✨",
-    layout="centered",
-    initial_sidebar_state=st.session_state.sidebar_state
-)
-
-# Load Gemini API Key from secrets
-api_key = st.secrets.get("GEMINI_API_KEY")
-
 # 2. Handle Authentication Flow
 if not st.user.is_logged_in:
     st.markdown("""
     <style>
         .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
-        header {visibility: hidden;}
         footer {visibility: hidden;}
         .login-box { text-align: center; margin-top: 20vh; }
-        .gemini-login-header {
+        .metaverse-login-header {
             background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -44,7 +40,7 @@ if not st.user.is_logged_in:
     """, unsafe_allow_html=True)
     
     st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    st.markdown('<p class="gemini-login-header">Gemini AI</p>', unsafe_allow_html=True)
+    st.markdown('<p class="metaverse-login-header">Metaverse_AI</p>', unsafe_allow_html=True)
     st.markdown('<p style="color: #8e918f; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
     
     if st.button("🔵 Sign in with Google", use_container_width=True):
@@ -72,13 +68,12 @@ else:
 st.markdown(f"""
 <style>
     .stApp {{ background-color: {bg_color}; color: {text_color}; font-family: 'Inter', sans-serif; }}
-    header {{visibility: hidden;}}
     footer {{visibility: hidden;}}
     .stChatMessage {{ background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; color: {text_color}; }}
     [data-testid="stChatMessage"]:nth-child(odd) {{ background-color: {user_bubble_bg} !important; border: 1px solid {border_col}; }}
     .stChatInput input {{ color: {text_color} !important; }}
     [data-testid="stSidebar"] {{ background-color: {sidebar_bg}; border-right: 1px solid {border_col}; }}
-    .gemini-header {{
+    .metaverse-header {{
         text-align: center;
         background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
         -webkit-background-clip: text;
@@ -87,7 +82,7 @@ st.markdown(f"""
         font-weight: 700;
         margin-bottom: 0px;
     }}
-    .gemini-subheader {{ text-align: center; color: {sub_text}; font-size: 1.2rem; margin-bottom: 30px; }}
+    .metaverse-subheader {{ text-align: center; color: {sub_text}; font-size: 1.2rem; margin-bottom: 30px; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -102,12 +97,6 @@ if st.session_state.current_session_id not in st.session_state.sessions:
 
 # 4. Sidebar Configuration
 with st.sidebar:
-    # --- CLOSE SIDEBAR BUTTON ---
-    if st.button("◀ Close Sidebar", use_container_width=True):
-        st.session_state.sidebar_state = "collapsed"
-        st.rerun()
-        
-    st.markdown("---")
     st.markdown("### 👤 User Profile")
     if hasattr(st.user, "picture") and st.user.picture:
         st.image(st.user.picture, width=50)
@@ -183,16 +172,10 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY is missing! Please configure it in your secrets.")
     st.stop()
 
-# --- OPEN SIDEBAR BUTTON (Shown on main screen when sidebar is collapsed) ---
-if st.session_state.sidebar_state == "collapsed":
-    if st.button("▶ Open Sidebar"):
-        st.session_state.sidebar_state = "expanded"
-        st.rerun()
-
 # 5. Main UI Layout
 user_first_name = getattr(st.user, 'name', 'human').split()[0]
-st.markdown(f'<p class="gemini-header">Hello, {user_first_name}</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="gemini-subheader">How can I help you today? (Language: {st.session_state.language})</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-header">Metaverse_AI</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subheader">Welcome back, {user_first_name}! (Language: {st.session_state.language})</p>', unsafe_allow_html=True)
 
 current_sid = st.session_state.current_session_id
 current_messages = st.session_state.sessions[current_sid]["messages"]
@@ -224,7 +207,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
             ]
             
             # Configure Gemini to respond in the user's selected language
-            system_instruction = f"You are a helpful AI assistant. Always respond in {st.session_state.language}."
+            system_instruction = f"You are Metaverse_AI, a helpful AI assistant. Always respond in {st.session_state.language}."
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction
             )
