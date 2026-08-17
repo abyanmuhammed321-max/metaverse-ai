@@ -104,7 +104,7 @@ except Exception as e:
     st.error(f"Failed to initialize Gemini Client: {e}")
     client = None
 
-# 5. Multi-Chat Session Storage Initialization (Stateless message tracking)
+# 5. Multi-Chat Session Storage Initialization
 if "sessions" not in st.session_state:
     init_id = str(uuid.uuid4())
     st.session_state.sessions = {
@@ -194,7 +194,6 @@ if app_mode == "💬 Gemini Neural Chat":
             st.markdown(msg["content"])
 
     if prompt := st.chat_input("Ask your neon AI anything..."):
-        # 1. Append user message
         current_session["messages"].append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
@@ -202,28 +201,30 @@ if app_mode == "💬 Gemini Neural Chat":
         if current_session["title"] == "New Chat":
             current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
 
-        # 2. Generate response using stateless history formatting
         with st.chat_message("assistant"):
             with st.spinner("Thinking through neural pathways..."):
                 try:
-                    formatted_contents = []
-                    for m in current_session["messages"]:
+                    # Build history dynamically to prevent session state object corruption
+                    history = []
+                    for m in current_session["messages"][:-1]:  # Exclude current prompt
                         role = "user" if m["role"] == "user" else "model"
-                        formatted_contents.append({
+                        history.append({
                             "role": role,
                             "parts": [{"text": m["content"]}]
                         })
-
-                    response = client.models.generate_content(
-                        model="gemini-2.0-flash",
-                        contents=formatted_contents
+                    
+                    # Create a fresh chat session on the fly with the history
+                    chat_session = client.chats.create(
+                        model="gemini-2.5-flash",
+                        history=history
                     )
+                    response = chat_session.send_message(prompt)
                     
                     reply = response.text if hasattr(response, 'text') and response.text else "No response generated."
                     st.markdown(reply)
                     current_session["messages"].append({"role": "assistant", "content": reply})
                 except Exception as e:
-                    st.error(f"⚠️ API Error: {str(e)}")
+                    st.error(f"⚠️ API Error Details: {str(e)}")
         st.rerun()
 
 # --- MODE 2: VISION ANALYZER ---
@@ -238,7 +239,7 @@ elif app_mode == "👁️ Vision Analyzer":
             with st.spinner("Scanning visual patterns..."):
                 try:
                     resp = client.models.generate_content(
-                        model="gemini-2.0-flash",
+                        model="gemini-2.5-flash",
                         contents=[v_prompt, types.Part.from_bytes(data=uploaded_image.getvalue(), mime_type=uploaded_image.type)]
                     )
                     st.markdown("### Analysis Report:")
