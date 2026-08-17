@@ -201,13 +201,18 @@ else:
                     try:
                         response = current_session["chat_obj"].send_message(prompt)
                         reply = response.text
-                    except Exception:
-                        current_session["chat_obj"] = client.chats.create(model="gemini-2.5-flash")
-                        response = current_session["chat_obj"].send_message(prompt)
-                        reply = response.text
-
-                    st.markdown(reply)
-                    current_session["messages"].append({"role": "assistant", "content": reply})
+                        st.markdown(reply)
+                        current_session["messages"].append({"role": "assistant", "content": reply})
+                    except Exception as e:
+                        st.warning(f"Session context expired or error occurred. Re-establishing secure link...")
+                        try:
+                            current_session["chat_obj"] = client.chats.create(model="gemini-2.5-flash")
+                            response = current_session["chat_obj"].send_message(prompt)
+                            reply = response.text
+                            st.markdown(reply)
+                            current_session["messages"].append({"role": "assistant", "content": reply})
+                        except Exception as inner_e:
+                            st.error(f"API Error Details: {inner_e}")
             st.rerun()
 
     # --- MODE 2: VISION ANALYZER ---
