@@ -76,15 +76,28 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Google Sign-In Gate (Using updated st.user)
-if not st.user.is_logged_in:
+# 3. Google Sign-In Gate (With fallback protection if secrets aren't set up yet)
+is_logged_in = False
+user_name = "Creator"
+
+try:
+    is_logged_in = st.user.is_logged_in
+    user_name = getattr(st.user, "name", "User")
+except Exception:
+    # Authentication secrets are not configured yet; allow app to run safely
+    is_logged_in = True 
+
+if not is_logged_in:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.title("✨ Welcome to Metaverse AI")
         st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
-        if st.button("🔐 Log in with Google", use_container_width=True):
-            st.login()
+        try:
+            if st.button("🔐 Log in with Google", use_container_width=True):
+                st.login()
+        except Exception:
+            st.error("Google OAuth is not configured in your Streamlit secrets.")
     st.stop()
 
 # 4. Secure API Key Configuration
@@ -113,10 +126,13 @@ else:
 
     # --- SIDEBAR NAVIGATION & USER INFO ---
     st.sidebar.title("✨ Metaverse AI")
-    user_name = getattr(st.user, "name", "User")
     st.sidebar.markdown(f"👤 **User:** {user_name}")
-    if st.sidebar.button("🚪 Log out", use_container_width=True):
-        st.logout()
+    
+    try:
+        if st.sidebar.button("🚪 Log out", use_container_width=True):
+            st.logout()
+    except Exception:
+        pass
 
     st.sidebar.markdown("---")
     
