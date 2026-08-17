@@ -76,8 +76,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Google Sign-In Gate (Native Streamlit Authentication)
-if not st.experimental_user.is_logged_in:
+# 3. Google Sign-In Gate (Using updated st.user)
+if not st.user.is_logged_in:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -85,7 +85,7 @@ if not st.experimental_user.is_logged_in:
         st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
         if st.button("🔐 Log in with Google", use_container_width=True):
             st.login()
-    st.stop() # Halts app execution here until the user successfully logs in
+    st.stop()
 
 # 4. Secure API Key Configuration
 API_KEY = st.secrets.get("GEMINI_API_KEY", os.getenv("GEMINI_API_KEY", "YOUR_ACTUAL_API_KEY"))
@@ -113,7 +113,8 @@ else:
 
     # --- SIDEBAR NAVIGATION & USER INFO ---
     st.sidebar.title("✨ Metaverse AI")
-    st.sidebar.markdown(f"👤 **User:** {st.experimental_user.name}")
+    user_name = getattr(st.user, "name", "User")
+    st.sidebar.markdown(f"👤 **User:** {user_name}")
     if st.sidebar.button("🚪 Log out", use_container_width=True):
         st.logout()
 
@@ -147,7 +148,6 @@ else:
                 st.rerun()
         
         with col_del:
-            # Delete chat button next to each chat item
             if st.button("🗑️", key=f"del_{s_id}", use_container_width=True):
                 sessions_to_delete.append(s_id)
 
@@ -156,7 +156,6 @@ else:
         for s_id in sessions_to_delete:
             del st.session_state.sessions[s_id]
         
-        # If active chat was deleted, create or jump to another session
         if len(st.session_state.sessions) == 0:
             fallback_id = str(uuid.uuid4())
             st.session_state.sessions[fallback_id] = {
@@ -186,18 +185,15 @@ else:
         st.title("✨ Metaverse AI: Gemini Core")
         st.caption(f"Active Session: {current_session['title']}")
 
-        # Display history of current session
         for msg in current_session["messages"]:
             with st.chat_message(msg["role"]):
                 st.markdown(msg["content"])
 
-        # Input Prompt Handler
         if prompt := st.chat_input("Ask your neon AI anything..."):
             current_session["messages"].append({"role": "user", "content": prompt})
             with st.chat_message("user"):
                 st.markdown(prompt)
 
-            # Auto-name chat session based on first prompt
             if current_session["title"] == "New Chat":
                 current_session["title"] = prompt[:22] + ("..." if len(prompt) > 22 else "")
 
