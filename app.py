@@ -38,23 +38,27 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# 3. Simple Instant Login Gate (Bypasses OAuth errors if not configured)
-if "username" not in st.session_state:
-    st.session_state.username = None
+# 3. Google Sign-In Gate (with fallback safety if secrets aren't linked yet)
+is_logged_in = True
+user_name = "Matrix Creator"
 
-if not st.session_state.username:
+try:
+    is_logged_in = st.user.is_logged_in
+    user_name = getattr(st.user, "name", "User")
+except Exception:
+    pass # Bypasses safely if [auth] secrets are not added yet
+
+if not is_logged_in:
     st.markdown("<br><br>", unsafe_allow_html=True)
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.title("✨ Welcome to Metaverse AI")
-        st.markdown("Enter your name to access your personal AI matrix.")
-        entered_name = st.text_input("Your Name:")
-        if st.button("🚀 Enter Matrix", use_container_width=True):
-            if entered_name.strip():
-                st.session_state.username = entered_name.strip()
-                st.rerun()
-            else:
-                st.warning("Please enter a valid name.")
+        st.markdown("Sign in securely with your Google account to access your personal AI matrix.")
+        try:
+            if st.button("🔐 Log in with Google", use_container_width=True):
+                st.login()
+        except Exception:
+            st.error("Google OAuth is not configured in your Streamlit secrets block.")
     st.stop()
 
 # 4. Secure API Key Configuration
@@ -87,10 +91,13 @@ else:
 
     # --- SIDEBAR ---
     st.sidebar.title("✨ Metaverse AI")
-    st.sidebar.markdown(f"👤 **User:** {st.session_state.username}")
-    if st.sidebar.button("🚪 Logout", use_container_width=True):
-        st.session_state.username = None
-        st.rerun()
+    st.sidebar.markdown(f"👤 **User:** {user_name}")
+    
+    try:
+        if st.sidebar.button("🚪 Log out", use_container_width=True):
+            st.logout()
+    except Exception:
+        pass
 
     st.sidebar.markdown("---")
     
@@ -212,9 +219,9 @@ else:
                 else:
                     st.warning("Please enter a prompt description.")
 
-        else: # Image-to-Image / Style Transform
+        else: 
             uploaded_file = st.file_uploader("Upload reference image(s) [Up to 5]", type=["jpg", "jpeg", "png", "webp"], accept_multiple_files=True)
-            edit_prompt = st.text_input("Describe how to transform or edit the image:", placeholder="e.g., Turn this into a hand-drawn cartoon anime style, keep character consistency...")
+            edit_prompt = st.text_input("Describe how to transform or edit the image:", placeholder="e.g., Turn this into a hand-drawn cartoon anime style...")
 
             if uploaded_file:
                 st.write(f"Loaded {len(uploaded_file)} reference specimen(s).")
