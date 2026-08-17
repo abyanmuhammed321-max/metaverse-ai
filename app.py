@@ -26,8 +26,7 @@ if "language" not in st.session_state:
 if not st.user.is_logged_in:
     st.markdown("""
     <style>
-        .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
-        footer {visibility: hidden;}
+        .stApp { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
         .login-box { text-align: center; margin-top: 20vh; }
         .metaverse-login-header {
             background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
@@ -41,7 +40,7 @@ if not st.user.is_logged_in:
     
     st.markdown('<div class="login-box">', unsafe_allow_html=True)
     st.markdown('<p class="metaverse-login-header">Metaverse_AI</p>', unsafe_allow_html=True)
-    st.markdown('<p style="color: #8e918f; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color: #a0a0a0; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
     
     if st.button("🔵 Sign in with Google", use_container_width=True):
         st.login()
@@ -49,17 +48,17 @@ if not st.user.is_logged_in:
     st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
 
-# 3. Dynamic Theme Styling (Dark vs Light Mode)
+# 3. Dynamic Theme Styling (True Dark vs Light Mode Opposites)
 if st.session_state.theme == "Dark":
-    bg_color = "#131314"
-    text_color = "#e3e3e3"
-    sidebar_bg = "#1e1f20"
+    bg_color = "#000000"
+    text_color = "#ffffff"
+    sidebar_bg = "#121212"
     user_bubble_bg = "#1e1f20"
     border_col = "#333537"
-    sub_text = "#8e918f"
+    sub_text = "#a0a0a0"
 else:
     bg_color = "#ffffff"
-    text_color = "#1f1f1f"
+    text_color = "#000000"
     sidebar_bg = "#f0f4f9"
     user_bubble_bg = "#f8f9fa"
     border_col = "#d1d5db"
@@ -67,12 +66,13 @@ else:
 
 st.markdown(f"""
 <style>
-    .stApp {{ background-color: {bg_color}; color: {text_color}; font-family: 'Inter', sans-serif; }}
-    footer {{visibility: hidden;}}
-    .stChatMessage {{ background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; color: {text_color}; }}
+    .stApp {{ background-color: {bg_color} !important; color: {text_color} !important; font-family: 'Inter', sans-serif; }}
+    [data-testid="stSidebar"] {{ background-color: {sidebar_bg} !important; color: {text_color} !important; border-right: 1px solid {border_col}; }}
+    [data-testid="stSidebar"] * {{ color: {text_color} !important; }}
+    .stChatMessage {{ background-color: transparent !important; border-radius: 12px; padding: 10px; margin-bottom: 10px; color: {text_color} !important; }}
+    [data-testid="stChatMessage"] p, [data-testid="stChatMessage"] span, [data-testid="stChatMessage"] li {{ color: {text_color} !important; }}
     [data-testid="stChatMessage"]:nth-child(odd) {{ background-color: {user_bubble_bg} !important; border: 1px solid {border_col}; }}
-    .stChatInput input {{ color: {text_color} !important; }}
-    [data-testid="stSidebar"] {{ background-color: {sidebar_bg}; border-right: 1px solid {border_col}; }}
+    .stChatInput input {{ color: {text_color} !important; background-color: {sidebar_bg} !important; }}
     .metaverse-header {{
         text-align: center;
         background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
