@@ -90,7 +90,7 @@ st.sidebar.markdown("✨ **Status:** Fully Synchronized")
 st.sidebar.markdown("🚀 **Intelligence:** Gemini Flash Core")
 
 # 4. API Key Configuration
-API_KEY = os.getenv("GEMINI_API_KEY", "AQ.Ab8RN6IbtvEByqqfkwMOl1niYyc1rMQedmUy9s1FuclVCwKu4A")
+API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 if API_KEY == "YOUR_ACTUAL_API_KEY":
     st.error("⚠️ Please insert your valid Google AI Studio API key into app.py to activate Metaverse AI.")
