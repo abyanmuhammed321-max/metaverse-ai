@@ -1,10 +1,11 @@
+import uuid
 import streamlit as st
 from google import genai
 from google.genai import errors
 
 # 1. Page Configuration
 st.set_page_config(
-    page_title="Gemini Clone with Google Login",
+    page_title="Gemini Clone with Multi-Chat",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="expanded"
@@ -15,7 +16,6 @@ api_key = st.secrets.get("GEMINI_API_KEY")
 
 # 2. Handle Authentication Flow
 if not st.user.is_logged_in:
-    # --- LOGIN SCREEN ---
     st.markdown("""
     <style>
         .stApp { background-color: #131314; color: #e3e3e3; font-family: 'Inter', sans-serif; }
@@ -37,7 +37,7 @@ if not st.user.is_logged_in:
     st.markdown('<p style="color: #8e918f; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
     
     if st.button("🔵 Sign in with Google", use_container_width=True):
-        st.login() # Triggers native Google OAuth login flow
+        st.login()
         
     st.markdown('</div>', unsafe_allow_html=True)
     st.stop()
@@ -65,7 +65,17 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Configuration (Displays Authenticated User Info & Controls)
+# Initialize Multi-Chat Session Storage State
+if "sessions" not in st.session_state:
+    first_sid = str(uuid.uuid4())
+    st.session_state.sessions = {first_sid: {"title": "New Chat", "messages": []}}
+    st.session_state.current_session_id = first_sid
+
+# Ensure current session pointer is valid
+if st.session_state.current_session_id not in st.session_state.sessions:
+    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
+
+# 4. Sidebar Configuration (Profile, New Chat, Chat History List, Delete, & Settings)
 with st.sidebar:
     st.markdown("### 👤 User Profile")
     if hasattr(st.user, "picture") and st.user.picture:
@@ -74,6 +84,38 @@ with st.sidebar:
     st.write(f"<span style='font-size: 0.8rem; color: #8e918f;'>{getattr(st.user, 'email', '')}</span>", unsafe_allow_html=True)
     
     st.markdown("---")
+    
+    # --- NEW CHAT BUTTON ---
+    if st.button("➕ New Chat", use_container_width=True, type="primary"):
+        new_sid = str(uuid.uuid4())
+        st.session_state.sessions[new_sid] = {"title": "New Chat", "messages": []}
+        st.session_state.current_session_id = new_sid
+        st.rerun()
+        
+    st.markdown("### 💬 Chat History")
+    
+    # --- RENDER CHAT LIST WITH SELECT & DELETE BUTTONS ---
+    for sid, sdata in list(st.session_state.sessions.items()):
+        col1, col2 = st.columns([0.75, 0.25])
+        with col1:
+            btn_type = "primary" if sid == st.session_state.current_session_id else "secondary"
+            display_title = sdata["title"][:18] + ("..." if len(sdata["title"]) > 18 else "")
+            if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
+                st.session_state.current_session_id = sid
+                st.rerun()
+        with col2:
+            if st.button("🗑️", key=f"del_{sid}", help="Delete chat"):
+                del st.session_state.sessions[sid]
+                # If all chats are deleted, create a fresh empty chat session
+                if not st.session_state.sessions:
+                    fresh_sid = str(uuid.uuid4())
+                    st.session_state.sessions[fresh_sid] = {"title": "New Chat", "messages": []}
+                    st.session_state.current_session_id = fresh_sid
+                else:
+                    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
+                st.rerun()
+
+    st.markdown("---")
     st.markdown("### ⚙️ Settings")
     selected_model = st.selectbox(
         "Choose Model",
@@ -81,13 +123,9 @@ with st.sidebar:
         index=0
     )
     
-    if st.button("🗑️ Clear Chat History", use_container_width=True):
-        st.session_state.messages = []
-        st.rerun()
-        
     st.markdown("---")
     if st.button("🚪 Sign Out", use_container_width=True):
-        st.logout() # Clears session cookie and logs out
+        st.logout()
 
 # 5. Main UI Layout
 user_first_name = getattr(st.user, 'name', 'human').split()[0]
@@ -98,18 +136,22 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY is missing! Please configure it in your secrets.")
     st.stop()
 
-# Initialize Chat History State
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+# Retrieve active chat session messages
+current_sid = st.session_state.current_session_id
+current_messages = st.session_state.sessions[current_sid]["messages"]
 
-# Display Prior Chat Messages
-for message in st.session_state.messages:
+# Display Prior Chat Messages for Current Session
+for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
 # 6. Handle Prompt Submission & Streaming
 if prompt := st.chat_input("Enter a prompt here..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
+    # If this is the first message in the chat, auto-name the chat title using the prompt
+    if len(current_messages) == 0:
+        st.session_state.sessions[current_sid]["title"] = prompt[:25]
+
+    current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
@@ -122,7 +164,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
             
             chat_history_formatted = [
                 {"role": m["role"], "parts": [{"text": m["content"]}]} 
-                for m in st.session_state.messages
+                for m in current_messages
             ]
             
             response_stream = client.models.generate_content_stream(
@@ -144,4 +186,4 @@ if prompt := st.chat_input("Enter a prompt here..."):
             full_response = f"❌ **Error:** {str(e)}"
             message_placeholder.markdown(full_response)
 
-        st.session_state.messages.append({"role": "model", "content": full_response})
+        current_messages.append({"role": "model", "content": full_response})
