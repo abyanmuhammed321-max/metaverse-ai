@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Click-to-Start / Click-to-Stop Voice Dictation."
+        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Multilingual Click-to-Start / Click-to-Stop Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles with Working Toggle Mic Button
+# 3. Enhanced Ultra-Futuristic UI Styles with Multilingual Mic Button Support
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -489,6 +489,20 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
+# Map selected response language to BCP-47 speech recognition locale code
+lang_code_map = {
+    "English": "en-US",
+    "Malayalam": "ml-IN",
+    "Spanish": "es-ES",
+    "French": "fr-FR",
+    "German": "de-DE",
+    "Hindi": "hi-IN",
+    "Japanese": "ja-JP",
+    "Chinese": "zh-CN",
+    "Arabic": "ar-SA"
+}
+active_speech_lang = lang_code_map.get(lang_choice, "en-US")
+
 # 5. Settings Modal Panel
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
@@ -504,7 +518,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 
         languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
-        lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
+        lang_choice_input = st.selectbox("Response & Voice Language", languages, index=lang_index, key="modal_lang_select")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -549,7 +563,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Toggle Mic: Click to Start / Click again to Stop) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language Mode: {lang_choice} (Mic supports {lang_choice}) • Click Mic to Start / Click again to Stop</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
@@ -571,23 +585,25 @@ for message in current_messages:
 # 8. Render Chat Input Bar FIRST so st.chat_input is mounted
 prompt = st.chat_input("Ask anything or click the microphone to start/stop speaking...")
 
-# 9. Fully Functional Click-to-Start / Click-to-Stop Voice Recognition JavaScript Script
-working_mic_toggle_html = """
+# 9. Fully Functional Multilingual Click-to-Start / Click-to-Stop Voice Recognition JavaScript Script
+working_mic_toggle_html = f"""
 <script>
     function initializeWorkingToggleMic() {
-        // Find Streamlit's chat input container across DOM frames/elements
         const doc = window.parent.document;
         const chatInputContainer = doc.querySelector('[data-testid="stChatInput"]');
         if (!chatInputContainer) return;
 
-        // Prevent duplicate buttons
-        if (chatInputContainer.querySelector('#embedded-working-mic-btn')) return;
+        // Remove old mic button if language changed so it updates with new language
+        const existingBtn = chatInputContainer.querySelector('#embedded-working-mic-btn');
+        if (existingBtn) {
+            existingBtn.remove();
+        }
 
         const micButton = doc.createElement('div');
         micButton.id = 'embedded-working-mic-btn';
         micButton.className = 'mic-overlay-btn';
         micButton.innerHTML = '🎙️';
-        micButton.title = 'Click to start speaking';
+        micButton.title = 'Click to start speaking ({lang_choice})';
 
         let recognition = null;
         let isListening = false;
@@ -598,7 +614,7 @@ working_mic_toggle_html = """
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
-            recognition.lang = 'en-US';
+            recognition.lang = '{active_speech_lang}';
 
             recognition.onstart = function() {
                 isListening = true;
@@ -625,10 +641,8 @@ working_mic_toggle_html = """
 
                 const fullLiveText = baseTranscript + (currentInterim ? ' ' + currentInterim : '');
                 
-                // Update Streamlit textarea value cleanly
                 const textarea = chatInputContainer.querySelector('textarea');
                 if (textarea) {
-                    // Native setter override to update React state
                     const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
                     nativeInputValueSetter.call(textarea, fullLiveText);
                     
@@ -650,7 +664,7 @@ working_mic_toggle_html = """
             isListening = false;
             micButton.classList.remove('listening');
             micButton.innerHTML = '🎙️';
-            micButton.title = 'Click to start speaking';
+            micButton.title = 'Click to start speaking ({lang_choice})';
         }
 
         micButton.onclick = function(e) {
@@ -663,11 +677,9 @@ working_mic_toggle_html = """
             }
 
             if (isListening) {
-                // Click again to STOP recording
                 recognition.stop();
                 stopMicUI();
             } else {
-                // Click to START recording
                 const textarea = chatInputContainer.querySelector('textarea');
                 baseTranscript = textarea ? textarea.value : '';
                 try {
@@ -682,9 +694,8 @@ working_mic_toggle_html = """
         chatInputContainer.appendChild(micButton);
     }
 
-    // Run initialization with fallback checks
     setTimeout(initializeWorkingToggleMic, 200);
-    setInterval(initializeWorkingToggleMic, 1000);
+    setInterval(initializeWorkingToggleMic, 1500);
 </script>
 """
 st.components.v1.html(working_mic_toggle_html, height=0)
