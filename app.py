@@ -55,7 +55,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. High-Tech Cyberpunk Neon UI/UX Matrix Style
+# 3. Cyberpunk Neon UI/UX Matrix Style (Clean standard text box)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -209,19 +209,19 @@ st.markdown("""
         transform: translateY(-1px);
     }
 
-    /* --- HOLOGRAPHIC CHAT INPUT FIELD --- */
+    /* --- CLEAN STANDARD CHAT INPUT FIELD (NO NEON GLOW) --- */
     [data-testid="stChatInput"] textarea {
-        background-color: rgba(8, 13, 26, 0.95) !important;
-        color: #00f3ff !important;
-        border: 1px solid rgba(0, 243, 255, 0.4) !important;
-        border-radius: 12px !important;
+        background-color: #0d111a !important;
+        color: #e2e8f0 !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
         font-family: 'Inter', sans-serif !important;
-        box-shadow: inset 0 0 12px rgba(0, 243, 255, 0.08), 0 0 15px rgba(0, 243, 255, 0.1);
+        box-shadow: none !important;
     }
     
     [data-testid="stChatInput"] textarea:focus {
-        border-color: #00f3ff !important;
-        box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.15), 0 0 25px rgba(0, 243, 255, 0.4) !important;
+        border-color: #64748b !important;
+        box-shadow: none !important;
     }
 
     /* --- ADVANCED HOLOGRAPHIC AI LOADING BOX --- */
