@@ -70,94 +70,116 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Modern Gemini-Inspired Clean UI Style with All-Over Colorful Animated Neon Background & Interactive Neon Input Glow
+# 3. Enhanced Futuristic Gemini-Inspired UI with Dual-Layer Full-Screen Neon Gradient, Floating Orbs & Interactive Particle Sparkle Grid
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-    /* --- ENTIRE WEBSITE FULL COVERAGE ANIMATED MULTICOLOR NEON BACKGROUND --- */
+    /* --- FULL SCREEN 4-COLOR ANIMATED NEON GRADIENT BASE --- */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-        background: linear-gradient(135deg, #0a0c16, #120d1a, #0e161f, #1a0e16) !important;
+        background: linear-gradient(135deg, #070913, #100b17, #0b131a, #170b16) !important;
         background-size: 400% 400% !important;
-        animation: fullWebsiteNeonShift 12s ease infinite !important;
+        animation: ultimateNeonFlow 10s ease infinite !important;
         color: #e3e3e3 !important;
         font-family: 'Google Sans', 'Inter', sans-serif;
         min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    @keyframes fullWebsiteNeonShift {
+    @keyframes ultimateNeonFlow {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    /* --- MASSIVE DYNAMIC GLOWING NEON ORBS COVERING ENTIRE VIEWPORT --- */
-    @keyframes viewportOrbFloat1 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.4; }
-        33% { transform: translate(300px, 400px) scale(1.5); opacity: 0.6; }
-        66% { transform: translate(-150px, 250px) scale(1.3); opacity: 0.45; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.4; }
+    /* --- FEATURED ANIMATION LAYER 1: VIBRANT GLOWING NEON ORBS --- */
+    @keyframes orbMotion1 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
+        33% { transform: translate(350px, 450px) scale(1.6); opacity: 0.65; }
+        66% { transform: translate(-200px, 300px) scale(1.35); opacity: 0.5; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
     }
 
-    @keyframes viewportOrbFloat2 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.4; }
-        33% { transform: translate(-350px, -300px) scale(1.6); opacity: 0.6; }
-        66% { transform: translate(-200px, 200px) scale(1.35); opacity: 0.5; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.4; }
+    @keyframes orbMotion2 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
+        33% { transform: translate(-400px, -350px) scale(1.7); opacity: 0.65; }
+        66% { transform: translate(-250px, 220px) scale(1.4); opacity: 0.55; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
     }
 
-    @keyframes viewportOrbFloat3 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
-        50% { transform: translate(250px, -350px) scale(1.7); opacity: 0.55; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+    @keyframes centerCorePulse {
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; filter: hue-rotate(0deg); }
+        50% { transform: translate(-50%, -50%) scale(1.45); opacity: 0.6; filter: hue-rotate(180deg); }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; filter: hue-rotate(360deg); }
     }
 
     .stApp::after {
         content: "";
         position: fixed;
-        top: -250px;
-        left: -250px;
-        width: 700px;
-        height: 700px;
-        background: radial-gradient(circle, rgba(66, 133, 244, 0.65) 0%, rgba(52, 168, 83, 0.3) 50%, transparent 75%);
+        top: -300px;
+        left: -300px;
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(66, 133, 244, 0.7) 0%, rgba(52, 168, 83, 0.35) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: viewportOrbFloat1 9s infinite ease-in-out;
+        animation: orbMotion1 8s infinite ease-in-out;
     }
 
     .stApp::before {
         content: "";
         position: fixed;
-        bottom: -250px;
-        right: -250px;
-        width: 750px;
-        height: 750px;
-        background: radial-gradient(circle, rgba(234, 67, 53, 0.6) 0%, rgba(251, 188, 5, 0.35) 50%, transparent 75%);
+        bottom: -300px;
+        right: -300px;
+        width: 850px;
+        height: 850px;
+        background: radial-gradient(circle, rgba(234, 67, 53, 0.65) 0%, rgba(251, 188, 5, 0.4) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: viewportOrbFloat2 11s infinite ease-in-out;
+        animation: orbMotion2 10s infinite ease-in-out;
     }
 
-    .neon-center-overlay-orb {
+    .neon-center-pulsar {
         position: fixed;
         top: 50%;
         left: 50%;
-        width: 600px;
-        height: 600px;
-        background: radial-gradient(circle, rgba(138, 43, 226, 0.35) 0%, rgba(0, 255, 255, 0.2) 60%, transparent 85%);
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(circle, rgba(138, 43, 226, 0.4) 0%, rgba(0, 255, 255, 0.25) 55%, transparent 80%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
         transform: translate(-50%, -50%);
-        animation: viewportOrbFloat3 14s infinite ease-in-out;
+        animation: centerCorePulse 12s infinite ease-in-out;
     }
 
-    /* --- SIDEBAR SCROLL OPTIMIZATION & TRANSPARENCY --- */
+    /* --- FEATURED ANIMATION LAYER 2: SCANNING NEON GRID & FLOATING PARTICLES --- */
+    @keyframes gridScanMotion {
+        0% { background-position: 0 0, 0 0; }
+        100% { background-position: 50px 50px, 50px 50px; }
+    }
+
+    .neon-grid-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: 
+            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 45px 45px;
+        pointer-events: none;
+        z-index: 1;
+        animation: gridScanMotion 20s linear infinite;
+    }
+
+    /* --- SIDEBAR SCROLL OPTIMIZATION & GLASS STYLE --- */
     [data-testid="stSidebar"] {
-        background-color: rgba(18, 20, 26, 0.85) !important;
-        backdrop-filter: blur(16px);
+        background-color: rgba(15, 17, 23, 0.88) !important;
+        backdrop-filter: blur(18px);
         border-right: 1px solid rgba(255, 255, 255, 0.12);
         z-index: 1000;
         overflow-y: auto !important;
@@ -195,13 +217,13 @@ st.markdown("""
 
     /* --- MINIMALIST CLEAN CHAT BUBBLES WITH GLASSMORPHISM --- */
     .stChatMessage {
-        background-color: rgba(22, 24, 32, 0.8) !important;
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background-color: rgba(20, 22, 30, 0.82) !important;
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.14) !important;
         border-radius: 16px !important;
         padding: 16px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        box-shadow: 0 10px 35px rgba(0,0,0,0.55);
         position: relative;
         z-index: 2;
     }
@@ -219,7 +241,7 @@ st.markdown("""
         font-weight: 500 !important;
         font-size: 0.82rem !important;
         border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        background-color: rgba(35, 38, 48, 0.85) !important;
+        background-color: rgba(30, 34, 44, 0.88) !important;
         color: #e3e3e3 !important;
         transition: all 0.2s ease !important;
         position: relative;
@@ -227,17 +249,17 @@ st.markdown("""
     }
     
     .stButton button:hover {
-        background-color: rgba(55, 60, 75, 0.95) !important;
+        background-color: rgba(50, 55, 70, 0.95) !important;
         border-color: #8ab4f8 !important;
-        box-shadow: 0 0 18px rgba(66, 133, 244, 0.6);
+        box-shadow: 0 0 20px rgba(66, 133, 244, 0.65);
     }
 
     /* --- FLOATING CHAT INPUT BOX STYLE WITH GEMINI SPARKLE BORDER GLOW --- */
     @keyframes inputNeonBorderGlow {
-        0% { border-color: rgba(66, 133, 244, 0.5); box-shadow: 0 0 12px rgba(66, 133, 244, 0.25); }
-        33% { border-color: rgba(234, 67, 53, 0.5); box-shadow: 0 0 16px rgba(234, 67, 53, 0.35); }
-        66% { border-color: rgba(251, 188, 5, 0.5); box-shadow: 0 0 16px rgba(251, 188, 5, 0.35); }
-        100% { border-color: rgba(52, 168, 83, 0.5); box-shadow: 0 0 12px rgba(52, 168, 83, 0.25); }
+        0% { border-color: rgba(66, 133, 244, 0.6); box-shadow: 0 0 14px rgba(66, 133, 244, 0.3); }
+        33% { border-color: rgba(234, 67, 53, 0.6); box-shadow: 0 0 18px rgba(234, 67, 53, 0.4); }
+        66% { border-color: rgba(251, 188, 5, 0.6); box-shadow: 0 0 18px rgba(251, 188, 5, 0.4); }
+        100% { border-color: rgba(52, 168, 83, 0.6); box-shadow: 0 0 14px rgba(52, 168, 83, 0.3); }
     }
 
     [data-testid="stChatInput"] {
@@ -247,15 +269,15 @@ st.markdown("""
     }
 
     [data-testid="stChatInput"] textarea {
-        background-color: rgba(20, 22, 30, 0.9) !important;
-        backdrop-filter: blur(12px);
+        background-color: rgba(16, 18, 26, 0.92) !important;
+        backdrop-filter: blur(14px);
         color: #e3e3e3 !important;
-        border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
         border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 12px 18px !important;
-        box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+        box-shadow: 0 10px 35px rgba(0,0,0,0.65);
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
@@ -280,20 +302,20 @@ st.markdown("""
         align-items: center;
         gap: 12px;
         padding: 14px 18px;
-        background-color: rgba(22, 24, 32, 0.9);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.18);
+        background-color: rgba(20, 22, 30, 0.9);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
         border-radius: 16px;
         width: fit-content;
         margin: 10px 0;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
         position: relative;
         z-index: 2;
     }
 
     @keyframes geminiSparkleGlow {
         0% { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 4px #4285f4); opacity: 0.7; }
-        50% { transform: scale(1.35) rotate(180deg); filter: drop-shadow(0 0 16px #ea4335) drop-shadow(0 0 24px #fbbc05); opacity: 1; }
+        50% { transform: scale(1.35) rotate(180deg); filter: drop-shadow(0 0 18px #ea4335) drop-shadow(0 0 26px #fbbc05); opacity: 1; }
         100% { transform: scale(0.85) rotate(360deg); filter: drop-shadow(0 0 4px #34a853); opacity: 0.7; }
     }
 
@@ -325,8 +347,8 @@ st.markdown("""
         gap: 8px;
         padding: 4px 12px;
         margin-bottom: 10px;
-        background-color: rgba(66, 133, 244, 0.18);
-        border: 1px solid rgba(66, 133, 244, 0.45);
+        background-color: rgba(66, 133, 244, 0.2);
+        border: 1px solid rgba(66, 133, 244, 0.5);
         border-radius: 12px;
         font-family: 'Google Sans', sans-serif;
         font-size: 0.75rem;
@@ -334,8 +356,9 @@ st.markdown("""
     }
 </style>
 
-<!-- Injecting Full-Screen Center Overlay Orb -->
-<div class="neon-center-overlay-orb"></div>
+<!-- Injecting Dual-Layer Animated Background Elements -->
+<div class="neon-grid-overlay"></div>
+<div class="neon-center-pulsar"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
@@ -413,7 +436,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: rgba(22, 24, 32, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
+            <div style="background-color: rgba(20, 22, 30, 0.95); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -443,7 +466,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: rgba(22, 24, 32, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
+            <div style="background-color: rgba(20, 22, 30, 0.95); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -474,7 +497,7 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
     st.markdown("""
-        <div style="background-color: rgba(22, 24, 32, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
+        <div style="background-color: rgba(20, 22, 30, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
             <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
             <p style="color: #b0b3b0; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
