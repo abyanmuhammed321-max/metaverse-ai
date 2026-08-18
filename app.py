@@ -15,12 +15,15 @@ st.set_page_config(
 # Load Gemini API Key from secrets
 api_key = st.secrets.get("GEMINI_API_KEY")
 
-# Initialize session state variables for settings and persistence
+# Initialize session state variables for settings, user auth, and persistence
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
+
+if "user" not in st.session_state:
+    st.session_state.user = None  # Tracks Google Sign-In state
 
 # Persistent Chat History Storage across sessions using st.session_state
 if "sessions" not in st.session_state:
@@ -36,7 +39,7 @@ if "sessions" not in st.session_state:
 if st.session_state.current_session_id not in st.session_state.sessions:
     st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
 
-# 2. Dynamic Theme Styling (True Dark vs Light Mode Opposites)
+# 2. Dynamic Theme Styling
 if st.session_state.theme == "Dark":
     bg_color = "#000000"
     text_color = "#ffffff"
@@ -71,15 +74,48 @@ st.markdown(f"""
         margin-bottom: 0px;
     }}
     .metaverse-subheader {{ text-align: center; color: {sub_text}; font-size: 1.2rem; margin-bottom: 30px; }}
+    .google-btn {{
+        background-color: #ffffff;
+        color: #1f1f1f !important;
+        border: 1px solid #747775;
+        border-radius: 20px;
+        padding: 8px 16px;
+        font-weight: 500;
+        text-align: center;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        width: 100%;
+        text-decoration: none;
+    }}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Sidebar Configuration (Chat History & Settings)
+# 3. Sidebar Configuration (Authentication, Chat History & Settings)
 with st.sidebar:
-    st.markdown("### 👤 User Profile")
-    st.write("**Local User**")
-    st.write(f"<span style='font-size: 0.8rem; color: {sub_text};'>Metaverse AI Session</span>", unsafe_allow_html=True)
+    st.markdown("### 👤 User Account")
     
+    # --- GOOGLE SIGN IN FLOW ---
+    if st.session_state.user is None:
+        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in to save chat sync state across sessions.</span>", unsafe_allow_html=True)
+        if st.button("🌐 Sign in with Google", use_container_width=True):
+            # Simulating successful Google Account authentication payload
+            st.session_state.user = {
+                "name": "Google User",
+                "email": "user@gmail.com",
+                "avatar": "https://www.gstatic.com/images/branding/product/1x/avatar_square_grey_512dp.png"
+            }
+            st.rerun()
+    else:
+        user_info = st.session_state.user
+        st.success(f"Signed in as **{user_info['name']}**")
+        st.write(f"<span style='font-size: 0.75rem; color: {sub_text};'>{user_info['email']}</span>", unsafe_allow_html=True)
+        if st.button("Sign Out", use_container_width=True):
+            st.session_state.user = None
+            st.rerun()
+            
     st.markdown("---")
     
     # --- NEW CHAT BUTTON ---
@@ -116,7 +152,7 @@ with st.sidebar:
     
     selected_model = st.selectbox(
         "Choose Model",
-        ["gemini-2.5-flash", "gemini-2.5-pro"],
+        ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.1-flash-lite"],
         index=0
     )
     
@@ -159,7 +195,6 @@ for message in current_messages:
 
 # 5. Handle Prompt Submission, History Persistence, & Streaming
 if prompt := st.chat_input("Enter a prompt here..."):
-    # Automatically rename chat history title based on the first prompt
     if len(current_messages) == 0:
         st.session_state.sessions[current_sid]["title"] = prompt[:25]
 
