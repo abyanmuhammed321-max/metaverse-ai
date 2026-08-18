@@ -24,7 +24,7 @@ except Exception:
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences with latest free Gemini models
+# Initialize default preferences with modern Gemini versions
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-2.5-flash",
@@ -348,19 +348,19 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Including Model Core & Language Matrices)
+# 6. Animated Settings Modal Popup Dialog (Featuring ONLY modern/latest Gemini versions)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
     st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Free Gemini Versions / Models Selection
-    models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+    # Updated modern/latest Gemini models list (older versions removed)
+    models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
     current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
     model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
 
     selected_model_input = st.selectbox(
-        "⚡ Quantum Model Core (Free Gemini)",
+        "⚡ Quantum Model Core (Latest Gemini)",
         models_list,
         index=model_index,
         key="modal_model_select"
