@@ -28,7 +28,8 @@ prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replac
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
-        "lang_choice": "English"
+        "lang_choice": "English",
+        "persona_mode": "Standard Metaverse AI"
     }
 
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
@@ -363,13 +364,13 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog
+# 6. Animated Settings Modal Popup Dialog (Including ChatGPT Intelligence Persona)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores, Persona Intelligence, and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Updated modern/latest Gemini models list including gemini-3.1-flash-lite
+    # Updated modern/latest Gemini models list
     models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
     current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
     model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
@@ -379,6 +380,20 @@ def settings_modal():
         models_list,
         index=model_index,
         key="modal_model_select"
+    )
+
+    st.markdown("---")
+
+    # Persona Intelligence Selector (Added ChatGPT Intelligence capability)
+    personas_list = ["Standard Metaverse AI", "ChatGPT Intelligence (Conversational & Structured)", "ChatGPT Advanced Reasoner"]
+    current_saved_persona = st.session_state[prefs_storage_key].get("persona_mode", "Standard Metaverse AI")
+    persona_index = personas_list.index(current_saved_persona) if current_saved_persona in personas_list else 0
+
+    persona_choice_input = st.selectbox(
+        "🧠 Intelligence Persona Matrix",
+        personas_list,
+        index=persona_index,
+        key="modal_persona_select"
     )
 
     st.markdown("---")
@@ -398,6 +413,7 @@ def settings_modal():
     st.markdown("---")
     if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
         st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
+        st.session_state[prefs_storage_key]["persona_mode"] = persona_choice_input
         st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
         st.session_state["show_settings_modal"] = False
         st.rerun()
@@ -407,11 +423,12 @@ if st.session_state.get("show_settings_modal", False):
 
 # Retrieve active persistent preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+persona_mode = st.session_state[prefs_storage_key].get("persona_mode", "Standard Metaverse AI")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Persona: {persona_mode.split("(")[0].strip()} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
@@ -458,7 +475,20 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
                 for m in current_messages
             ]
             
-            system_instruction = f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}."
+            # Configure System Instructions based on Persona Intelligence mode
+            if "ChatGPT" in persona_mode:
+                system_instruction = (
+                    f"You are METAVERSE_AI, enhanced with ChatGPT Intelligence persona capabilities. "
+                    f"Adopt ChatGPT's conversational tone, highly structured formatting, thoughtful analytical depth, "
+                    f"and clear step-by-step reasoning style while operating on Google's high-speed architecture. "
+                    f"Respond natively in {lang_choice}."
+                )
+            else:
+                system_instruction = (
+                    f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. "
+                    f"Respond natively in {lang_choice}."
+                )
+
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction
             )
