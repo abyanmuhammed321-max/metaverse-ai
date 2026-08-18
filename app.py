@@ -24,10 +24,10 @@ except Exception:
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences with modern Gemini versions
+# Initialize default preferences with Gemini 3.1 Flash Lite
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-2.5-flash",
+        "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English"
     }
 
@@ -348,19 +348,19 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Featuring ONLY modern/latest Gemini versions)
+# 6. Animated Settings Modal Popup Dialog (Including gemini-3.1-flash-lite and newest versions)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
     st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
-    # Updated modern/latest Gemini models list (older versions removed)
-    models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
+    # Updated modern/latest Gemini models list including gemini-3.1-flash-lite
+    models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
     model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
 
     selected_model_input = st.selectbox(
-        "⚡ Quantum Model Core (Latest Gemini)",
+        "⚡ Quantum Model Core (Gemini 3.1 & Latest)",
         models_list,
         index=model_index,
         key="modal_model_select"
@@ -391,7 +391,7 @@ if st.session_state.get("show_settings_modal", False):
     settings_modal()
 
 # Retrieve active persistent preferences
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Interface Layout
