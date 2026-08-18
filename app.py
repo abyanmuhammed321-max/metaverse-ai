@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics."
+        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Voice Input support."
     ]
 
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
@@ -63,14 +63,17 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# Initialize Settings & Brain Modal State
+# Initialize Settings, Brain Modal State & Voice Input State
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & Interactive AI Thinking / Typing Animations
+if "voice_transcript" not in st.session_state:
+    st.session_state["voice_transcript"] = ""
+
+# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & Web Speech API Voice Integration
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -529,7 +532,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (High-Speed & Animated Reply) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Voice Mic + Animated Reply) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
@@ -543,14 +546,91 @@ if not is_logged_in:
     """, unsafe_allow_html=True)
     st.stop()
 
+# 8. Web Speech API Microphone Component (HTML/JS Voice Recognition)
+voice_html = """
+<div style="background: rgba(20, 22, 30, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 1.2rem;">🎙️</span>
+        <span style="font-family: 'Google Sans', sans-serif; font-size: 0.9rem; color: #e3e3e3;" id="mic-status">Voice Input Ready</span>
+    </div>
+    <button id="mic-btn" onclick="toggleVoice()" style="background: linear-gradient(135deg, #4285f4, #34a853); color: white; border: none; padding: 8px 18px; border-radius: 20px; font-family: 'Google Sans', sans-serif; font-weight: 500; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); transition: all 0.2s;">
+        🎤 Start Voice
+    </button>
+</div>
+
+<script>
+    let recognition = null;
+    let isListening = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = function() {
+            isListening = true;
+            document.getElementById('mic-status').innerText = "Listening... Speak now 🎙️";
+            document.getElementById('mic-btn').innerText = "⏹️ Stop Voice";
+            document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #ea4335, #fbbc05)";
+        };
+
+        recognition.onresult = function(event) {
+            let transcript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                transcript += event.results[i][0].transcript;
+            }
+            // Locate Streamlit textarea input and inject voice text
+            const chatInputArea = window.parent.document.querySelector('textarea[aria-label*="Chat input"]');
+            if (chatInputArea) {
+                chatInputArea.value = transcript;
+                chatInputArea.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        };
+
+        recognition.onerror = function(event) {
+            document.getElementById('mic-status').innerText = "Microphone error: " + event.error;
+            stopVoiceUI();
+        };
+
+        recognition.onend = function() {
+            isListening = false;
+            document.getElementById('mic-status').innerText = "Voice Input Ready";
+            document.getElementById('mic-btn').innerText = "🎤 Start Voice";
+            document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #4285f4, #34a853)";
+        };
+    } else {
+        document.getElementById('mic-status').innerText = "Speech Recognition not supported in this browser.";
+        document.getElementById('mic-btn').style.display = "none";
+    }
+
+    function toggleVoice() {
+        if (!recognition) return;
+        if (isListening) {
+            recognition.stop();
+        } else {
+            recognition.start();
+        }
+    }
+
+    function stopVoiceUI() {
+        isListening = false;
+        document.getElementById('mic-btn').innerText = "🎤 Start Voice";
+        document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #4285f4, #34a853)";
+    }
+</script>
+"""
+st.components.v1.html(voice_html, height=85)
+
 current_messages = current_session_data["messages"]
 
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Message Handling & Animated AI Reply Engine
-if prompt := st.chat_input("Enter a prompt here..."):
+# 9. Realtime Message Handling & Animated AI Reply Engine
+if prompt := st.chat_input("Enter a prompt here or use microphone voice input..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
 
