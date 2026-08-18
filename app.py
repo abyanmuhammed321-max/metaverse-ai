@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration (Optimized for Modern Minimalist Layout)
+# 1. Page Configuration (Optimized for Modern Minimalist Layout & Speed)
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
@@ -27,10 +27,10 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences
+# Initialize default preferences (Defaulting to ultra-fast flash model)
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-3.1-flash-lite",
+        "selected_model": "gemini-2.0-flash",
         "lang_choice": "English"
     }
 
@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a pristine, futuristic experience inspired by modern AI aesthetics."
+        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics."
     ]
 
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Futuristic Gemini-Inspired UI with Dual-Layer Full-Screen Neon Gradient, Floating Orbs & Interactive Particle Sparkle Grid
+# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & High-Speed Optimizations
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -79,7 +79,7 @@ st.markdown("""
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
         background: linear-gradient(135deg, #070913, #100b17, #0b131a, #170b16) !important;
         background-size: 400% 400% !important;
-        animation: ultimateNeonFlow 10s ease infinite !important;
+        animation: ultimateNeonFlow 8s ease infinite !important;
         color: #e3e3e3 !important;
         font-family: 'Google Sans', 'Inter', sans-serif;
         min-height: 100vh;
@@ -92,25 +92,25 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* --- FEATURED ANIMATION LAYER 1: VIBRANT GLOWING NEON ORBS --- */
+    /* --- FULL VIEWPORT ANIMATED NEON ORBS --- */
     @keyframes orbMotion1 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
-        33% { transform: translate(350px, 450px) scale(1.6); opacity: 0.65; }
-        66% { transform: translate(-200px, 300px) scale(1.35); opacity: 0.5; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.5; }
+        33% { transform: translate(350px, 450px) scale(1.6); opacity: 0.7; }
+        66% { transform: translate(-200px, 300px) scale(1.35); opacity: 0.55; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.5; }
     }
 
     @keyframes orbMotion2 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
-        33% { transform: translate(-400px, -350px) scale(1.7); opacity: 0.65; }
-        66% { transform: translate(-250px, 220px) scale(1.4); opacity: 0.55; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.45; }
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.5; }
+        33% { transform: translate(-400px, -350px) scale(1.7); opacity: 0.7; }
+        66% { transform: translate(-250px, 220px) scale(1.4); opacity: 0.6; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.5; }
     }
 
     @keyframes centerCorePulse {
-        0% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; filter: hue-rotate(0deg); }
-        50% { transform: translate(-50%, -50%) scale(1.45); opacity: 0.6; filter: hue-rotate(180deg); }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 0.35; filter: hue-rotate(360deg); }
+        0% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; filter: hue-rotate(0deg); }
+        50% { transform: translate(-50%, -50%) scale(1.45); opacity: 0.65; filter: hue-rotate(180deg); }
+        100% { transform: translate(-50%, -50%) scale(1); opacity: 0.4; filter: hue-rotate(360deg); }
     }
 
     .stApp::after {
@@ -118,13 +118,13 @@ st.markdown("""
         position: fixed;
         top: -300px;
         left: -300px;
-        width: 800px;
-        height: 800px;
-        background: radial-gradient(circle, rgba(66, 133, 244, 0.7) 0%, rgba(52, 168, 83, 0.35) 50%, transparent 75%);
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(circle, rgba(66, 133, 244, 0.75) 0%, rgba(52, 168, 83, 0.4) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: orbMotion1 8s infinite ease-in-out;
+        animation: orbMotion1 7s infinite ease-in-out;
     }
 
     .stApp::before {
@@ -132,30 +132,30 @@ st.markdown("""
         position: fixed;
         bottom: -300px;
         right: -300px;
-        width: 850px;
-        height: 850px;
-        background: radial-gradient(circle, rgba(234, 67, 53, 0.65) 0%, rgba(251, 188, 5, 0.4) 50%, transparent 75%);
+        width: 950px;
+        height: 950px;
+        background: radial-gradient(circle, rgba(234, 67, 53, 0.7) 0%, rgba(251, 188, 5, 0.45) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: orbMotion2 10s infinite ease-in-out;
+        animation: orbMotion2 9s infinite ease-in-out;
     }
 
     .neon-center-pulsar {
         position: fixed;
         top: 50%;
         left: 50%;
-        width: 700px;
-        height: 700px;
-        background: radial-gradient(circle, rgba(138, 43, 226, 0.4) 0%, rgba(0, 255, 255, 0.25) 55%, transparent 80%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(circle, rgba(138, 43, 226, 0.45) 0%, rgba(0, 255, 255, 0.3) 55%, transparent 80%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
         transform: translate(-50%, -50%);
-        animation: centerCorePulse 12s infinite ease-in-out;
+        animation: centerCorePulse 10s infinite ease-in-out;
     }
 
-    /* --- FEATURED ANIMATION LAYER 2: SCANNING NEON GRID & FLOATING PARTICLES --- */
+    /* --- SCANNING NEON GRID OVERLAY --- */
     @keyframes gridScanMotion {
         0% { background-position: 0 0, 0 0; }
         100% { background-position: 50px 50px, 50px 50px; }
@@ -168,17 +168,17 @@ st.markdown("""
         width: 100vw;
         height: 100vh;
         background-image: 
-            linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
         background-size: 45px 45px;
         pointer-events: none;
         z-index: 1;
-        animation: gridScanMotion 20s linear infinite;
+        animation: gridScanMotion 15s linear infinite;
     }
 
     /* --- SIDEBAR SCROLL OPTIMIZATION & GLASS STYLE --- */
     [data-testid="stSidebar"] {
-        background-color: rgba(15, 17, 23, 0.88) !important;
+        background-color: rgba(15, 17, 23, 0.9) !important;
         backdrop-filter: blur(18px);
         border-right: 1px solid rgba(255, 255, 255, 0.12);
         z-index: 1000;
@@ -217,9 +217,9 @@ st.markdown("""
 
     /* --- MINIMALIST CLEAN CHAT BUBBLES WITH GLASSMORPHISM --- */
     .stChatMessage {
-        background-color: rgba(20, 22, 30, 0.82) !important;
+        background-color: rgba(20, 22, 30, 0.85) !important;
         backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.14) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 16px !important;
         padding: 16px !important;
         margin-bottom: 16px !important;
@@ -241,7 +241,7 @@ st.markdown("""
         font-weight: 500 !important;
         font-size: 0.82rem !important;
         border: 1px solid rgba(255, 255, 255, 0.18) !important;
-        background-color: rgba(30, 34, 44, 0.88) !important;
+        background-color: rgba(30, 34, 44, 0.9) !important;
         color: #e3e3e3 !important;
         transition: all 0.2s ease !important;
         position: relative;
@@ -269,7 +269,7 @@ st.markdown("""
     }
 
     [data-testid="stChatInput"] textarea {
-        background-color: rgba(16, 18, 26, 0.92) !important;
+        background-color: rgba(16, 18, 26, 0.95) !important;
         backdrop-filter: blur(14px);
         color: #e3e3e3 !important;
         border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
@@ -322,7 +322,7 @@ st.markdown("""
     .gemini-sparkle-loader {
         font-size: 1.4rem;
         display: inline-block;
-        animation: geminiSparkleGlow 2s infinite ease-in-out;
+        animation: geminiSparkleGlow 1.5s infinite ease-in-out;
     }
 
     @keyframes geminiTextShimmer {
@@ -338,7 +338,7 @@ st.markdown("""
         background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: geminiTextShimmer 3s linear infinite;
+        animation: geminiTextShimmer 2s linear infinite;
     }
 
     .ai-streaming-badge {
@@ -429,7 +429,7 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Settings Modal Panel
@@ -441,9 +441,9 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
             </div>
         """, unsafe_allow_html=True)
         
-        models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+        models_list = ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
-        selected_model_input = st.selectbox("Model Engine", models_list, index=model_index, key="modal_model_select")
+        selected_model_input = st.selectbox("Model Engine (Fast Flash Recommended)", models_list, index=model_index, key="modal_model_select")
 
         languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
@@ -487,12 +487,12 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
         st.markdown("---")
 
 # Refresh preferences
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Ultra-Fast Stream) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
@@ -512,7 +512,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Message Handling & Creator Rules
+# 8. Realtime High-Speed Message Handling & Creator Rules
 if prompt := st.chat_input("Enter a prompt here..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
@@ -526,7 +526,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
         loader_placeholder.markdown("""
             <div class="gemini-loading-container">
                 <span class="gemini-sparkle-loader">✨</span>
-                <span class="gemini-loading-text">Generating response...</span>
+                <span class="gemini-loading-text">Instant processing...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -538,7 +538,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
             
             brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
-                f"You are Metaverse_AI, an advanced AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
+                f"You are Metaverse_AI, an advanced ultra-fast AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
                 f"USER PROFILE:\n"
                 f"- Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
