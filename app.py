@@ -23,7 +23,7 @@ except Exception:
 
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# 2. Comprehensive Persistent Storage (Chats, Selections, UI States)
+# 2. Comprehensive Persistent Storage (Chats & State Sync)
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
@@ -44,20 +44,43 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# 3. Solid High-Contrast Clean UI Theme (Zero Background Overlays to Ensure 100% Visibility)
+# 3. High-Tech Animated Background with 100% Crisp Text (Zero Blur/Zero Overlay Interference)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #0b0f19 !important;
+        background-color: #050814 !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* --- ANIMATED SUBTLE NEON PULSE BACKGROUND (NO TEXT BLUR) --- */
+    @keyframes neonPulseBg {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .neon-bg-animation {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(125deg, rgba(56, 189, 248, 0.03), rgba(168, 85, 247, 0.03), rgba(236, 72, 153, 0.03));
+        background-size: 300% 300%;
+        animation: neonPulseBg 15s ease infinite;
+        z-index: 0;
+        pointer-events: none;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #111827 !important;
+        background-color: #0b1120 !important;
         border-right: 1px solid #1f2937;
+        z-index: 10;
     }
     
     [data-testid="stSidebar"] * {
@@ -76,6 +99,8 @@ st.markdown("""
         letter-spacing: 2px;
         margin-bottom: 0px;
         padding-top: 10px;
+        position: relative;
+        z-index: 2;
     }
     
     .metaverse-subtitle {
@@ -86,16 +111,20 @@ st.markdown("""
         letter-spacing: 1.5px;
         margin-bottom: 25px;
         text-transform: uppercase;
+        position: relative;
+        z-index: 2;
     }
 
-    /* 100% Solid & Crisp Chat Bubbles */
+    /* 100% Solid & Crisp Chat Bubbles (Zero Blur) */
     .stChatMessage {
-        background-color: #111827 !important;
-        border: 1px solid #374151 !important;
+        background-color: #0f172a !important;
+        border: 1px solid #334155 !important;
         border-radius: 12px !important;
         padding: 16px !important;
         margin-bottom: 14px !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 2;
     }
 
     /* Guarantee absolute clarity for all text inside messages */
@@ -112,15 +141,16 @@ st.markdown("""
         font-weight: 600 !important;
         font-size: 0.8rem !important;
         letter-spacing: 0.5px !important;
-        border: 1px solid #4b5563 !important;
-        background-color: #1f2937 !important;
+        border: 1px solid #475569 !important;
+        background-color: #1e293b !important;
         color: #38bdf8 !important;
         transition: all 0.2s ease !important;
+        z-index: 2;
     }
     
     .stButton button:hover {
         border-color: #38bdf8 !important;
-        background-color: #374151 !important;
+        background-color: #334155 !important;
         color: #ffffff !important;
     }
 
@@ -130,11 +160,13 @@ st.markdown("""
         align-items: center;
         gap: 8px;
         padding: 10px 16px;
-        background-color: #1f2937;
-        border: 1px solid #4b5563;
+        background-color: #1e293b;
+        border: 1px solid #475569;
         border-radius: 8px;
         width: fit-content;
         margin: 10px 0;
+        position: relative;
+        z-index: 2;
     }
 
     .m-dot {
@@ -154,9 +186,12 @@ st.markdown("""
         40% { transform: scale(1.2); opacity: 1; }
     }
 </style>
+
+<!-- Animated Background Layer -->
+<div class="neon-bg-animation"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Archive Panel
+# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
@@ -181,7 +216,7 @@ with st.sidebar:
         st.session_state[f"{storage_key}_current_sid"] = new_sid
         st.rerun()
         
-    st.markdown("### 🗄️ SAVED NODES & CHATS")
+    st.markdown("### 🗄️ SAVED CHATS & NODES")
     
     for sid, sdata in list(st.session_state[storage_key].items()):
         col1, col2 = st.columns([0.76, 0.24])
@@ -210,7 +245,7 @@ with st.sidebar:
         st.info("No selections or chat points saved in this node yet.")
     else:
         for idx, clip in enumerate(saved_snippets):
-            st.markdown(f"<div style='background-color: #1f2937; border-left: 3px solid #38bdf8; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #1e293b; border-left: 3px solid #38bdf8; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
         if st.button("🧹 Clear Saved Clips", use_container_width=True):
             current_session_data["selected_snippets"] = []
             st.rerun()
@@ -237,7 +272,7 @@ if not api_key:
 
 # 5. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Next-Gen High-Visibility Intelligence • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Next-Gen Persistent Chat Matrix • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
