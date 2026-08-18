@@ -34,10 +34,10 @@ if prefs_storage_key not in st.session_state:
         "lang_choice": "English"
     }
 
-# Initialize Persistent Brain / Memory Bank across chats (including creator identity)
+# Initialize Persistent Brain / Memory Bank across chats (including explicit creator signature)
 if memory_storage_key not in st.session_state:
     st.session_state[memory_storage_key] = [
-        "Creator & Master Architect of METAVERSE_AI: You (the user)",
+        "Creator & Master Architect: Made by Abyan Muhammed",
         "User signed in as Google Identity: " + user_display_name,
         "Email registered: " + user_email,
         "Core Objective: Build and expand the METAVERSE_AI quantum ecosystem."
@@ -339,7 +339,7 @@ st.markdown("""
 <div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
+# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel + Creator Footer Signature
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
@@ -395,6 +395,15 @@ with st.sidebar:
                 else:
                     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                 st.rerun()
+
+    # Permanent visual signature at the bottom of the sidebar
+    st.markdown("---")
+    st.markdown(
+        """<div style="text-align: center; padding: 4px 0; font-family: 'Orbitron', sans-serif; font-size: 0.72rem; color: #00f3ff; text-shadow: 0 0 8px rgba(0, 243, 255, 0.4); letter-spacing: 1px;">
+        MADE BY ABYAN MUHAMMED
+        </div>""",
+        unsafe_allow_html=True
+    )
 
 if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
@@ -533,17 +542,17 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
         try:
             client = genai.Client(api_key=api_key)
             
-            # Combine Google identity and persistent brain/memories into system instructions (including Creator profile)
+            # Combine Google identity and persistent brain/memories into system instructions (explicitly including Abyan Muhammed as Creator)
             brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
                 f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}.\n"
-                f"USER AUTHENTICATION & CREATOR PROFILE:\n"
-                f"- Creator & Master Architect: You (the user who built and coded this AI)\n"
+                f"CREATOR & USER IDENTITY PROFILE:\n"
+                f"- Creator and Architect: Made by Abyan Muhammed\n"
                 f"- Google Account Full Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
                 f"PERSISTENT AI BRAIN / MEMORY BANK:\n{brain_memories_str}\n\n"
                 f"Guidelines:\n"
-                f"1. When the user asks who created or made this AI, proudly recognize and state that they are the master creator and architect who built it!\n"
+                f"1. When anyone asks who created, built, or made this AI, proudly proclaim that it was **Made by Abyan Muhammed**!\n"
                 f"2. When the user asks for their name or who they are signed in as, instantly recognize and state their Google account name ({user_display_name}).\n"
                 f"3. Utilize the persistent brain/memory bank to retain context across sessions."
             )
@@ -576,7 +585,7 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
             # Final rendered response without cursor
             message_placeholder.markdown(full_response)
             
-            # Automatically extract any significant preferences or facts from the prompt/response to save into Brain Memory Bank
+            # Automatically extract significant facts into Brain Memory Bank
             if len(prompt) > 10 and not any(prompt.lower() in m.lower() for m in st.session_state[memory_storage_key]):
                 st.session_state[memory_storage_key].append(f"Recent User Interaction Note: {prompt}")
             
