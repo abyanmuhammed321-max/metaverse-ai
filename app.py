@@ -389,61 +389,61 @@ st.markdown("""
 <div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
+# 4. Sidebar Professional Navigation & Feature Gates
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Authenticate with Google to activate cloud sync.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Authenticate with Google to unlock all features.</span>", unsafe_allow_html=True)
         st.button("🌐 Connect Google ID", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
         st.write(f"<span style='font-size: 0.72rem; color: #94a3b8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Disconnect Node", on_click=st.logout, use_container_width=True)
             
-    st.markdown("---")
-    
-    show_settings = st.checkbox("⚙️ System Settings Matrix", value=st.session_state["show_settings_modal"])
-    if show_settings != st.session_state["show_settings_modal"]:
-        st.session_state["show_settings_modal"] = show_settings
-        st.rerun()
-
-    show_brain = st.checkbox("🧠 AI Brain & Memory Bank", value=st.session_state["show_brain_modal"])
-    if show_brain != st.session_state["show_brain_modal"]:
-        st.session_state["show_brain_modal"] = show_brain
-        st.rerun()
-
-    st.markdown("---")
-    
-    if st.button("➕ New Metaverse Node", use_container_width=True, type="primary"):
-        new_sid = str(uuid.uuid4())
-        st.session_state[storage_key][new_sid] = {
-            "title": f"Node {len(st.session_state[storage_key]) + 1}",
-            "messages": []
-        }
-        st.session_state[f"{storage_key}_current_sid"] = new_sid
-        st.rerun()
+        st.markdown("---")
         
-    st.markdown("### 🗄️ SAVED NODES")
-    
-    for sid, sdata in list(st.session_state[storage_key].items()):
-        col1, col2 = st.columns([0.75, 0.25])
-        with col1:
-            btn_type = "primary" if sid == current_sid else "secondary"
-            display_title = sdata["title"][:14] + ("..." if len(sdata["title"]) > 14 else "")
-            if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
-                st.session_state[f"{storage_key}_current_sid"] = sid
-                st.rerun()
-        with col2:
-            if st.button("🗑️", key=f"del_{sid}", help="Purge Node"):
-                del st.session_state[storage_key][sid]
-                if not st.session_state[storage_key]:
-                    fresh_sid = str(uuid.uuid4())
-                    st.session_state[storage_key][fresh_sid] = {"title": "Node 1", "messages": []}
-                    st.session_state[f"{storage_key}_current_sid"] = fresh_sid
-                else:
-                    st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
-                st.rerun()
+        show_settings = st.checkbox("⚙️ System Settings Matrix", value=st.session_state["show_settings_modal"])
+        if show_settings != st.session_state["show_settings_modal"]:
+            st.session_state["show_settings_modal"] = show_settings
+            st.rerun()
+
+        show_brain = st.checkbox("🧠 AI Brain & Memory Bank", value=st.session_state["show_brain_modal"])
+        if show_brain != st.session_state["show_brain_modal"]:
+            st.session_state["show_brain_modal"] = show_brain
+            st.rerun()
+
+        st.markdown("---")
+        
+        if st.button("➕ New Metaverse Node", use_container_width=True, type="primary"):
+            new_sid = str(uuid.uuid4())
+            st.session_state[storage_key][new_sid] = {
+                "title": f"Node {len(st.session_state[storage_key]) + 1}",
+                "messages": []
+            }
+            st.session_state[f"{storage_key}_current_sid"] = new_sid
+            st.rerun()
+            
+        st.markdown("### 🗄️ SAVED NODES")
+        
+        for sid, sdata in list(st.session_state[storage_key].items()):
+            col1, col2 = st.columns([0.75, 0.25])
+            with col1:
+                btn_type = "primary" if sid == current_sid else "secondary"
+                display_title = sdata["title"][:14] + ("..." if len(sdata["title"]) > 14 else "")
+                if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
+                    st.session_state[f"{storage_key}_current_sid"] = sid
+                    st.rerun()
+            with col2:
+                if st.button("🗑️", key=f"del_{sid}", help="Purge Node"):
+                    del st.session_state[storage_key][sid]
+                    if not st.session_state[storage_key]:
+                        fresh_sid = str(uuid.uuid4())
+                        st.session_state[storage_key][fresh_sid] = {"title": "Node 1", "messages": []}
+                        st.session_state[f"{storage_key}_current_sid"] = fresh_sid
+                    else:
+                        st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
+                    st.rerun()
 
     # Sidebar Neon Creator Full Name Signature
     st.markdown(
@@ -460,8 +460,8 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Panel (Main Area)
-if st.session_state.get("show_settings_modal", False):
+# 5. Settings Panel (Main Area) - Only active when logged in
+if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
             <div style="background: rgba(8, 12, 25, 0.95); border: 1px solid #00f3ff; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -490,8 +490,8 @@ if st.session_state.get("show_settings_modal", False):
                 st.rerun()
         st.markdown("---")
 
-# 6. Persistent AI Brain & Memory Bank Panel
-if st.session_state.get("show_brain_modal", False):
+# 6. Persistent AI Brain & Memory Bank Panel - Only active when logged in
+if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
             <div style="background: rgba(18, 8, 38, 0.95); border: 1px solid #bc13fe; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -522,8 +522,16 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
+# Feature gate: If not logged in, hide all AI features and display a lock screen prompt
 if not is_logged_in:
-    st.warning("🔒 **Authorization Required:** Please expand sidebar and click **'Connect Google ID'**.")
+    st.markdown("""
+        <div style="background: rgba(8, 13, 26, 0.9); border: 1px solid rgba(0, 243, 255, 0.4); border-radius: 14px; padding: 30px; text-align: center; margin-top: 40px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.15);">
+            <h2 style="font-family: 'Orbitron', sans-serif; color: #00f3ff; font-size: 1.5rem; margin-bottom: 15px;">🔒 ACCESS RESTRICTED</h2>
+            <p style="color: #94a3b8; font-size: 1rem; line-height: 1.6; margin-bottom: 25px;">
+                All AI features, chat nodes, and quantum memories are hidden until authorization. Please expand the sidebar and connect your Google ID to enter the metaverse.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
     st.stop()
 
 current_messages = current_session_data["messages"]
