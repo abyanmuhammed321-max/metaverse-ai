@@ -6,7 +6,7 @@ from google.genai import types
 
 # 1. Page Configuration (Optimized for Modern Minimalist Layout)
 st.set_page_config(
-    page_title="METAVERSE AI",
+    page_title="Metaverse_AI",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="auto"
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "New Chat",
+            "title": "New chat",
             "messages": []
         }
     }
@@ -255,7 +255,7 @@ st.markdown("""
 
 # 4. Sidebar Navigation & Feature Control
 with st.sidebar:
-    st.markdown("### ✨ GEMINI WORKSPACE")
+    st.markdown("### ✨ Metaverse_AI Workspace")
     
     if not is_logged_in:
         st.write("<span style='font-size: 0.8rem; color: #8e918f;'>Sign in with Google to unlock all features and chats.</span>", unsafe_allow_html=True)
@@ -279,16 +279,16 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Chat", use_container_width=True, type="primary"):
+        if st.button("➕ New chat", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "New Chat",
+                "title": "New chat",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("### 💬 RECENT CHATS")
+        st.markdown("### 💬 Recent chats")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.78, 0.22])
@@ -303,7 +303,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "New Chat", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "New chat", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -383,14 +383,14 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
-st.markdown(f'<div class="gemini-title">Gemini</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
     st.markdown("""
         <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px;">
-            <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Gemini</h2>
+            <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
             <p style="color: #8e918f; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
             </p>
@@ -430,7 +430,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
             
             brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
-                f"You are Gemini, a large language model built by Google. Respond natively in {lang_choice}.\n"
+                f"You are Metaverse_AI, an advanced AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
                 f"USER PROFILE:\n"
                 f"- Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
@@ -462,7 +462,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-streaming-badge"><span class="sparkle-icon">✨</span>Gemini</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-streaming-badge"><span class="sparkle-icon">✨</span>Metaverse_AI</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
