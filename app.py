@@ -47,7 +47,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. High-Tech Neon Cyber Grid Background with 100% Solid & Crystal Clear Visibility
+# 3. High-Tech Neon Cyber Grid Background with Smooth Popup & Element Keyframe Animations
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -102,6 +102,27 @@ st.markdown("""
         animation: neonGlowPulse 10s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
+    }
+
+    /* --- SMOOTH POPUP ANIMATION KEYFRAMES FOR STREAMLIT DIALOGS/MODALS --- */
+    @keyframes modalPopupFadeIn {
+        0% {
+            opacity: 0;
+            transform: scale(0.85) translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+
+    /* Target Streamlit Modal Dialog Container */
+    div[data-testid="stModal"] > div {
+        animation: modalPopupFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        background-color: #0c1222 !important;
+        border: 1px solid #38bdf8 !important;
+        box-shadow: 0 0 35px rgba(56, 189, 248, 0.25) !important;
+        border-radius: 14px !important;
     }
 
     [data-testid="stSidebar"] {
@@ -224,7 +245,7 @@ st.markdown("""
 <div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel (Saved Section Removed)
+# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
@@ -279,7 +300,7 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Settings Modal Popup Dialog
+# 6. Animated Settings Modal Popup Dialog
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
     st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure quantum model parameters and linguistic matrices below.</span>", unsafe_allow_html=True)
