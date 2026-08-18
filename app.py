@@ -44,35 +44,45 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# 3. High-Tech Animated Background with 100% Crisp Text (Zero Blur/Zero Overlay Interference)
+# 3. High-Tech UI with Subtle Side Glow Animation (Keeps All Text 100% Crisp and Fully Visible)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #050814 !important;
+        background-color: #060913 !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
-        position: relative;
-        overflow-x: hidden;
     }
 
-    /* --- ANIMATED SUBTLE NEON PULSE BACKGROUND (NO TEXT BLUR) --- */
-    @keyframes neonPulseBg {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* --- SAFE SIDE AMBIENT GLOW ANIMATION (SITS BEHIND CONTENT WITHOUT TOUCHING TEXT) --- */
+    @keyframes sideGlowPulse {
+        0%, 100% { opacity: 0.25; transform: scale(1); }
+        50% { opacity: 0.55; transform: scale(1.05); }
     }
 
-    .neon-bg-animation {
+    .ambient-glow-left {
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background: linear-gradient(125deg, rgba(56, 189, 248, 0.03), rgba(168, 85, 247, 0.03), rgba(236, 72, 153, 0.03));
-        background-size: 300% 300%;
-        animation: neonPulseBg 15s ease infinite;
+        top: 20vh;
+        left: -10vw;
+        width: 35vw;
+        height: 35vw;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: sideGlowPulse 8s infinite ease-in-out;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .ambient-glow-right {
+        position: fixed;
+        bottom: 10vh;
+        right: -10vw;
+        width: 35vw;
+        height: 35vw;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: sideGlowPulse 10s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
     }
@@ -115,14 +125,14 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* 100% Solid & Crisp Chat Bubbles (Zero Blur) */
+    /* 100% Solid & Crisp Chat Bubbles (Zero Overlays / Full Visibility) */
     .stChatMessage {
         background-color: #0f172a !important;
         border: 1px solid #334155 !important;
         border-radius: 12px !important;
         padding: 16px !important;
         margin-bottom: 14px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         position: relative;
         z-index: 2;
     }
@@ -187,8 +197,9 @@ st.markdown("""
     }
 </style>
 
-<!-- Animated Background Layer -->
-<div class="neon-bg-animation"></div>
+<!-- Safe Non-Obstructive Ambient Glow Elements -->
+<div class="ambient-glow-left"></div>
+<div class="ambient-glow-right"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
