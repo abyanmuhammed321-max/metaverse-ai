@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration
+# 1. Page Configuration with Mobile Viewport Scaler
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
@@ -41,7 +41,7 @@ try:
 except Exception:
     is_logged_in = False
 
-# 2. Dynamic Gemini-Inspired UI Theme & Responsive High-Tech Animations
+# 2. Dynamic Gemini UI Theme & Mobile/Laptop Responsive Media Query Engine
 if st.session_state.theme == "Dark":
     bg_color = "#131314"
     text_color = "#e3e3e3"
@@ -82,7 +82,7 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
-    /* --- RESPONSIVE ENTRANCE ANIMATION FOR PHONE & LAPTOP --- */
+    /* --- RESPONSIVE OPENING ANIMATION & AUTO-RESIZING FOR PHONE & LAPTOP --- */
     @keyframes geminiEntrance {{
         0% {{
             opacity: 0;
@@ -95,7 +95,28 @@ st.markdown(f"""
     }}
 
     .stApp, .block-container {{
-        animation: geminiEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: geminiEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }}
+
+    /* Mobile Adaptive Fluid Scaling Rules */
+    @media (max-width: 768px) {{
+        .block-container {{
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1.5rem !important;
+            max-width: 100% !important;
+        }}
+        .gemini-title {{
+            font-size: 2.1rem !important;
+        }}
+        .gemini-subtitle {{
+            font-size: 0.95rem !important;
+            margin-bottom: 20px !important;
+        }}
+        .stChatMessage {{
+            padding: 12px !important;
+            font-size: 0.95rem !important;
+        }}
     }}
 
     /* --- HIGH-TECH NEURAL PULSATING STREAM LOADER --- */
