@@ -31,7 +31,7 @@ memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').repl
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-2.0-flash",
-        "lang_choice": "English"
+        "lang_choice": "Malayalam"
     }
 
 # Initialize Persistent Brain / Memory Bank
@@ -487,21 +487,21 @@ if not api_key:
     st.stop()
 
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
-lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam")
 
 # Map selected response language to BCP-47 speech recognition locale code
 lang_code_map = {
-    "English": "en-US",
     "Malayalam": "ml-IN",
+    "English": "en-US",
+    "Hindi": "hi-IN",
     "Spanish": "es-ES",
     "French": "fr-FR",
     "German": "de-DE",
-    "Hindi": "hi-IN",
     "Japanese": "ja-JP",
     "Chinese": "zh-CN",
     "Arabic": "ar-SA"
 }
-active_speech_lang = lang_code_map.get(lang_choice, "en-US")
+active_speech_lang = lang_code_map.get(lang_choice, "ml-IN")
 
 # 5. Settings Modal Panel
 if is_logged_in and st.session_state.get("show_settings_modal", False):
@@ -516,7 +516,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("Model Engine", models_list, index=model_index, key="modal_model_select")
 
-        languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Arabic"]
+        languages = ["Malayalam", "English", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response & Voice Language", languages, index=lang_index, key="modal_lang_select")
         
@@ -559,7 +559,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
-lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
