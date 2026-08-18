@@ -47,7 +47,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. High-Tech Neon Cyber Grid Background with Smooth Popup & Element Keyframe Animations
+# 3. High-Tech Neon Cyber Grid Background with Advanced AI Holographic Loading & Popup Animations
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -116,7 +116,6 @@ st.markdown("""
         }
     }
 
-    /* Target Streamlit Modal Dialog Container */
     div[data-testid="stModal"] > div {
         animation: modalPopupFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
         background-color: #0c1222 !important;
@@ -204,38 +203,80 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     }
 
-    /* High-Tech Loader */
-    .metaverse-loader {
+    /* --- ADVANCED HOLOGRAPHIC AI LOADING ANIMATION --- */
+    .metaverse-loader-box {
         display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 16px;
-        background-color: #1e293b;
-        border: 1px solid #475569;
-        border-radius: 8px;
-        width: fit-content;
-        margin: 10px 0;
+        flex-direction: column;
+        gap: 12px;
+        padding: 18px 22px;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+        border: 1px solid #38bdf8;
+        border-radius: 12px;
+        width: 100%;
+        max-width: 320px;
+        margin: 12px 0;
         position: relative;
         z-index: 2;
-        box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+        box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.1);
+        animation: boxGlowPulse 2s infinite ease-in-out;
     }
 
-    .m-dot {
-        width: 8px;
-        height: 8px;
-        background-color: #38bdf8;
+    @keyframes boxGlowPulse {
+        0%, 100% { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+        50% { border-color: rgba(168, 85, 247, 0.8); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
+    }
+
+    .loader-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .m-core-ring {
+        width: 18px;
+        height: 18px;
+        border: 2px solid rgba(56, 189, 248, 0.2);
+        border-top: 2px solid #38bdf8;
         border-radius: 50%;
-        box-shadow: 0 0 8px #38bdf8;
-        animation: mPulse 1.2s infinite ease-in-out both;
+        animation: spinRing 0.8s linear infinite;
     }
 
-    .m-dot:nth-child(1) { animation-delay: -0.32s; }
-    .m-dot:nth-child(2) { animation-delay: -0.16s; }
-    .m-dot:nth-child(3) { animation-delay: 0s; }
+    @keyframes spinRing {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
 
-    @keyframes mPulse {
-        0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
-        40% { transform: scale(1.2); opacity: 1; }
+    .loader-text {
+        font-size: 0.82rem;
+        font-family: 'Orbitron', sans-serif;
+        color: #38bdf8;
+        letter-spacing: 1.2px;
+        font-weight: 600;
+    }
+
+    /* Futuristic Animated Progress Bar */
+    .loader-progress-track {
+        width: 100%;
+        height: 4px;
+        background-color: #1e293b;
+        border-radius: 4px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .loader-progress-fill {
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, #38bdf8, #a855f7, #ec4899, transparent);
+        animation: progressWave 1.6s infinite linear;
+    }
+
+    @keyframes progressWave {
+        0% { left: -100%; }
+        100% { left: 100%; }
     }
 </style>
 
@@ -360,11 +401,14 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="metaverse-loader">
-                <div class="m-dot"></div>
-                <div class="m-dot"></div>
-                <div class="m-dot"></div>
-                <span style="font-size: 0.8rem; font-family: 'Orbitron', sans-serif; color: #38bdf8; letter-spacing: 1px;">SYNTHESIZING MATRIX...</span>
+            <div class="metaverse-loader-box">
+                <div class="loader-header">
+                    <div class="m-core-ring"></div>
+                    <span class="loader-text">SYNTHESIZING MATRIX...</span>
+                </div>
+                <div class="loader-progress-track">
+                    <div class="loader-progress-fill"></div>
+                </div>
             </div>
         """, unsafe_allow_html=True)
         
