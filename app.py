@@ -37,8 +37,8 @@ if prefs_storage_key not in st.session_state:
 # Initialize Persistent Brain / Memory Bank
 if memory_storage_key not in st.session_state:
     st.session_state[memory_storage_key] = [
-        "Creator and Master Developer: Abyan Muhammed",
-        "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
+        "Creator and Master Developer: Abyan",
+        "Creator Display Rule: Only mention 'Made by Abyan' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
         "Core Objective: Build and expand the METAVERSE_AI quantum ecosystem."
     ]
@@ -523,8 +523,8 @@ if prompt := st.chat_input("Transmit prompt..."):
                 f"- Google Account Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
                 f"STRICT CREATOR DISCLOSURE RULE:\n"
-                f"- You were created and developed by Abyan Muhammed.\n"
-                f"- ABSOLUTE RESTRICTION: You MUST ONLY mention 'Made by Abyan Muhammed' when the user's current message is a greeting (such as 'hello', 'hi', 'hey', 'greetings') OR when the user explicitly asks who made you, who created you, or who is your developer.\n"
+                f"- You were created and developed by Abyan.\n"
+                f"- ABSOLUTE RESTRICTION: You MUST ONLY mention 'Made by Abyan' when the user's current message is a greeting (such as 'hello', 'hi', 'hey', 'greetings') OR when the user explicitly asks who made you, who created you, or who is your developer.\n"
                 f"- For all other standard questions, queries, coding tasks, or discussions, DO NOT mention who made you unless specifically asked.\n\n"
                 f"MEMORY BANK:\n{brain_memories_str}"
             )
@@ -570,7 +570,7 @@ if prompt := st.chat_input("Transmit prompt..."):
 # 9. Permanent Bottom Creator Signature Banner
 st.markdown(
     """<div class="metaverse-footer-signature">
-    MADE BY ABYAN MUHAMMED
+    MADE BY ABYAN
     </div>""",
     unsafe_allow_html=True
 )
