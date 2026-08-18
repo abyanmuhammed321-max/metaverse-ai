@@ -51,7 +51,7 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# Initialize Settings Dialog State
+# Initialize Settings Dialog State using standard session state variable
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
@@ -110,20 +110,6 @@ st.markdown("""
         animation: neonGlowPulse 9s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
-    }
-
-    /* --- SMOOTH POPUP ANIMATION FOR MODALS --- */
-    @keyframes modalPopupFadeIn {
-        0% { opacity: 0; transform: scale(0.85) translateY(20px); }
-        100% { opacity: 1; transform: scale(1) translateY(0); }
-    }
-
-    div[data-testid="stModal"] > div {
-        animation: modalPopupFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-        background-color: #080c19 !important;
-        border: 1px solid #00f3ff !important;
-        box-shadow: 0 0 40px rgba(0, 243, 255, 0.35) !important;
-        border-radius: 16px !important;
     }
 
     /* --- SIDEBAR NEON UX STYLING --- */
@@ -354,9 +340,11 @@ with st.sidebar:
             
     st.markdown("---")
     
-    # Settings Button cleanly integrated into sidebar instead of top bar floating element
-    if st.button("⚙️ System Settings Matrix", use_container_width=True):
-        st.session_state["show_settings_modal"] = True
+    # Checkbox toggle for settings (Fully avoids button focus/Enter-key hijacking bugs in Streamlit)
+    show_settings = st.checkbox("⚙️ Open System Settings Matrix", value=st.session_state["show_settings_modal"])
+    if show_settings != st.session_state["show_settings_modal"]:
+        st.session_state["show_settings_modal"] = show_settings
+        st.rerun()
 
     st.markdown("---")
     
@@ -394,48 +382,56 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-# 5. Animated Settings Modal Popup Dialog (Gemini Core & Language Settings)
-@st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
-def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
-    st.markdown("---")
-
-    models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
-    model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
-
-    selected_model_input = st.selectbox(
-        "⚡ Quantum Model Core (Gemini)",
-        models_list,
-        index=model_index,
-        key="modal_model_select"
-    )
-
-    st.markdown("---")
-
-    # Language Selection
-    languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
-    current_saved_lang = st.session_state[prefs_storage_key].get("lang_choice", "English")
-    lang_index = languages.index(current_saved_lang) if current_saved_lang in languages else 0
-
-    lang_choice_input = st.selectbox(
-        "Language Matrix",
-        languages,
-        index=lang_index,
-        key="modal_lang_select"
-    )
-    
-    st.markdown("---")
-    if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
-        st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
-        st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
-        st.session_state["show_settings_modal"] = False
-        st.rerun()
-
-if st.session_state.get("show_settings_modal", False):
-    settings_modal()
-
 # Retrieve active persistent preferences
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+
+# 5. Settings Expander Panel inside Main Area (Rendered only when toggled on)
+if st.session_state.get("show_settings_modal", False):
+    with st.container():
+        st.markdown("""
+            <div style="background: rgba(8, 12, 25, 0.95); border: 1px solid #00f3ff; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 0 25px rgba(0, 243, 255, 0.25);">
+                <h3 style="font-family: 'Orbitron', sans-serif; color: #00f3ff; margin-top: 0;">⚙️ SYSTEM SETTINGS MATRIX</h3>
+                <p style="color: #94a3b8; font-size: 0.88rem;">Configure Quantum Model Cores and Linguistic matrices below.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+        current_saved_model = selected_model
+        model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
+
+        selected_model_input = st.selectbox(
+            "⚡ Quantum Model Core (Gemini)",
+            models_list,
+            index=model_index,
+            key="modal_model_select"
+        )
+
+        languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
+        current_saved_lang = lang_choice
+        lang_index = languages.index(current_saved_lang) if current_saved_lang in languages else 0
+
+        lang_choice_input = st.selectbox(
+            "Language Matrix",
+            languages,
+            index=lang_index,
+            key="modal_lang_select"
+        )
+        
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            if st.button("💾 Apply & Close Settings", use_container_width=True, type="primary"):
+                st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
+                st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
+                st.session_state["show_settings_modal"] = False
+                st.rerun()
+        with col_s2:
+            if st.button("❌ Close", use_container_width=True):
+                st.session_state["show_settings_modal"] = False
+                st.rerun()
+        st.markdown("---")
+
+# Re-fetch active preferences in case they were updated
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
@@ -450,7 +446,7 @@ if not is_logged_in:
 current_messages = current_session_data["messages"]
 
 # Render Existing Saved Chat Messages
-for msg_idx, message in enumerate(current_messages):
+for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
