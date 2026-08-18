@@ -588,16 +588,16 @@ prompt = st.chat_input("Ask anything or click the microphone to start/stop speak
 # 9. Fully Functional Multilingual Click-to-Start / Click-to-Stop Voice Recognition JavaScript Script
 working_mic_toggle_html = f"""
 <script>
-    function initializeWorkingToggleMic() {
+    function initializeWorkingToggleMic() {{
         const doc = window.parent.document;
         const chatInputContainer = doc.querySelector('[data-testid="stChatInput"]');
         if (!chatInputContainer) return;
 
         // Remove old mic button if language changed so it updates with new language
         const existingBtn = chatInputContainer.querySelector('#embedded-working-mic-btn');
-        if (existingBtn) {
+        if (existingBtn) {{
             existingBtn.remove();
-        }
+        }}
 
         const micButton = doc.createElement('div');
         micButton.id = 'embedded-working-mic-btn';
@@ -610,89 +610,89 @@ working_mic_toggle_html = f"""
         let baseTranscript = '';
 
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {
+        if (SpeechRecognition) {{
             recognition = new SpeechRecognition();
             recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = '{active_speech_lang}';
 
-            recognition.onstart = function() {
+            recognition.onstart = function() {{
                 isListening = true;
                 micButton.classList.add('listening');
                 micButton.innerHTML = '🔴';
                 micButton.title = 'Click again to stop speaking';
-            };
+            }};
 
-            recognition.onresult = function(event) {
+            recognition.onresult = function(event) {{
                 let currentInterim = '';
                 let currentFinal = '';
 
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {{
+                    if (event.results[i].isFinal) {{
                         currentFinal += event.results[i][0].transcript;
-                    } else {
+                    }} else {{
                         currentInterim += event.results[i][0].transcript;
-                    }
-                }
+                    }}
+                }}
 
-                if (currentFinal) {
+                if (currentFinal) {{
                     baseTranscript += (baseTranscript ? ' ' : '') + currentFinal;
-                }
+                }}
 
                 const fullLiveText = baseTranscript + (currentInterim ? ' ' + currentInterim : '');
                 
                 const textarea = chatInputContainer.querySelector('textarea');
-                if (textarea) {
+                if (textarea) {{
                     const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
                     nativeInputValueSetter.call(textarea, fullLiveText);
                     
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    textarea.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-            };
+                    textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    textarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                }}
+            }};
 
-            recognition.onerror = function(event) {
+            recognition.onerror = function(event) {{
                 stopMicUI();
-            };
+            }};
 
-            recognition.onend = function() {
+            recognition.onend = function() {{
                 stopMicUI();
-            };
-        }
+            }};
+        }}
 
-        function stopMicUI() {
+        function stopMicUI() {{
             isListening = false;
             micButton.classList.remove('listening');
             micButton.innerHTML = '🎙️';
             micButton.title = 'Click to start speaking ({lang_choice})';
-        }
+        }}
 
-        micButton.onclick = function(e) {
+        micButton.onclick = function(e) {{
             e.preventDefault();
             e.stopPropagation();
 
-            if (!recognition) {
+            if (!recognition) {{
                 alert("Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.");
                 return;
-            }
+            }}
 
-            if (isListening) {
+            if (isListening) {{
                 recognition.stop();
                 stopMicUI();
-            } else {
+            }} else {{
                 const textarea = chatInputContainer.querySelector('textarea');
                 baseTranscript = textarea ? textarea.value : '';
-                try {
+                try {{
                     recognition.start();
-                } catch(err) {
+                }} catch(err) {{
                     console.log("Recognition error:", err);
-                }
-            }
-        };
+                }}
+            }}
+        }};
 
         chatInputContainer.style.position = 'relative';
         chatInputContainer.appendChild(micButton);
-    }
+    }}
 
     setTimeout(initializeWorkingToggleMic, 200);
     setInterval(initializeWorkingToggleMic, 1500);
