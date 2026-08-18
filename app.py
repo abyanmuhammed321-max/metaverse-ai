@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast futuristic experience with Original Native Multilingual Voice Dictation."
+        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Click-To-Start / Click-To-Stop Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles with Native Mic Integration
+# 3. Enhanced Ultra-Futuristic UI Styles with Direct Toggle Mic Integration
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -279,8 +279,8 @@ st.markdown("""
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
-    /* --- ORIGINAL NATIVE MIC BUTTON OVERLAY --- */
-    .mic-overlay-btn {
+    /* --- EXACT CLICK-TO-START / CLICK-TO-STOP MIC BUTTON OVERLAY --- */
+    .mic-toggle-btn {
         position: absolute;
         bottom: 21px;
         right: 68px;
@@ -300,12 +300,12 @@ st.markdown("""
         user-select: none;
     }
     
-    .mic-overlay-btn:hover {
+    .mic-toggle-btn:hover {
         transform: scale(1.12);
         box-shadow: 0 0 22px rgba(52, 168, 83, 0.9);
     }
     
-    .mic-overlay-btn.listening {
+    .mic-toggle-btn.recording {
         background: linear-gradient(135deg, #ea4335, #fbbc05) !important;
         animation: micPulse 1.2s infinite ease-in-out;
     }
@@ -489,7 +489,7 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam")
 
-# Map selected response language to native BCP-47 Speech Recognition locale codes
+# Map selected response language to native BCP-47 speech recognition locale codes
 lang_code_map = {
     "Malayalam": "ml-IN",
     "English": "en-US",
@@ -563,7 +563,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam"
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language Mode: {lang_choice} (Native Mic Locale: {active_speech_lang}) • Click Mic to Start / Click again to Stop</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language: {lang_choice} ({active_speech_lang}) • Click 🎙️ to Start Speaking, Click 🔴 again to Stop</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
@@ -582,123 +582,127 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Render Chat Input Bar FIRST so st.chat_input is mounted
-prompt = st.chat_input("Ask anything or click the microphone to start/stop speaking...")
+# 8. Render Chat Input Bar FIRST so st.chat_input is mounted in the DOM
+prompt = st.chat_input("Type your message or click the microphone to dictate...")
 
-# 9. Original Native Multilingual Speech Recognition Engine Script
-native_mic_script_html = f"""
+# 9. Guaranteed Click-to-Start / Click-to-Stop Voice Engine Script
+click_toggle_mic_html = f"""
 <script>
-    function initializeNativeMic() {{
-        const parentDoc = window.parent.document;
-        const chatInputContainer = parentDoc.querySelector('[data-testid="stChatInput"]');
-        if (!chatInputContainer) return;
+    function setupClickToggleMicrophone() {{
+        const targetDoc = window.parent.document;
+        const inputWrapper = targetDoc.querySelector('[data-testid="stChatInput"]');
+        if (!inputWrapper) return;
 
-        // Clean up any stale instances
-        const existingBtn = chatInputContainer.querySelector('#original-native-mic-btn');
-        if (existingBtn) {{
-            existingBtn.remove();
+        // Remove old instance to prevent duplicate buttons
+        const preExistingBtn = inputWrapper.querySelector('#direct-mic-toggle-btn');
+        if (preExistingBtn) {{
+            preExistingBtn.remove();
         }}
 
-        const micBtn = parentDoc.createElement('div');
-        micBtn.id = 'original-native-mic-btn';
-        micBtn.className = 'mic-overlay-btn';
-        micBtn.innerHTML = '🎙️';
-        micBtn.title = 'Click to start speaking ({lang_choice})';
+        const micToggleElement = targetDoc.createElement('div');
+        micToggleElement.id = 'direct-mic-toggle-btn';
+        micToggleElement.className = 'mic-toggle-btn';
+        micToggleElement.innerHTML = '🎙️';
+        micToggleElement.title = 'Click to start speaking ({lang_choice})';
 
-        let speechRecognition = null;
-        let isRecording = false;
-        let accumulatedTranscript = '';
+        let speechRecInstance = null;
+        let isActivelyListening = false;
+        let preservedTranscript = '';
 
-        const SpeechRecEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecEngine) {{
-            speechRecognition = new SpeechRecEngine();
-            speechRecognition.continuous = true;
-            speechRecognition.interimResults = true;
-            speechRecognition.lang = '{active_speech_lang}';
+        const BrowserSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (BrowserSpeechRecognition) {{
+            speechRecInstance = new BrowserSpeechRecognition();
+            speechRecInstance.continuous = true;
+            speechRecInstance.interimResults = true;
+            speechRecInstance.lang = '{active_speech_lang}';
 
-            speechRecognition.onstart = function() {{
-                isRecording = true;
-                micBtn.classList.add('listening');
-                micBtn.innerHTML = '🔴';
-                micBtn.title = 'Click again to stop speaking';
+            speechRecInstance.onstart = function() {{
+                isActivelyListening = true;
+                micToggleElement.classList.add('recording');
+                micToggleElement.innerHTML = '🔴';
+                micToggleElement.title = 'Click again to stop speaking';
             }};
 
-            speechRecognition.onresult = function(e) {{
-                let interimStr = '';
-                let finalStr = '';
+            speechRecInstance.onresult = function(evt) {{
+                let currentInterimSegment = '';
+                let currentFinalSegment = '';
 
-                for (let i = e.resultIndex; i < e.results.length; ++i) {{
-                    if (e.results[i].isFinal) {{
-                        finalStr += e.results[i][0].transcript;
+                for (let i = evt.resultIndex; i < evt.results.length; ++i) {{
+                    if (evt.results[i].isFinal) {{
+                        currentFinalSegment += evt.results[i][0].transcript;
                     }} else {{
-                        interimStr += e.results[i][0].transcript;
+                        currentInterimSegment += evt.results[i][0].transcript;
                     }}
                 }}
 
-                if (finalStr) {{
-                    accumulatedTranscript += (accumulatedTranscript ? ' ' : '') + finalStr;
+                if (currentFinalSegment) {{
+                    preservedTranscript += (preservedTranscript ? ' ' : '') + currentFinalSegment;
                 }}
 
-                const combinedSpeechOutput = accumulatedTranscript + (interimStr ? ' ' + interimStr : '');
+                const combinedFullText = preservedTranscript + (currentInterimSegment ? ' ' + currentInterimSegment : '');
                 
-                const boxTextarea = chatInputContainer.querySelector('textarea');
-                if (boxTextarea) {{
-                    const setterDescriptor = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-                    setterDescriptor.call(boxTextarea, combinedSpeechOutput);
+                const chatTextarea = inputWrapper.querySelector('textarea');
+                if (chatTextarea) {{
+                    const setterFn = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+                    setterFn.call(chatTextarea, combinedFullText);
                     
-                    boxTextarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                    boxTextarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                    chatTextarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    chatTextarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
                 }}
             }};
 
-            speechRecognition.onerror = function(errEvent) {{
-                deactivateMicUI();
+            speechRecInstance.onerror = function(err) {{
+                forceStopMicState();
             }};
 
-            speechRecognition.onend = function() {{
-                deactivateMicUI();
+            speechRecInstance.onend = function() {{
+                forceStopMicState();
             }};
         }}
 
-        function deactivateMicUI() {{
-            isRecording = false;
-            micBtn.classList.remove('listening');
-            micBtn.innerHTML = '🎙️';
-            micBtn.title = 'Click to start speaking ({lang_choice})';
+        function forceStopMicState() {{
+            isActivelyListening = false;
+            micToggleElement.classList.remove('recording');
+            micToggleElement.innerHTML = '🎙️';
+            micToggleElement.title = 'Click to start speaking ({lang_choice})';
         }}
 
-        micBtn.onclick = function(clickEvent) {{
-            clickEvent.preventDefault();
-            clickEvent.stopPropagation();
+        micToggleElement.onclick = function(mouseEvent) {{
+            mouseEvent.preventDefault();
+            mouseEvent.stopPropagation();
 
-            if (!speechRecognition) {{
-                alert("Native Speech Recognition is not supported in this browser. Please use Google Chrome, Microsoft Edge, or Safari.");
+            if (!speechRecInstance) {{
+                alert("Speech recognition is not supported in this web browser. Please use Google Chrome, Microsoft Edge, or Safari.");
                 return;
             }}
 
-            if (isRecording) {{
-                speechRecognition.stop();
-                deactivateMicUI();
-            }} else {{
-                const boxTextarea = chatInputContainer.querySelector('textarea');
-                accumulatedTranscript = boxTextarea ? boxTextarea.value : '';
+            if (isActivelyListening) {{
+                // User clicked again to STOP
                 try {{
-                    speechRecognition.start();
-                }} catch(startErr) {{
-                    console.log("Mic start warning:", startErr);
+                    speechRecInstance.stop();
+                }} catch (e) {{}}
+                forceStopMicState();
+            }} else {{
+                // User clicked to START
+                const chatTextarea = inputWrapper.querySelector('textarea');
+                preservedTranscript = chatTextarea ? chatTextarea.value : '';
+                try {{
+                    speechRecInstance.start();
+                }} catch (startErr) {{
+                    console.log("Speech start exception:", startErr);
                 }}
             }}
         }};
 
-        chatInputContainer.style.position = 'relative';
-        chatInputContainer.appendChild(micBtn);
+        inputWrapper.style.position = 'relative';
+        inputWrapper.appendChild(micToggleElement);
     }}
 
-    setTimeout(initializeNativeMic, 250);
-    setInterval(initializeNativeMic, 1500);
+    setTimeout(setupClickToggleMicrophone, 300);
+    setInterval(setupClickToggleMicrophone, 1500);
 </script>
 """
-st.components.v1.html(native_mic_script_html, height=0)
+st.components.v1.html(click_toggle_mic_html, height=0)
 
 # 10. Realtime Message Handling & Animated AI Reply Engine
 if prompt:
