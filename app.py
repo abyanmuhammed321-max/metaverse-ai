@@ -24,12 +24,12 @@ except Exception:
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences with Gemini 3.1 Flash Lite
+# Initialize default preferences (including ChatGPT / OpenAI model simulation choices)
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English",
-        "persona_mode": "Standard Metaverse AI"
+        "system_brain": "Gemini Core (Default)"
     }
 
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
@@ -56,7 +56,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style (Clean standard text box)
+# 3. Cyberpunk Neon UI/UX Matrix Style (Clean standard text box, NO neon glow on inputs)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -364,10 +364,10 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Including ChatGPT Intelligence Persona)
+# 6. Animated Settings Modal Popup Dialog (Featuring OpenAI / ChatGPT Versions & Brains)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores, Persona Intelligence, and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores, Brain/Version architectures, and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
     # Updated modern/latest Gemini models list
@@ -384,16 +384,21 @@ def settings_modal():
 
     st.markdown("---")
 
-    # Persona Intelligence Selector (Added ChatGPT Intelligence capability)
-    personas_list = ["Standard Metaverse AI", "ChatGPT Intelligence (Conversational & Structured)", "ChatGPT Advanced Reasoner"]
-    current_saved_persona = st.session_state[prefs_storage_key].get("persona_mode", "Standard Metaverse AI")
-    persona_index = personas_list.index(current_saved_persona) if current_saved_persona in personas_list else 0
+    # AI Brain & Version Selector (Including ChatGPT Brain / Versions like GPT-4o, o3-mini, GPT-5 simulation)
+    brains_list = [
+        "Gemini Core (Default)", 
+        "ChatGPT-4o Brain (OpenAI Conversational)", 
+        "ChatGPT-o3 Brain (Advanced Deep Reasoner)", 
+        "ChatGPT-5 Brain (Next-Gen Architecture)"
+    ]
+    current_saved_brain = st.session_state[prefs_storage_key].get("system_brain", "Gemini Core (Default)")
+    brain_index = brains_list.index(current_saved_brain) if current_saved_brain in brains_list else 0
 
-    persona_choice_input = st.selectbox(
-        "🧠 Intelligence Persona Matrix",
-        personas_list,
-        index=persona_index,
-        key="modal_persona_select"
+    system_brain_input = st.selectbox(
+        "🧠 AI Brain / Version Architecture",
+        brains_list,
+        index=brain_index,
+        key="modal_brain_select"
     )
 
     st.markdown("---")
@@ -413,7 +418,7 @@ def settings_modal():
     st.markdown("---")
     if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
         st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
-        st.session_state[prefs_storage_key]["persona_mode"] = persona_choice_input
+        st.session_state[prefs_storage_key]["system_brain"] = system_brain_input
         st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
         st.session_state["show_settings_modal"] = False
         st.rerun()
@@ -423,12 +428,12 @@ if st.session_state.get("show_settings_modal", False):
 
 # Retrieve active persistent preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
-persona_mode = st.session_state[prefs_storage_key].get("persona_mode", "Standard Metaverse AI")
+system_brain = st.session_state[prefs_storage_key].get("system_brain", "Gemini Core (Default)")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Persona: {persona_mode.split("(")[0].strip()} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Brain: {system_brain.split("(")[0].strip()} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
@@ -475,13 +480,24 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
                 for m in current_messages
             ]
             
-            # Configure System Instructions based on Persona Intelligence mode
-            if "ChatGPT" in persona_mode:
+            # Configure System Instructions based on selected AI Brain / Version
+            if "ChatGPT-4o" in system_brain:
                 system_instruction = (
-                    f"You are METAVERSE_AI, enhanced with ChatGPT Intelligence persona capabilities. "
-                    f"Adopt ChatGPT's conversational tone, highly structured formatting, thoughtful analytical depth, "
-                    f"and clear step-by-step reasoning style while operating on Google's high-speed architecture. "
-                    f"Respond natively in {lang_choice}."
+                    f"You are METAVERSE_AI, powered by the **ChatGPT-4o Brain architecture**. "
+                    f"Emulate GPT-4o's signature warm, highly articulate, conversational style, deeply engaging tone, "
+                    f"and structured formatting. Respond natively in {lang_choice}."
+                )
+            elif "ChatGPT-o3" in system_brain:
+                system_instruction = (
+                    f"You are METAVERSE_AI, powered by the **ChatGPT-o3 Advanced Reasoner Brain**. "
+                    f"Emulate OpenAI o3's rigorous, step-by-step analytical reasoning, deep logical breakdown, "
+                    f"and precise technical precision. Respond natively in {lang_choice}."
+                )
+            elif "ChatGPT-5" in system_brain:
+                system_instruction = (
+                    f"You are METAVERSE_AI, powered by the **ChatGPT-5 Next-Gen Brain**. "
+                    f"Emulate cutting-edge state-of-the-art reasoning, ultimate nuance, maximum speed, "
+                    f"and comprehensive synthesis. Respond natively in {lang_choice}."
                 )
             else:
                 system_instruction = (
