@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style with Moving Neon Border Animation & Sidebar Full Name
+# 3. Cyberpunk Neon UI/UX Matrix Style with Continuous Moving Neon Border & Mobile Sidebar Scroll Optimization
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -84,23 +84,23 @@ st.markdown("""
         border-radius: 12px;
     }
 
-    /* --- MOVING NEON EDGE BORDER ANIMATION --- */
+    /* --- CONTINUOUS MOVING NEON EDGE BORDER ANIMATION (ALL EDGES) --- */
     @keyframes moveNeonBorder {
         0% {
             border-color: #00f3ff;
-            box-shadow: inset 0 0 25px rgba(0, 243, 255, 0.25), 0 0 20px rgba(0, 243, 255, 0.4);
+            box-shadow: inset 0 0 35px rgba(0, 243, 255, 0.3), 0 0 25px rgba(0, 243, 255, 0.5);
         }
         33% {
             border-color: #bc13fe;
-            box-shadow: inset 0 0 25px rgba(188, 19, 254, 0.25), 0 0 20px rgba(188, 19, 254, 0.4);
+            box-shadow: inset 0 0 35px rgba(188, 19, 254, 0.3), 0 0 25px rgba(188, 19, 254, 0.5);
         }
         66% {
             border-color: #ff007f;
-            box-shadow: inset 0 0 25px rgba(255, 0, 127, 0.25), 0 0 20px rgba(255, 0, 127, 0.4);
+            box-shadow: inset 0 0 35px rgba(255, 0, 127, 0.3), 0 0 25px rgba(255, 0, 127, 0.5);
         }
         100% {
             border-color: #00f3ff;
-            box-shadow: inset 0 0 25px rgba(0, 243, 255, 0.25), 0 0 20px rgba(0, 243, 255, 0.4);
+            box-shadow: inset 0 0 35px rgba(0, 243, 255, 0.3), 0 0 25px rgba(0, 243, 255, 0.5);
         }
     }
 
@@ -111,10 +111,10 @@ st.markdown("""
         left: 0;
         width: 100vw;
         height: 100vh;
-        border: 3px solid #00f3ff;
+        border: 4px solid #00f3ff;
         pointer-events: none;
         z-index: 999;
-        animation: moveNeonBorder 6s infinite linear;
+        animation: moveNeonBorder 5s infinite linear;
         border-radius: 4px;
     }
 
@@ -164,11 +164,14 @@ st.markdown("""
         pointer-events: none;
     }
 
-    /* --- SIDEBAR NEON UX STYLING --- */
+    /* --- SIDEBAR SCROLL OPTIMIZATION FOR PHONES & MOBILE DEVICES --- */
     [data-testid="stSidebar"] {
         background-color: #060913 !important;
         border-right: 1px solid rgba(0, 243, 255, 0.15);
-        z-index: 10;
+        z-index: 1000;
+        overflow-y: auto !important;
+        max-height: 100vh !important;
+        -webkit-overflow-scrolling: touch;
     }
     
     [data-testid="stSidebar"] * {
@@ -271,6 +274,7 @@ st.markdown("""
         letter-spacing: 1.5px;
         padding: 12px 5px;
         margin-top: 25px;
+        margin-bottom: 30px;
         border-top: 1px solid rgba(0, 243, 255, 0.3);
         border-bottom: 1px solid rgba(0, 243, 255, 0.3);
         text-transform: uppercase;
@@ -389,7 +393,7 @@ st.markdown("""
 <div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Feature Gates
+# 4. Sidebar Professional Navigation & Feature Gates with Smooth Mobile Scrolling
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
