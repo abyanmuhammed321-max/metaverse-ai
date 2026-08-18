@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration
 st.set_page_config(
     page_title="METAVERSE_AI",
-    page_icon="⚡",
+    page_icon="🌌",
     layout="centered",
     initial_sidebar_state="expanded"
 )
@@ -44,73 +44,70 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# 3. High-Tech Cyber-Neon Background Animation & Ultimate Futuristic UI
+# 3. High-Tech Cyber-Neon Crystal Clear UI with Smooth Floating Orbs Background Animation
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@500;600;700&display=swap');
 
     .stApp {
-        background-color: #030305 !important;
-        color: #00ffcc !important;
+        background-color: #020408 !important;
+        color: #ffffff !important;
         font-family: 'Rajdhani', sans-serif;
-        background-image: 
-            radial-gradient(circle at 15% 20%, rgba(0, 255, 204, 0.04) 0%, transparent 40%),
-            radial-gradient(circle at 85% 80%, rgba(138, 43, 226, 0.05) 0%, transparent 40%);
+        position: relative;
         overflow-x: hidden;
     }
 
-    /* --- BACKGROUND ANIMATED HOLOGRAPHIC GRID & SCANLINES --- */
-    .stApp::before {
-        content: " ";
-        display: block;
-        position: fixed;
-        top: 0; left: 0; bottom: 0; right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                    linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-        z-index: 99999;
-        background-size: 100% 3px, 6px 100%;
-        pointer-events: none;
+    /* --- CLEAN VIBRANT FLOATING ORBS BACKGROUND ANIMATION (NO BLUR ON TEXT) --- */
+    @keyframes orbFloat1 {
+        0% { transform: translate(0px, 0px) scale(1); }
+        50% { transform: translate(120px, 150px) scale(1.2); }
+        100% { transform: translate(0px, 0px) scale(1); }
     }
 
-    /* --- DYNAMIC FLOATING METAVERSE NEON PARTICLES ANIMATION --- */
-    @keyframes bgParticles {
-        0% { transform: translateY(0px) rotate(0deg); opacity: 0.15; }
-        50% { transform: translateY(-15px) rotate(180deg); opacity: 0.35; filter: drop-shadow(0 0 12px #00ffcc); }
-        100% { transform: translateY(0px) rotate(360deg); opacity: 0.15; }
+    @keyframes orbFloat2 {
+        0% { transform: translate(0px, 0px) scale(1); }
+        50% { transform: translate(-140px, -120px) scale(1.3); }
+        100% { transform: translate(0px, 0px) scale(1); }
     }
 
-    .stApp::after {
-        content: "";
+    .bg-orb-1 {
         position: fixed;
-        width: 100vw;
-        height: 100vh;
-        top: 0;
-        left: 0;
-        background-image: radial-gradient(#00ffcc 1px, transparent 1px);
-        background-size: 40px 40px;
-        opacity: 0.08;
-        animation: bgParticles 12s infinite ease-in-out;
-        pointer-events: none;
+        top: -10vh;
+        left: -10vw;
+        width: 45vw;
+        height: 45vw;
+        background: radial-gradient(circle, rgba(0, 255, 204, 0.15) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: orbFloat1 16s infinite ease-in-out;
         z-index: 0;
+        pointer-events: none;
+    }
+
+    .bg-orb-2 {
+        position: fixed;
+        bottom: -10vh;
+        right: -10vw;
+        width: 50vw;
+        height: 50vw;
+        background: radial-gradient(circle, rgba(121, 40, 202, 0.18) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: orbFloat2 20s infinite ease-in-out;
+        z-index: 0;
+        pointer-events: none;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #07090f !important;
-        border-right: 1px solid rgba(0, 255, 204, 0.2);
-        box-shadow: inset -5px 0 25px rgba(0, 255, 204, 0.04);
+        background-color: #050811 !important;
+        border-right: 1px solid rgba(0, 255, 204, 0.25);
+        box-shadow: inset -5px 0 25px rgba(0, 255, 204, 0.05);
         z-index: 10;
     }
     
     [data-testid="stSidebar"] * {
-        color: #d1dcf5 !important;
+        color: #e2e8f0 !important;
     }
 
-    /* METAVERSE_AI Holographic Glowing Title with Pulsing Neon Gradient */
-    @keyframes titleGlow {
-        0%, 100% { filter: drop-shadow(0 0 15px rgba(0, 255, 204, 0.4)); }
-        50% { filter: drop-shadow(0 0 30px rgba(138, 43, 226, 0.8)); }
-    }
-
+    /* METAVERSE_AI Holographic Title */
     .metaverse-title {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
@@ -122,30 +119,40 @@ st.markdown("""
         letter-spacing: 3px;
         margin-bottom: 0px;
         padding-top: 10px;
-        animation: titleGlow 4s infinite ease-in-out;
+        filter: drop-shadow(0 0 20px rgba(0, 255, 204, 0.3));
+        position: relative;
+        z-index: 2;
     }
     
     .metaverse-subtitle {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
-        color: #8fa3cc;
+        color: #94a3b8;
         font-size: 0.9rem;
         letter-spacing: 2px;
         margin-bottom: 25px;
         text-transform: uppercase;
+        position: relative;
+        z-index: 2;
     }
 
-    /* High-Tech Glassmorphism Message Bubbles */
+    /* Crystal Clear High-Tech Message Bubbles (ZERO BLUR) */
     .stChatMessage {
-        background: rgba(10, 14, 23, 0.8) !important;
-        border: 1px solid rgba(0, 255, 204, 0.3) !important;
+        background: rgba(9, 14, 26, 0.95) !important;
+        border: 1px solid rgba(0, 255, 204, 0.35) !important;
         border-radius: 12px !important;
         padding: 16px !important;
         margin-bottom: 14px !important;
-        box-shadow: 0 0 20px rgba(0, 255, 204, 0.06), inset 0 0 10px rgba(0, 255, 204, 0.02);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(0, 255, 204, 0.03);
         position: relative;
         z-index: 2;
+    }
+
+    /* Ensure all text inside chat messages remains 100% sharp and readable */
+    .stChatMessage p, .stChatMessage span, .stChatMessage div {
+        color: #f8fafc !important;
+        font-size: 1.05rem !important;
+        font-weight: 500 !important;
     }
 
     /* Holographic Cyber Buttons */
@@ -156,31 +163,34 @@ st.markdown("""
         font-size: 0.8rem !important;
         letter-spacing: 1px !important;
         border: 1px solid rgba(0, 255, 204, 0.4) !important;
-        background: rgba(0, 255, 204, 0.06) !important;
+        background: rgba(0, 255, 204, 0.08) !important;
         color: #00ffcc !important;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        transition: all 0.3s ease !important;
+        z-index: 2;
     }
     
     .stButton button:hover {
         border-color: #ff007f !important;
-        background: rgba(255, 0, 127, 0.2) !important;
+        background: rgba(255, 0, 127, 0.25) !important;
         color: #ffffff !important;
         box-shadow: 0 0 20px rgba(255, 0, 127, 0.6) !important;
         transform: translateY(-1px);
     }
 
-    /* High-Tech Pulsating Neural Stream Loader */
+    /* Pulsating Neural Stream Loader */
     .metaverse-loader {
         display: flex;
         align-items: center;
         gap: 8px;
         padding: 12px 18px;
-        background: rgba(121, 40, 202, 0.12);
+        background: rgba(121, 40, 202, 0.2);
         border: 1px solid rgba(0, 255, 204, 0.5);
         border-radius: 12px;
         width: fit-content;
         margin: 10px 0;
         box-shadow: 0 0 20px rgba(0, 255, 204, 0.2);
+        position: relative;
+        z-index: 2;
     }
 
     .m-dot {
@@ -200,6 +210,10 @@ st.markdown("""
         40% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #00ffcc; }
     }
 </style>
+
+<!-- Background Animated Glowing Orbs Layers -->
+<div class="bg-orb-1"></div>
+<div class="bg-orb-2"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Professional Navigation & Archive Panel
@@ -207,12 +221,12 @@ with st.sidebar:
     st.markdown("### 🌌 METAVERSE IDENTITY")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem; color: #8fa3cc;'>Authenticate with Google to activate permanent cloud synchronization.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Authenticate with Google to activate permanent cloud synchronization.</span>", unsafe_allow_html=True)
         st.button("🌐 Connect Google ID", on_click=st.login, use_container_width=True, type="primary")
     else:
         user_name = getattr(st.user, "name", "Meta Operative")
         st.success(f"**{user_name}**")
-        st.write(f"<span style='font-size: 0.72rem; color: #8fa3cc;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.72rem; color: #94a3b8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Disconnect Node", on_click=st.logout, use_container_width=True)
             
     st.markdown("---")
@@ -256,7 +270,7 @@ with st.sidebar:
         st.info("No selections or chat points saved in this node yet.")
     else:
         for idx, clip in enumerate(saved_snippets):
-            st.markdown(f"<div style='background: rgba(0,255,204,0.04); border-left: 2px solid #00ffcc; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #e2fefc;'>{clip[:70]}...</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background: rgba(0,255,204,0.06); border-left: 2px solid #00ffcc; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
         if st.button("🧹 Clear Saved Clips", use_container_width=True):
             current_session_data["selected_snippets"] = []
             st.rerun()
