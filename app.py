@@ -44,44 +44,20 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# 3. Next-Gen Animated Cyber Grid Background with 100% Crisp Text (Zero Blur)
+# 3. Solid High-Contrast Clean UI Theme (Zero Background Overlays to Ensure 100% Visibility)
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #040711 !important;
+        background-color: #0b0f19 !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
-        position: relative;
-        overflow-x: hidden;
-    }
-
-    /* --- ANIMATED SUBTLE CYBER GRID BACKGROUND (NO TEXT BLUR) --- */
-    @keyframes gridMove {
-        0% { background-position: 0 0; }
-        100% { background-position: 50px 50px; }
-    }
-
-    .cyber-grid-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        background-image: 
-            linear-gradient(to right, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(168, 85, 247, 0.04) 1px, transparent 1px);
-        background-size: 50px 50px;
-        animation: gridMove 25s linear infinite;
-        z-index: 0;
-        pointer-events: none;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #080e1a !important;
-        border-right: 1px solid #1e293b;
-        z-index: 10;
+        background-color: #111827 !important;
+        border-right: 1px solid #1f2937;
     }
     
     [data-testid="stSidebar"] * {
@@ -100,8 +76,6 @@ st.markdown("""
         letter-spacing: 2px;
         margin-bottom: 0px;
         padding-top: 10px;
-        position: relative;
-        z-index: 2;
     }
     
     .metaverse-subtitle {
@@ -112,20 +86,16 @@ st.markdown("""
         letter-spacing: 1.5px;
         margin-bottom: 25px;
         text-transform: uppercase;
-        position: relative;
-        z-index: 2;
     }
 
-    /* 100% Solid & Crisp Chat Bubbles (Zero Overlays / Zero Blur) */
+    /* 100% Solid & Crisp Chat Bubbles */
     .stChatMessage {
-        background-color: #0d1527 !important;
-        border: 1px solid #1e293b !important;
+        background-color: #111827 !important;
+        border: 1px solid #374151 !important;
         border-radius: 12px !important;
         padding: 16px !important;
         margin-bottom: 14px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-        position: relative;
-        z-index: 2;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
     }
 
     /* Guarantee absolute clarity for all text inside messages */
@@ -142,16 +112,15 @@ st.markdown("""
         font-weight: 600 !important;
         font-size: 0.8rem !important;
         letter-spacing: 0.5px !important;
-        border: 1px solid #334155 !important;
-        background-color: #111c33 !important;
+        border: 1px solid #4b5563 !important;
+        background-color: #1f2937 !important;
         color: #38bdf8 !important;
         transition: all 0.2s ease !important;
-        z-index: 2;
     }
     
     .stButton button:hover {
         border-color: #38bdf8 !important;
-        background-color: #1e293b !important;
+        background-color: #374151 !important;
         color: #ffffff !important;
     }
 
@@ -161,13 +130,11 @@ st.markdown("""
         align-items: center;
         gap: 8px;
         padding: 10px 16px;
-        background-color: #111c33;
-        border: 1px solid #334155;
+        background-color: #1f2937;
+        border: 1px solid #4b5563;
         border-radius: 8px;
         width: fit-content;
         margin: 10px 0;
-        position: relative;
-        z-index: 2;
     }
 
     .m-dot {
@@ -187,9 +154,6 @@ st.markdown("""
         40% { transform: scale(1.2); opacity: 1; }
     }
 </style>
-
-<!-- Animated Background Layer -->
-<div class="cyber-grid-bg"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Professional Navigation & Archive Panel
@@ -246,7 +210,7 @@ with st.sidebar:
         st.info("No selections or chat points saved in this node yet.")
     else:
         for idx, clip in enumerate(saved_snippets):
-            st.markdown(f"<div style='background-color: #111c33; border-left: 3px solid #38bdf8; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='background-color: #1f2937; border-left: 3px solid #38bdf8; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
         if st.button("🧹 Clear Saved Clips", use_container_width=True):
             current_session_data["selected_snippets"] = []
             st.rerun()
@@ -273,7 +237,7 @@ if not api_key:
 
 # 5. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Next-Gen Crystal-Clear Intelligence • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Next-Gen High-Visibility Intelligence • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
@@ -326,7 +290,7 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
                 for m in current_messages
             ]
             
-            system_instruction = f"You are METAVERSE_AI, an advanced crystal-clear AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}."
+            system_instruction = f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}."
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction
             )
