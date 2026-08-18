@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Multilingual Click-to-Start / Click-to-Stop Voice Dictation."
+        "Core Objective: Deliver a lightning-fast futuristic experience with Original Native Multilingual Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles with Multilingual Mic Button Support
+# 3. Enhanced Ultra-Futuristic UI Styles with Native Mic Integration
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -279,7 +279,7 @@ st.markdown("""
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
-    /* --- TOGGLEABLE WORKING MIC BUTTON OVERLAY --- */
+    /* --- ORIGINAL NATIVE MIC BUTTON OVERLAY --- */
     .mic-overlay-btn {
         position: absolute;
         bottom: 21px;
@@ -489,7 +489,7 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.0-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam")
 
-# Map selected response language to BCP-47 speech recognition locale code
+# Map selected response language to native BCP-47 Speech Recognition locale codes
 lang_code_map = {
     "Malayalam": "ml-IN",
     "English": "en-US",
@@ -563,7 +563,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "Malayalam"
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language Mode: {lang_choice} (Mic supports {lang_choice}) • Click Mic to Start / Click again to Stop</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language Mode: {lang_choice} (Native Mic Locale: {active_speech_lang}) • Click Mic to Start / Click again to Stop</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
@@ -585,119 +585,120 @@ for message in current_messages:
 # 8. Render Chat Input Bar FIRST so st.chat_input is mounted
 prompt = st.chat_input("Ask anything or click the microphone to start/stop speaking...")
 
-# 9. Fully Functional Multilingual Click-to-Start / Click-to-Stop Voice Recognition JavaScript Script
-working_mic_toggle_html = f"""
+# 9. Original Native Multilingual Speech Recognition Engine Script
+native_mic_script_html = f"""
 <script>
-    function initializeWorkingToggleMic() {{
-        const doc = window.parent.document;
-        const chatInputContainer = doc.querySelector('[data-testid="stChatInput"]');
+    function initializeNativeMic() {{
+        const parentDoc = window.parent.document;
+        const chatInputContainer = parentDoc.querySelector('[data-testid="stChatInput"]');
         if (!chatInputContainer) return;
 
-        const existingBtn = chatInputContainer.querySelector('#embedded-working-mic-btn');
+        // Clean up any stale instances
+        const existingBtn = chatInputContainer.querySelector('#original-native-mic-btn');
         if (existingBtn) {{
             existingBtn.remove();
         }}
 
-        const micButton = doc.createElement('div');
-        micButton.id = 'embedded-working-mic-btn';
-        micButton.className = 'mic-overlay-btn';
-        micButton.innerHTML = '🎙️';
-        micButton.title = 'Click to start speaking ({lang_choice})';
+        const micBtn = parentDoc.createElement('div');
+        micBtn.id = 'original-native-mic-btn';
+        micBtn.className = 'mic-overlay-btn';
+        micBtn.innerHTML = '🎙️';
+        micBtn.title = 'Click to start speaking ({lang_choice})';
 
-        let recognition = null;
-        let isListening = false;
-        let baseTranscript = '';
+        let speechRecognition = null;
+        let isRecording = false;
+        let accumulatedTranscript = '';
 
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (SpeechRecognition) {{
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = '{active_speech_lang}';
+        const SpeechRecEngine = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (SpeechRecEngine) {{
+            speechRecognition = new SpeechRecEngine();
+            speechRecognition.continuous = true;
+            speechRecognition.interimResults = true;
+            speechRecognition.lang = '{active_speech_lang}';
 
-            recognition.onstart = function() {{
-                isListening = true;
-                micButton.classList.add('listening');
-                micButton.innerHTML = '🔴';
-                micButton.title = 'Click again to stop speaking';
+            speechRecognition.onstart = function() {{
+                isRecording = true;
+                micBtn.classList.add('listening');
+                micBtn.innerHTML = '🔴';
+                micBtn.title = 'Click again to stop speaking';
             }};
 
-            recognition.onresult = function(event) {{
-                let currentInterim = '';
-                let currentFinal = '';
+            speechRecognition.onresult = function(e) {{
+                let interimStr = '';
+                let finalStr = '';
 
-                for (let i = event.resultIndex; i < event.results.length; ++i) {{
-                    if (event.results[i].isFinal) {{
-                        currentFinal += event.results[i][0].transcript;
+                for (let i = e.resultIndex; i < e.results.length; ++i) {{
+                    if (e.results[i].isFinal) {{
+                        finalStr += e.results[i][0].transcript;
                     }} else {{
-                        currentInterim += event.results[i][0].transcript;
+                        interimStr += e.results[i][0].transcript;
                     }}
                 }}
 
-                if (currentFinal) {{
-                    baseTranscript += (baseTranscript ? ' ' : '') + currentFinal;
+                if (finalStr) {{
+                    accumulatedTranscript += (accumulatedTranscript ? ' ' : '') + finalStr;
                 }}
 
-                const fullLiveText = baseTranscript + (currentInterim ? ' ' + currentInterim : '');
+                const combinedSpeechOutput = accumulatedTranscript + (interimStr ? ' ' + interimStr : '');
                 
-                const textarea = chatInputContainer.querySelector('textarea');
-                if (textarea) {{
-                    const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-                    nativeInputValueSetter.call(textarea, fullLiveText);
+                const boxTextarea = chatInputContainer.querySelector('textarea');
+                if (boxTextarea) {{
+                    const setterDescriptor = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
+                    setterDescriptor.call(boxTextarea, combinedSpeechOutput);
                     
-                    textarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                    textarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                    boxTextarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    boxTextarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
                 }}
             }};
 
-            recognition.onerror = function(event) {{
-                stopMicUI();
+            speechRecognition.onerror = function(errEvent) {{
+                deactivateMicUI();
             }};
 
-            recognition.onend = function() {{
-                stopMicUI();
+            speechRecognition.onend = function() {{
+                deactivateMicUI();
             }};
         }}
 
-        function stopMicUI() {{
-            isListening = false;
-            micButton.classList.remove('listening');
-            micButton.innerHTML = '🎙️';
-            micButton.title = 'Click to start speaking ({lang_choice})';
+        function deactivateMicUI() {{
+            isRecording = false;
+            micBtn.classList.remove('listening');
+            micBtn.innerHTML = '🎙️';
+            micBtn.title = 'Click to start speaking ({lang_choice})';
         }}
 
-        micButton.onclick = function(e) {{
-            e.preventDefault();
-            e.stopPropagation();
+        micBtn.onclick = function(clickEvent) {{
+            clickEvent.preventDefault();
+            clickEvent.stopPropagation();
 
-            if (!recognition) {{
-                alert("Speech recognition is not supported in this browser. Please use Chrome, Edge, or Safari.");
+            if (!speechRecognition) {{
+                alert("Native Speech Recognition is not supported in this browser. Please use Google Chrome, Microsoft Edge, or Safari.");
                 return;
             }}
 
-            if (isListening) {{
-                recognition.stop();
-                stopMicUI();
+            if (isRecording) {{
+                speechRecognition.stop();
+                deactivateMicUI();
             }} else {{
-                const textarea = chatInputContainer.querySelector('textarea');
-                baseTranscript = textarea ? textarea.value : '';
+                const boxTextarea = chatInputContainer.querySelector('textarea');
+                accumulatedTranscript = boxTextarea ? boxTextarea.value : '';
                 try {{
-                    recognition.start();
-                }} catch(err) {{
-                    console.log("Recognition error:", err);
+                    speechRecognition.start();
+                }} catch(startErr) {{
+                    console.log("Mic start warning:", startErr);
                 }}
             }}
         }};
 
         chatInputContainer.style.position = 'relative';
-        chatInputContainer.appendChild(micButton);
+        chatInputContainer.appendChild(micBtn);
     }}
 
-    setTimeout(initializeWorkingToggleMic, 200);
-    setInterval(initializeWorkingToggleMic, 1500);
+    setTimeout(initializeNativeMic, 250);
+    setInterval(initializeNativeMic, 1500);
 </script>
 """
-st.components.v1.html(working_mic_toggle_html, height=0)
+st.components.v1.html(native_mic_script_html, height=0)
 
 # 10. Realtime Message Handling & Animated AI Reply Engine
 if prompt:
