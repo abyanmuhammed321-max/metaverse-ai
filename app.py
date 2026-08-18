@@ -354,6 +354,12 @@ with st.sidebar:
             
     st.markdown("---")
     
+    # Settings Button cleanly integrated into sidebar instead of top bar floating element
+    if st.button("⚙️ System Settings Matrix", use_container_width=True):
+        st.session_state["show_settings_modal"] = True
+
+    st.markdown("---")
+    
     if st.button("➕ New Metaverse Node", use_container_width=True, type="primary"):
         new_sid = str(uuid.uuid4())
         st.session_state[storage_key][new_sid] = {
@@ -388,13 +394,7 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-# 5. Top Bar with Settings Icon Pop-up Trigger (Corner)
-col_top1, col_top2 = st.columns([0.92, 0.08])
-with col_top2:
-    if st.button("⚙️", help="System Settings Matrix"):
-        st.session_state["show_settings_modal"] = True
-
-# 6. Animated Settings Modal Popup Dialog (Gemini Core & Language Settings)
+# 5. Animated Settings Modal Popup Dialog (Gemini Core & Language Settings)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
     st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
@@ -439,7 +439,7 @@ if st.session_state.get("show_settings_modal", False):
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 7. Main Canvas Interface Layout
+# 6. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
@@ -454,7 +454,7 @@ for msg_idx, message in enumerate(current_messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Prompt Processing & Automated State Archiving with Pulsing Animation Badge
+# 7. Realtime Prompt Processing & Automated State Archiving with Pulsing Animation Badge
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
