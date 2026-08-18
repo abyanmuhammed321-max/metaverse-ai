@@ -23,6 +23,16 @@ except Exception:
 
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 
+# Key for persisting user preferences (Model & Language) across sessions/days
+prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+
+# Initialize default preferences if not present
+if prefs_storage_key not in st.session_state:
+    st.session_state[prefs_storage_key] = {
+        "selected_model": "gemini-3.7-flash",
+        "lang_choice": "English"
+    }
+
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
@@ -341,42 +351,52 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog
+# 6. Animated Settings Modal Popup Dialog with Persistent Saved State
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure quantum model parameters and linguistic matrices below.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure quantum model parameters and linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
     st.markdown("---")
     
-    selected_model = st.selectbox(
+    models_list = ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.1-flash-lite"]
+    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.7-flash")
+    model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
+
+    selected_model_input = st.selectbox(
         "Quantum Core",
-        ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.1-flash-lite"],
-        index=0,
+        models_list,
+        index=model_index,
         key="modal_model_select"
     )
 
     languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
-    lang_choice = st.selectbox(
+    current_saved_lang = st.session_state[prefs_storage_key].get("lang_choice", "English")
+    lang_index = languages.index(current_saved_lang) if current_saved_lang in languages else 0
+
+    lang_choice_input = st.selectbox(
         "Language Matrix",
         languages,
-        index=0,
+        index=lang_index,
         key="modal_lang_select"
     )
     
     st.markdown("---")
     if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
+        # Save user preferences persistently into session state dictionary linked to their user account/session
+        st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
+        st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
         st.session_state["show_settings_modal"] = False
         st.rerun()
 
 if st.session_state.get("show_settings_modal", False):
     settings_modal()
 
-# Retrieve saved configuration values from session state or defaults
-selected_model = st.session_state.get("modal_model_select", "gemini-3.7-flash")
-lang_choice = st.session_state.get("modal_lang_select", "English")
+# Retrieve active persistent preferences
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.7-flash")
+lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Neon Cyberpunk Edition • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Neon Cyberpunk Edition • Core: {selected_model} • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
