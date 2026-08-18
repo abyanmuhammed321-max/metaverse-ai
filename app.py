@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Modern Gemini-Inspired Clean UI Style with Animated Neon Background Glow & Moving Border
+# 3. Modern Gemini-Inspired Clean UI Style with Animated Neon Background Glow & Authentic Gemini Loading Sparkle Animation
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -86,15 +86,15 @@ st.markdown("""
 
     /* --- ANIMATED BACKGROUND NEON GLOW ORBS --- */
     @keyframes neonPulseOrb1 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
-        50% { transform: translate(100px, 150px) scale(1.3); opacity: 0.3; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
+        50% { transform: translate(120px, 160px) scale(1.35); opacity: 0.35; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
     }
 
     @keyframes neonPulseOrb2 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
-        50% { transform: translate(-120px, -100px) scale(1.4); opacity: 0.25; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
+        50% { transform: translate(-140px, -120px) scale(1.45); opacity: 0.3; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
     }
 
     .stApp::after {
@@ -102,13 +102,13 @@ st.markdown("""
         position: fixed;
         top: -150px;
         left: -150px;
-        width: 450px;
-        height: 450px;
-        background: radial-gradient(circle, rgba(66, 133, 244, 0.4) 0%, rgba(52, 168, 83, 0.1) 50%, transparent 80%);
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(66, 133, 244, 0.45) 0%, rgba(52, 168, 83, 0.15) 50%, transparent 80%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: neonPulseOrb1 10s infinite ease-in-out;
+        animation: neonPulseOrb1 9s infinite ease-in-out;
     }
 
     .stApp::before {
@@ -116,13 +116,13 @@ st.markdown("""
         position: fixed;
         bottom: -150px;
         right: -150px;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, rgba(234, 67, 53, 0.35) 0%, rgba(251, 188, 5, 0.15) 50%, transparent 80%);
+        width: 550px;
+        height: 550px;
+        background: radial-gradient(circle, rgba(234, 67, 53, 0.4) 0%, rgba(251, 188, 5, 0.2) 50%, transparent 80%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: neonPulseOrb2 12s infinite ease-in-out;
+        animation: neonPulseOrb2 11s infinite ease-in-out;
     }
 
     /* --- SIDEBAR SCROLL OPTIMIZATION FOR PHONES & MOBILE DEVICES --- */
@@ -198,7 +198,7 @@ st.markdown("""
     .stButton button:hover {
         background-color: #333537 !important;
         border-color: #8e918f !important;
-        box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
+        box-shadow: 0 0 12px rgba(66, 133, 244, 0.4);
     }
 
     /* --- FLOATING CHAT INPUT BOX STYLE --- */
@@ -234,7 +234,50 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* --- STREAMING & LOADING INDICATORS --- */
+    /* --- AUTHENTIC GEMINI MULTICOLOR SPARKLE LOADING ANIMATION --- */
+    .gemini-loading-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 18px;
+        background-color: #1e1f20;
+        border: 1px solid #333537;
+        border-radius: 16px;
+        width: fit-content;
+        margin: 10px 0;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        position: relative;
+        z-index: 2;
+    }
+
+    @keyframes geminiSparkleGlow {
+        0% { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 2px #4285f4); opacity: 0.6; }
+        50% { transform: scale(1.3) rotate(180deg); filter: drop-shadow(0 0 12px #ea4335) drop-shadow(0 0 18px #fbbc05); opacity: 1; }
+        100% { transform: scale(0.85) rotate(360deg); filter: drop-shadow(0 0 2px #34a853); opacity: 0.6; }
+    }
+
+    .gemini-sparkle-loader {
+        font-size: 1.4rem;
+        display: inline-block;
+        animation: geminiSparkleGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes geminiTextShimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+
+    .gemini-loading-text {
+        font-family: 'Google Sans', sans-serif;
+        font-size: 0.9rem;
+        font-weight: 500;
+        background: linear-gradient(90deg, #4285f4, #ea4335, #fbbc05, #34a853, #4285f4);
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: geminiTextShimmer 3s linear infinite;
+    }
+
     .ai-streaming-badge {
         display: inline-flex;
         align-items: center;
@@ -247,30 +290,6 @@ st.markdown("""
         font-family: 'Google Sans', sans-serif;
         font-size: 0.75rem;
         color: #8ab4f8;
-    }
-
-    .sparkle-icon {
-        display: inline-block;
-        animation: pulseSparkle 1.5s infinite ease-in-out;
-    }
-
-    @keyframes pulseSparkle {
-        0%, 100% { transform: scale(1); opacity: 0.7; }
-        50% { transform: scale(1.2); opacity: 1; }
-    }
-
-    .gemini-loader {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 12px 16px;
-        background-color: #1e1f20;
-        border: 1px solid #333537;
-        border-radius: 12px;
-        width: fit-content;
-        margin: 10px 0;
-        position: relative;
-        z-index: 2;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -438,9 +457,9 @@ if prompt := st.chat_input("Enter a prompt here..."):
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="gemini-loader">
-                <span class="sparkle-icon">✨</span>
-                <span style="font-size: 0.85rem; color: #8e918f;">Thinking...</span>
+            <div class="gemini-loading-container">
+                <span class="gemini-sparkle-loader">✨</span>
+                <span class="gemini-loading-text">Generating response...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -484,7 +503,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-streaming-badge"><span class="sparkle-icon">✨</span>Metaverse_AI</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-streaming-badge"><span class="gemini-sparkle-loader" style="font-size: 0.9rem;">✨</span>Metaverse_AI</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
