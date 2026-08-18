@@ -15,15 +15,12 @@ st.set_page_config(
 # Load Gemini API Key from secrets
 api_key = st.secrets.get("GEMINI_API_KEY")
 
-# Initialize session state variables for settings, user auth, and persistence
+# Initialize session state variables for settings and persistence
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
-
-if "user" not in st.session_state:
-    st.session_state.user = None  # Tracks Google Sign-In state
 
 # Persistent Chat History Storage across sessions using st.session_state
 if "sessions" not in st.session_state:
@@ -74,47 +71,28 @@ st.markdown(f"""
         margin-bottom: 0px;
     }}
     .metaverse-subheader {{ text-align: center; color: {sub_text}; font-size: 1.2rem; margin-bottom: 30px; }}
-    .google-btn {{
-        background-color: #ffffff;
-        color: #1f1f1f !important;
-        border: 1px solid #747775;
-        border-radius: 20px;
-        padding: 8px 16px;
-        font-weight: 500;
-        text-align: center;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        width: 100%;
-        text-decoration: none;
-    }}
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Sidebar Configuration (Authentication, Chat History & Settings)
+# 3. Sidebar Configuration (Native Google Auth, Chat History & Settings)
 with st.sidebar:
     st.markdown("### 👤 User Account")
     
-    # --- GOOGLE SIGN IN FLOW ---
-    if st.session_state.user is None:
-        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in to save chat sync state across sessions.</span>", unsafe_allow_html=True)
-        if st.button("🌐 Sign in with Google", use_container_width=True):
-            # Simulating successful Google Account authentication payload
-            st.session_state.user = {
-                "name": "Google User",
-                "email": "user@gmail.com",
-                "avatar": "https://www.gstatic.com/images/branding/product/1x/avatar_square_grey_512dp.png"
-            }
-            st.rerun()
+    # Check native Streamlit OIDC login status
+    try:
+        is_logged_in = getattr(st.user, "is_logged_in", False)
+    except Exception:
+        is_logged_in = False
+
+    if not is_logged_in:
+        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in with your Google account.</span>", unsafe_allow_html=True)
+        st.button("🌐 Sign in with Google", on_click=st.login, use_container_width=True)
     else:
-        user_info = st.session_state.user
-        st.success(f"Signed in as **{user_info['name']}**")
-        st.write(f"<span style='font-size: 0.75rem; color: {sub_text};'>{user_info['email']}</span>", unsafe_allow_html=True)
-        if st.button("Sign Out", use_container_width=True):
-            st.session_state.user = None
-            st.rerun()
+        user_name = getattr(st.user, "name", "Google User")
+        user_email = getattr(st.user, "email", "user@gmail.com")
+        st.success(f"Signed in as **{user_name}**")
+        st.write(f"<span style='font-size: 0.75rem; color: {sub_text};'>{user_email}</span>", unsafe_allow_html=True)
+        st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
     st.markdown("---")
     
@@ -214,7 +192,6 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 for m in current_messages
             ]
             
-            # Configure Gemini to respond in the user's selected language
             system_instruction = f"You are Metaverse_AI, a helpful AI assistant. Always respond in {st.session_state.language}."
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction
