@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Modern Gemini-Inspired Clean UI Style with Smooth Mobile-Optimized Neon Border Animation & Scrolling
+# 3. Modern Gemini-Inspired Clean UI Style with Animated Neon Background Glow & Moving Border
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -81,40 +81,48 @@ st.markdown("""
         font-family: 'Google Sans', 'Inter', sans-serif;
         position: relative;
         min-height: 100vh;
+        overflow-x: hidden;
     }
 
-    /* --- SLEEK CONTINUOUS MOVING NEON EDGE BORDER ANIMATION (ALL EDGES) --- */
-    @keyframes moveNeonBorder {
-        0% {
-            border-color: #4285f4;
-            box-shadow: inset 0 0 30px rgba(66, 133, 244, 0.2), 0 0 20px rgba(66, 133, 244, 0.4);
-        }
-        33% {
-            border-color: #ea4335;
-            box-shadow: inset 0 0 30px rgba(234, 67, 53, 0.2), 0 0 20px rgba(234, 67, 53, 0.4);
-        }
-        66% {
-            border-color: #fbbc05;
-            box-shadow: inset 0 0 30px rgba(251, 188, 5, 0.2), 0 0 20px rgba(251, 188, 5, 0.4);
-        }
-        100% {
-            border-color: #4285f4;
-            box-shadow: inset 0 0 30px rgba(66, 133, 244, 0.2), 0 0 20px rgba(66, 133, 244, 0.4);
-        }
+    /* --- ANIMATED BACKGROUND NEON GLOW ORBS --- */
+    @keyframes neonPulseOrb1 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+        50% { transform: translate(100px, 150px) scale(1.3); opacity: 0.3; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+    }
+
+    @keyframes neonPulseOrb2 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+        50% { transform: translate(-120px, -100px) scale(1.4); opacity: 0.25; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.15; }
+    }
+
+    .stApp::after {
+        content: "";
+        position: fixed;
+        top: -150px;
+        left: -150px;
+        width: 450px;
+        height: 450px;
+        background: radial-gradient(circle, rgba(66, 133, 244, 0.4) 0%, rgba(52, 168, 83, 0.1) 50%, transparent 80%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1;
+        animation: neonPulseOrb1 10s infinite ease-in-out;
     }
 
     .stApp::before {
         content: "";
         position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        border: 3px solid #4285f4;
+        bottom: -150px;
+        right: -150px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(234, 67, 53, 0.35) 0%, rgba(251, 188, 5, 0.15) 50%, transparent 80%);
+        border-radius: 50%;
         pointer-events: none;
-        z-index: 999;
-        animation: moveNeonBorder 6s infinite linear;
-        border-radius: 4px;
+        z-index: 1;
+        animation: neonPulseOrb2 12s infinite ease-in-out;
     }
 
     /* --- SIDEBAR SCROLL OPTIMIZATION FOR PHONES & MOBILE DEVICES --- */
@@ -142,6 +150,8 @@ st.markdown("""
         margin-bottom: 0px;
         padding-top: 10px;
         letter-spacing: -0.5px;
+        position: relative;
+        z-index: 2;
     }
     
     .gemini-subtitle {
@@ -149,6 +159,8 @@ st.markdown("""
         font-size: clamp(0.75rem, 2vw, 0.85rem);
         margin-bottom: 25px;
         font-weight: 500;
+        position: relative;
+        z-index: 2;
     }
 
     /* --- MINIMALIST CLEAN CHAT BUBBLES --- */
@@ -158,7 +170,9 @@ st.markdown("""
         border-radius: 16px !important;
         padding: 16px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        position: relative;
+        z-index: 2;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
@@ -177,16 +191,21 @@ st.markdown("""
         background-color: #28292a !important;
         color: #e3e3e3 !important;
         transition: all 0.2s ease !important;
+        position: relative;
+        z-index: 2;
     }
     
     .stButton button:hover {
         background-color: #333537 !important;
         border-color: #8e918f !important;
+        box-shadow: 0 0 10px rgba(66, 133, 244, 0.3);
     }
 
     /* --- FLOATING CHAT INPUT BOX STYLE --- */
     [data-testid="stChatInput"] {
         padding: 0 10px 10px 10px !important;
+        position: relative;
+        z-index: 2;
     }
 
     [data-testid="stChatInput"] textarea {
@@ -197,6 +216,7 @@ st.markdown("""
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 12px 16px !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     /* --- CREATOR SIGNATURE IN SIDEBAR --- */
@@ -249,6 +269,8 @@ st.markdown("""
         border-radius: 12px;
         width: fit-content;
         margin: 10px 0;
+        position: relative;
+        z-index: 2;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -328,7 +350,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -358,7 +380,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -389,7 +411,7 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
     st.markdown("""
-        <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px;">
+        <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
             <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
             <p style="color: #8e918f; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
