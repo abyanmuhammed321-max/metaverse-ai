@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration (Optimized for Modern Minimalist Layout & Speed)
+# 1. Page Configuration
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
@@ -27,7 +27,7 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences (Defaulting to ultra-fast flash model)
+# Initialize preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-2.0-flash",
@@ -40,10 +40,10 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Voice Input support."
+        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Integrated Voice Input directly inside the chat bar."
     ]
 
-# 2. Comprehensive Persistent Storage (Chats & State Sync)
+# 2. Comprehensive Persistent Storage
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
@@ -63,17 +63,14 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# Initialize Settings, Brain Modal State & Voice Input State
+# Initialize Modal State
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-if "voice_transcript" not in st.session_state:
-    st.session_state["voice_transcript"] = ""
-
-# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & Web Speech API Voice Integration
+# 3. Enhanced Ultra-Futuristic UI Styles & Native Input Box Integration
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -179,22 +176,20 @@ st.markdown("""
         animation: gridScanMotion 15s linear infinite;
     }
 
-    /* --- SIDEBAR SCROLL OPTIMIZATION & GLASS STYLE --- */
+    /* --- SIDEBAR GLASS STYLE --- */
     [data-testid="stSidebar"] {
         background-color: rgba(15, 17, 23, 0.9) !important;
         backdrop-filter: blur(18px);
         border-right: 1px solid rgba(255, 255, 255, 0.12);
         z-index: 1000;
         overflow-y: auto !important;
-        max-height: 100vh !important;
-        -webkit-overflow-scrolling: touch;
     }
     
     [data-testid="stSidebar"] * {
         color: #e3e3e3 !important;
     }
 
-    /* --- MODERN CLEAN TYPOGRAPHY HEADER --- */
+    /* --- TYPOGRAPHY HEADER --- */
     .gemini-title {
         font-family: 'Google Sans', sans-serif;
         font-size: clamp(1.6rem, 5vw, 2.4rem);
@@ -218,7 +213,7 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* --- MINIMALIST CLEAN CHAT BUBBLES WITH GLASSMORPHISM --- */
+    /* --- CHAT BUBBLES --- */
     .stChatMessage {
         background-color: rgba(20, 22, 30, 0.85) !important;
         backdrop-filter: blur(14px);
@@ -237,7 +232,7 @@ st.markdown("""
         line-height: 1.6 !important;
     }
 
-    /* --- MODERN ROUNDED BUTTONS --- */
+    /* --- BUTTONS --- */
     .stButton button {
         border-radius: 20px !important;
         font-family: 'Google Sans', sans-serif !important;
@@ -257,7 +252,7 @@ st.markdown("""
         box-shadow: 0 0 20px rgba(66, 133, 244, 0.65);
     }
 
-    /* --- FLOATING CHAT INPUT BOX STYLE WITH GEMINI SPARKLE BORDER GLOW --- */
+    /* --- FLOATING CHAT INPUT BOX STYLE --- */
     @keyframes inputNeonBorderGlow {
         0% { border-color: rgba(66, 133, 244, 0.6); box-shadow: 0 0 14px rgba(66, 133, 244, 0.3); }
         33% { border-color: rgba(234, 67, 53, 0.6); box-shadow: 0 0 18px rgba(234, 67, 53, 0.4); }
@@ -279,12 +274,48 @@ st.markdown("""
         border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 12px 18px !important;
+        padding: 12px 55px 12px 18px !important; /* Extra right padding so text doesn't overlap the mic button */
         box-shadow: 0 10px 35px rgba(0,0,0,0.65);
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
-    /* --- CREATOR SIGNATURE IN SIDEBAR --- */
+    /* --- EMBEDDED NATIVE MIC BUTTON OVERLAY (RIGHT INSIDE THE CHAT INPUT BAR) --- */
+    .mic-overlay-btn {
+        position: absolute;
+        bottom: 22px;
+        right: 24px;
+        width: 38px;
+        height: 38px;
+        background: linear-gradient(135deg, #4285f4, #34a853);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 999;
+        box-shadow: 0 0 15px rgba(66, 133, 244, 0.6);
+        transition: all 0.2s ease;
+        font-size: 1.1rem;
+    }
+    
+    .mic-overlay-btn:hover {
+        transform: scale(1.1);
+        box-shadow: 0 0 22px rgba(52, 168, 83, 0.8);
+    }
+    
+    .mic-overlay-btn.listening {
+        background: linear-gradient(135deg, #ea4335, #fbbc05) !important;
+        animation: micPulse 1.2s infinite ease-in-out;
+    }
+
+    @keyframes micPulse {
+        0% { transform: scale(1); box-shadow: 0 0 10px #ea4335; }
+        50% { transform: scale(1.2); box-shadow: 0 0 25px #fbbc05; }
+        100% { transform: scale(1); box-shadow: 0 0 10px #ea4335; }
+    }
+
+    /* --- CREATOR SIGNATURE --- */
     .sidebar-signature {
         text-align: center;
         font-family: 'Google Sans', sans-serif;
@@ -299,7 +330,7 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* --- VIBRANT AI THINKING & REPLY ANIMATION WIDGETS --- */
+    /* --- THINKING & REPLY WIDGETS --- */
     .ai-thinking-box {
         display: flex;
         align-items: center;
@@ -314,13 +345,6 @@ st.markdown("""
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(66, 133, 244, 0.25);
         position: relative;
         z-index: 2;
-        animation: thinkingPulseBorder 2s infinite ease-in-out;
-    }
-
-    @keyframes thinkingPulseBorder {
-        0% { border-color: rgba(66, 133, 244, 0.4); box-shadow: 0 0 15px rgba(66, 133, 244, 0.2); }
-        50% { border-color: rgba(234, 67, 53, 0.7); box-shadow: 0 0 25px rgba(234, 67, 53, 0.4); }
-        100% { border-color: rgba(66, 133, 244, 0.4); box-shadow: 0 0 15px rgba(66, 133, 244, 0.2); }
     }
 
     .ai-thinking-dots {
@@ -333,7 +357,6 @@ st.markdown("""
         width: 10px;
         height: 10px;
         border-radius: 50%;
-        background-color: #4285f4;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
     }
 
@@ -376,12 +399,6 @@ st.markdown("""
         font-size: 0.78rem;
         color: #8ab4f8;
         box-shadow: 0 0 15px rgba(66, 133, 244, 0.25);
-        animation: badgeGlowPulse 1.8s infinite ease-in-out;
-    }
-
-    @keyframes badgeGlowPulse {
-        0%, 100% { box-shadow: 0 0 10px rgba(66, 133, 244, 0.2); }
-        50% { box-shadow: 0 0 20px rgba(66, 133, 244, 0.5); }
     }
 
     .sparkle-icon {
@@ -457,7 +474,6 @@ with st.sidebar:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                     st.rerun()
 
-    # Sidebar Creator Signature
     st.markdown(
         """<div class="sidebar-signature">
         MADE BY ABYAN MUHAMMED
@@ -532,9 +548,8 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Voice Mic + Animated Reply) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Integrated Chat Bar Mic) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
-# Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
     st.markdown("""
         <div style="background-color: rgba(20, 22, 30, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
@@ -546,91 +561,105 @@ if not is_logged_in:
     """, unsafe_allow_html=True)
     st.stop()
 
-# 8. Web Speech API Microphone Component (HTML/JS Voice Recognition)
-voice_html = """
-<div style="background: rgba(20, 22, 30, 0.85); backdrop-filter: blur(14px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 14px; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 2;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 1.2rem;">🎙️</span>
-        <span style="font-family: 'Google Sans', sans-serif; font-size: 0.9rem; color: #e3e3e3;" id="mic-status">Voice Input Ready</span>
-    </div>
-    <button id="mic-btn" onclick="toggleVoice()" style="background: linear-gradient(135deg, #4285f4, #34a853); color: white; border: none; padding: 8px 18px; border-radius: 20px; font-family: 'Google Sans', sans-serif; font-weight: 500; font-size: 0.85rem; cursor: pointer; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); transition: all 0.2s;">
-        🎤 Start Voice
-    </button>
-</div>
-
-<script>
-    let recognition = null;
-    let isListening = false;
-
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        recognition = new SpeechRecognition();
-        recognition.continuous = false;
-        recognition.interimResults = true;
-        recognition.lang = 'en-US';
-
-        recognition.onstart = function() {
-            isListening = true;
-            document.getElementById('mic-status').innerText = "Listening... Speak now 🎙️";
-            document.getElementById('mic-btn').innerText = "⏹️ Stop Voice";
-            document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #ea4335, #fbbc05)";
-        };
-
-        recognition.onresult = function(event) {
-            let transcript = '';
-            for (let i = event.resultIndex; i < event.results.length; ++i) {
-                transcript += event.results[i][0].transcript;
-            }
-            // Locate Streamlit textarea input and inject voice text
-            const chatInputArea = window.parent.document.querySelector('textarea[aria-label*="Chat input"]');
-            if (chatInputArea) {
-                chatInputArea.value = transcript;
-                chatInputArea.dispatchEvent(new Event('input', { bubbles: true }));
-            }
-        };
-
-        recognition.onerror = function(event) {
-            document.getElementById('mic-status').innerText = "Microphone error: " + event.error;
-            stopVoiceUI();
-        };
-
-        recognition.onend = function() {
-            isListening = false;
-            document.getElementById('mic-status').innerText = "Voice Input Ready";
-            document.getElementById('mic-btn').innerText = "🎤 Start Voice";
-            document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #4285f4, #34a853)";
-        };
-    } else {
-        document.getElementById('mic-status').innerText = "Speech Recognition not supported in this browser.";
-        document.getElementById('mic-btn').style.display = "none";
-    }
-
-    function toggleVoice() {
-        if (!recognition) return;
-        if (isListening) {
-            recognition.stop();
-        } else {
-            recognition.start();
-        }
-    }
-
-    function stopVoiceUI() {
-        isListening = false;
-        document.getElementById('mic-btn').innerText = "🎤 Start Voice";
-        document.getElementById('mic-btn').style.background = "linear-gradient(135deg, #4285f4, #34a853)";
-    }
-</script>
-"""
-st.components.v1.html(voice_html, height=85)
-
 current_messages = current_session_data["messages"]
 
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 9. Realtime Message Handling & Animated AI Reply Engine
-if prompt := st.chat_input("Enter a prompt here or use microphone voice input..."):
+# 8. Render Chat Input Bar FIRST so st.chat_input is mounted
+prompt = st.chat_input("Ask anything or tap the mic to speak...")
+
+# 9. Embedded DOM JavaScript Voice Integration
+# This script injects a sleek mic icon right inside the chat bar box and attaches real-time Web Speech API speech-to-text.
+native_mic_injection_html = """
+<script>
+    function setupMicOverlay() {
+        const chatInputContainer = window.parent.document.querySelector('[data-testid="stChatInput"]');
+        if (!chatInputContainer) return;
+
+        // Prevent duplicate insertion
+        if (chatInputContainer.querySelector('#embedded-mic-btn')) return;
+
+        const micButton = document.createElement('div');
+        micButton.id = 'embedded-mic-btn';
+        micButton.className = 'mic-overlay-btn';
+        micButton.innerHTML = '🎙️';
+        micButton.title = 'Click to speak';
+
+        let recognition = null;
+        let isListening = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.lang = 'en-US';
+
+            recognition.onstart = function() {
+                isListening = true;
+                micButton.classList.add('listening');
+                micButton.innerHTML = '🔴';
+            };
+
+            recognition.onresult = function(event) {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                const textarea = chatInputContainer.querySelector('textarea');
+                if (textarea) {
+                    textarea.value = transcript;
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            };
+
+            recognition.onerror = function() {
+                stopListeningUI();
+            };
+
+            recognition.onend = function() {
+                stopListeningUI();
+            };
+        }
+
+        function stopListeningUI() {
+            isListening = false;
+            micButton.classList.remove('listening');
+            micButton.innerHTML = '🎙️';
+        }
+
+        micButton.onclick = function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (!recognition) {
+                alert("Speech recognition is not supported in your browser.");
+                return;
+            }
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        };
+
+        chatInputContainer.style.position = 'relative';
+        chatInputContainer.appendChild(micButton);
+    }
+
+    // Run setup immediately and monitor DOM changes to re-apply if Streamlit re-renders
+    setupMicOverlay();
+    const observer = new MutationObserver(() => {
+        setupMicOverlay();
+    });
+    observer.observe(window.parent.document.body, { childList: true, subtree: true });
+</script>
+"""
+st.components.v1.html(native_mic_injection_html, height=0)
+
+# 10. Realtime Message Handling & Animated AI Reply Engine
+if prompt:
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
 
