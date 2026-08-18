@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Modern Gemini-Inspired Clean UI Style with Full Colorful Animated Neon Background & Authentic Sparkle Loading
+# 3. Modern Gemini-Inspired Clean UI Style with Full Colorful Animated Neon Background & Input Box Sparkles
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -141,7 +141,6 @@ st.markdown("""
         animation: neonFloatOrb2 12s infinite ease-in-out;
     }
 
-    /* Additional Dynamic Floating Orb Layer via pseudo element wrapper */
     .neon-center-glow {
         position: fixed;
         top: 40%;
@@ -234,7 +233,14 @@ st.markdown("""
         box-shadow: 0 0 15px rgba(66, 133, 244, 0.5);
     }
 
-    /* --- FLOATING CHAT INPUT BOX STYLE --- */
+    /* --- FLOATING CHAT INPUT BOX STYLE WITH GEMINI SPARKLE GLOW BORDER --- */
+    @keyframes inputNeonBorderGlow {
+        0% { border-color: rgba(66, 133, 244, 0.4); box-shadow: 0 0 8px rgba(66, 133, 244, 0.2); }
+        33% { border-color: rgba(234, 67, 53, 0.4); box-shadow: 0 0 12px rgba(234, 67, 53, 0.3); }
+        66% { border-color: rgba(251, 188, 5, 0.4); box-shadow: 0 0 12px rgba(251, 188, 5, 0.3); }
+        100% { border-color: rgba(52, 168, 83, 0.4); box-shadow: 0 0 8px rgba(52, 168, 83, 0.2); }
+    }
+
     [data-testid="stChatInput"] {
         padding: 0 10px 10px 10px !important;
         position: relative;
@@ -245,12 +251,13 @@ st.markdown("""
         background-color: rgba(30, 31, 32, 0.9) !important;
         backdrop-filter: blur(10px);
         color: #e3e3e3 !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.2) !important;
         border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 12px 16px !important;
+        padding: 12px 18px !important;
         box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
     /* --- CREATOR SIGNATURE IN SIDEBAR --- */
