@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Click-To-Start / Click-To-Stop Voice Dictation."
+        "Core Objective: Deliver a lightning-fast futuristic experience with Robust Persistent Single-Instance Click-To-Start / Click-To-Stop Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles with Direct Toggle Mic Integration
+# 3. Enhanced Ultra-Futuristic UI Styles with Reliable Singleton Mic Integration
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -585,15 +585,23 @@ for message in current_messages:
 # 8. Render Chat Input Bar FIRST so st.chat_input is mounted in the DOM
 prompt = st.chat_input("Type your message or click the microphone to dictate...")
 
-# 9. Guaranteed Click-to-Start / Click-to-Stop Voice Engine Script
+# 9. Guaranteed Singleton Click-to-Start / Click-to-Stop Voice Engine Script
 click_toggle_mic_html = f"""
 <script>
+    if (!window.metaverseGlobalMicManager) {{
+        window.metaverseGlobalMicManager = {{
+            recognitionInstance: null,
+            isListening: false,
+            baseTranscript: ''
+        }};
+    }}
+
     function setupClickToggleMicrophone() {{
         const targetDoc = window.parent.document;
         const inputWrapper = targetDoc.querySelector('[data-testid="stChatInput"]');
         if (!inputWrapper) return;
 
-        // Remove old instance to prevent duplicate buttons
+        // Prevent duplicate buttons
         const preExistingBtn = inputWrapper.querySelector('#direct-mic-toggle-btn');
         if (preExistingBtn) {{
             preExistingBtn.remove();
@@ -602,94 +610,112 @@ click_toggle_mic_html = f"""
         const micToggleElement = targetDoc.createElement('div');
         micToggleElement.id = 'direct-mic-toggle-btn';
         micToggleElement.className = 'mic-toggle-btn';
-        micToggleElement.innerHTML = '🎙️';
-        micToggleElement.title = 'Click to start speaking ({lang_choice})';
-
-        let speechRecInstance = null;
-        let isActivelyListening = false;
-        let preservedTranscript = '';
+        
+        // Sync visual state with manager state
+        if (window.metaverseGlobalMicManager.isListening) {{
+            micToggleElement.classList.add('recording');
+            micToggleElement.innerHTML = '🔴';
+            micToggleElement.title = 'Click again to stop speaking';
+        }} else {{
+            micToggleElement.classList.remove('recording');
+            micToggleElement.innerHTML = '🎙️';
+            micToggleElement.title = 'Click to start speaking ({lang_choice})';
+        }}
 
         const BrowserSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-        if (BrowserSpeechRecognition) {{
-            speechRecInstance = new BrowserSpeechRecognition();
-            speechRecInstance.continuous = true;
-            speechRecInstance.interimResults = true;
-            speechRecInstance.lang = '{active_speech_lang}';
+        if (BrowserSpeechRecognition && !window.metaverseGlobalMicManager.recognitionInstance) {{
+            const rec = new BrowserSpeechRecognition();
+            rec.continuous = true;
+            rec.interimResults = true;
+            rec.lang = '{active_speech_lang}';
 
-            speechRecInstance.onstart = function() {{
-                isActivelyListening = true;
-                micToggleElement.classList.add('recording');
-                micToggleElement.innerHTML = '🔴';
-                micToggleElement.title = 'Click again to stop speaking';
+            rec.onstart = function() {{
+                window.metaverseGlobalMicManager.isListening = true;
+                const btn = targetDoc.querySelector('#direct-mic-toggle-btn');
+                if (btn) {{
+                    btn.classList.add('recording');
+                    btn.innerHTML = '🔴';
+                    btn.title = 'Click again to stop speaking';
+                }};
             }};
 
-            speechRecInstance.onresult = function(evt) {{
-                let currentInterimSegment = '';
-                let currentFinalSegment = '';
+            rec.onresult = function(evt) {{
+                let interimSeg = '';
+                let finalSeg = '';
 
                 for (let i = evt.resultIndex; i < evt.results.length; ++i) {{
                     if (evt.results[i].isFinal) {{
-                        currentFinalSegment += evt.results[i][0].transcript;
+                        finalSeg += evt.results[i][0].transcript;
                     }} else {{
-                        currentInterimSegment += evt.results[i][0].transcript;
+                        interimSeg += evt.results[i][0].transcript;
                     }}
                 }}
 
-                if (currentFinalSegment) {{
-                    preservedTranscript += (preservedTranscript ? ' ' : '') + currentFinalSegment;
+                if (finalSeg) {{
+                    window.metaverseGlobalMicManager.baseTranscript += (window.metaverseGlobalMicManager.baseTranscript ? ' ' : '') + finalSeg;
                 }}
 
-                const combinedFullText = preservedTranscript + (currentInterimSegment ? ' ' + currentInterimSegment : '');
+                const fullText = window.metaverseGlobalMicManager.baseTranscript + (interimSeg ? ' ' + interimSeg : '');
                 
-                const chatTextarea = inputWrapper.querySelector('textarea');
+                const chatTextarea = targetDoc.querySelector('[data-testid="stChatInput"] textarea');
                 if (chatTextarea) {{
                     const setterFn = Object.getOwnPropertyDescriptor(window.HTMLTextAreaElement.prototype, "value").set;
-                    setterFn.call(chatTextarea, combinedFullText);
+                    setterFn.call(chatTextarea, fullText);
                     
                     chatTextarea.dispatchEvent(new Event('input', {{ bubbles: true }}));
                     chatTextarea.dispatchEvent(new Event('change', {{ bubbles: true }}));
                 }}
             }};
 
-            speechRecInstance.onerror = function(err) {{
-                forceStopMicState();
+            rec.onerror = function(err) {{
+                resetMicUIState();
             }};
 
-            speechRecInstance.onend = function() {{
-                forceStopMicState();
+            rec.onend = function() {{
+                resetMicUIState();
             }};
+
+            window.metaverseGlobalMicManager.recognitionInstance = rec;
         }}
 
-        function forceStopMicState() {{
-            isActivelyListening = false;
-            micToggleElement.classList.remove('recording');
-            micToggleElement.innerHTML = '🎙️';
-            micToggleElement.title = 'Click to start speaking ({lang_choice})';
+        function resetMicUIState() {{
+            window.metaverseGlobalMicManager.isListening = false;
+            const btn = targetDoc.querySelector('#direct-mic-toggle-btn');
+            if (btn) {{
+                btn.classList.remove('recording');
+                btn.innerHTML = '🎙️';
+                btn.title = 'Click to start speaking ({lang_choice})';
+            }}
         }}
 
         micToggleElement.onclick = function(mouseEvent) {{
             mouseEvent.preventDefault();
             mouseEvent.stopPropagation();
 
-            if (!speechRecInstance) {{
-                alert("Speech recognition is not supported in this web browser. Please use Google Chrome, Microsoft Edge, or Safari.");
+            const recEngine = window.metaverseGlobalMicManager.recognitionInstance;
+            if (!recEngine) {{
+                alert("Speech recognition is not supported in this browser. Please use Google Chrome, Edge, or Safari.");
                 return;
             }}
 
-            if (isActivelyListening) {{
-                // User clicked again to STOP
+            if (window.metaverseGlobalMicManager.isListening) {{
+                // STOP COMMAND
                 try {{
-                    speechRecInstance.stop();
+                    recEngine.stop();
                 }} catch (e) {{}}
-                forceStopMicState();
+                resetMicUIState();
             }} else {{
-                // User clicked to START
-                const chatTextarea = inputWrapper.querySelector('textarea');
-                preservedTranscript = chatTextarea ? chatTextarea.value : '';
+                // START COMMAND
+                const chatTextarea = targetDoc.querySelector('[data-testid="stChatInput"] textarea');
+                window.metaverseGlobalMicManager.baseTranscript = chatTextarea ? chatTextarea.value : '';
                 try {{
-                    speechRecInstance.start();
-                }} catch (startErr) {{
-                    console.log("Speech start exception:", startErr);
+                    recEngine.start();
+                }} catch (e) {{
+                    // If already running, stop then restart cleanly
+                    try {{
+                        recEngine.stop();
+                    }} catch (err) {{}}
+                    resetMicUIState();
                 }}
             }}
         }};
@@ -698,8 +724,8 @@ click_toggle_mic_html = f"""
         inputWrapper.appendChild(micToggleElement);
     }}
 
-    setTimeout(setupClickToggleMicrophone, 300);
-    setInterval(setupClickToggleMicrophone, 1500);
+    setTimeout(setupClickToggleMicrophone, 200);
+    setInterval(setupClickToggleMicrophone, 1200);
 </script>
 """
 st.components.v1.html(click_toggle_mic_html, height=0)
