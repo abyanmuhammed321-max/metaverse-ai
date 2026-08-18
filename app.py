@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Integrated Voice Input directly inside the chat bar."
+        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Native Web Speech Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles & Native Input Box Integration
+# 3. Enhanced Ultra-Futuristic UI Styles with Perfectly Aligned Floating Mic Button
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -274,18 +274,18 @@ st.markdown("""
         border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 12px 55px 12px 18px !important; /* Extra right padding so text doesn't overlap the mic button */
+        padding: 12px 60px 12px 18px !important; /* Perfect right inset padding so text clears the mic button */
         box-shadow: 0 10px 35px rgba(0,0,0,0.65);
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
-    /* --- EMBEDDED NATIVE MIC BUTTON OVERLAY (RIGHT INSIDE THE CHAT INPUT BAR) --- */
+    /* --- PERFECTLY POSITIONED MIC BUTTON OVERLAY (ALIGNED WITH SUBMIT BUTTON) --- */
     .mic-overlay-btn {
         position: absolute;
-        bottom: 22px;
-        right: 24px;
-        width: 38px;
-        height: 38px;
+        bottom: 21px;
+        right: 64px; /* Positioned directly to the left of Streamlit's send button */
+        width: 36px;
+        height: 36px;
         background: linear-gradient(135deg, #4285f4, #34a853);
         border: 1px solid rgba(255, 255, 255, 0.3);
         border-radius: 50%;
@@ -296,12 +296,12 @@ st.markdown("""
         z-index: 999;
         box-shadow: 0 0 15px rgba(66, 133, 244, 0.6);
         transition: all 0.2s ease;
-        font-size: 1.1rem;
+        font-size: 1rem;
     }
     
     .mic-overlay-btn:hover {
-        transform: scale(1.1);
-        box-shadow: 0 0 22px rgba(52, 168, 83, 0.8);
+        transform: scale(1.12);
+        box-shadow: 0 0 22px rgba(52, 168, 83, 0.9);
     }
     
     .mic-overlay-btn.listening {
@@ -548,7 +548,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Integrated Chat Bar Mic) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Native Speech Voice-to-Text Input) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
@@ -568,10 +568,11 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 8. Render Chat Input Bar FIRST so st.chat_input is mounted
-prompt = st.chat_input("Ask anything or tap the mic to speak...")
+prompt = st.chat_input("Ask anything or click the microphone to speak...")
 
-# 9. Embedded DOM JavaScript Voice Integration
-# This script injects a sleek mic icon right inside the chat bar box and attaches real-time Web Speech API speech-to-text.
+# 9. Fully Integrated Native Voice-to-Text DOM Script
+# This script injects the glowing mic button right inside the chat bar next to the send button,
+# captures speech in real-time, and feeds it straight into Streamlit's textarea state (live typing effect).
 native_mic_injection_html = """
 <script>
     function setupMicOverlay() {
@@ -593,7 +594,7 @@ native_mic_injection_html = """
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
-            recognition.continuous = false;
+            recognition.continuous = true;
             recognition.interimResults = true;
             recognition.lang = 'en-US';
 
@@ -604,14 +605,24 @@ native_mic_injection_html = """
             };
 
             recognition.onresult = function(event) {
-                let transcript = '';
+                let interimTranscript = '';
+                let finalTranscript = '';
+                
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    transcript += event.results[i][0].transcript;
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
                 }
-                const textarea = chatInputContainer.querySelector('textarea');
-                if (textarea) {
-                    textarea.value = transcript;
-                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                const spokenText = finalTranscript || interimTranscript;
+                if (spokenText) {
+                    const textarea = chatInputContainer.querySelector('textarea');
+                    if (textarea) {
+                        textarea.value = spokenText;
+                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
                 }
             };
 
@@ -648,7 +659,7 @@ native_mic_injection_html = """
         chatInputContainer.appendChild(micButton);
     }
 
-    // Run setup immediately and monitor DOM changes to re-apply if Streamlit re-renders
+    // Initialize immediately and watch for DOM re-renders
     setupMicOverlay();
     const observer = new MutationObserver(() => {
         setupMicOverlay();
