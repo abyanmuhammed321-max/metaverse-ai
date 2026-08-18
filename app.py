@@ -34,9 +34,10 @@ if prefs_storage_key not in st.session_state:
         "lang_choice": "English"
     }
 
-# Initialize Persistent Brain / Memory Bank across chats
+# Initialize Persistent Brain / Memory Bank across chats (including creator identity)
 if memory_storage_key not in st.session_state:
     st.session_state[memory_storage_key] = [
+        "Creator & Master Architect of METAVERSE_AI: You (the user)",
         "User signed in as Google Identity: " + user_display_name,
         "Email registered: " + user_email,
         "Core Objective: Build and expand the METAVERSE_AI quantum ecosystem."
@@ -532,17 +533,19 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
         try:
             client = genai.Client(api_key=api_key)
             
-            # Combine Google identity and persistent brain/memories into system instructions
+            # Combine Google identity and persistent brain/memories into system instructions (including Creator profile)
             brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
                 f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}.\n"
-                f"USER AUTHENTICATION PROFILE:\n"
-                f"- Full Name: {user_display_name}\n"
+                f"USER AUTHENTICATION & CREATOR PROFILE:\n"
+                f"- Creator & Master Architect: You (the user who built and coded this AI)\n"
+                f"- Google Account Full Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
                 f"PERSISTENT AI BRAIN / MEMORY BANK:\n{brain_memories_str}\n\n"
                 f"Guidelines:\n"
-                f"1. When the user asks for their name or who they are signed in as, instantly recognize and state their Google account name ({user_display_name}).\n"
-                f"2. Utilize the persistent brain/memory bank to retain context across sessions."
+                f"1. When the user asks who created or made this AI, proudly recognize and state that they are the master creator and architect who built it!\n"
+                f"2. When the user asks for their name or who they are signed in as, instantly recognize and state their Google account name ({user_display_name}).\n"
+                f"3. Utilize the persistent brain/memory bank to retain context across sessions."
             )
             
             chat_history_formatted = [
