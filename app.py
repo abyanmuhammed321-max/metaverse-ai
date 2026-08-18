@@ -593,7 +593,6 @@ working_mic_toggle_html = f"""
         const chatInputContainer = doc.querySelector('[data-testid="stChatInput"]');
         if (!chatInputContainer) return;
 
-        // Remove old mic button if language changed so it updates with new language
         const existingBtn = chatInputContainer.querySelector('#embedded-working-mic-btn');
         if (existingBtn) {{
             existingBtn.remove();
