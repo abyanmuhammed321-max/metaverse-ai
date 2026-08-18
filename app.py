@@ -15,40 +15,28 @@ st.set_page_config(
 # Load Gemini API Key from secrets
 api_key = st.secrets.get("GEMINI_API_KEY")
 
-# Initialize session state variables for settings
+# Initialize session state variables for settings and persistence
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
 
-# 2. Handle Authentication Flow
-if not st.user.is_logged_in:
-    st.markdown("""
-    <style>
-        .stApp { background-color: #000000; color: #ffffff; font-family: 'Inter', sans-serif; }
-        .login-box { text-align: center; margin-top: 20vh; }
-        .metaverse-login-header {
-            background: linear-gradient(90deg, #4285F4, #9B72CB, #D96570);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 3rem;
-            font-weight: 700;
+# Persistent Chat History Storage across sessions using st.session_state
+if "sessions" not in st.session_state:
+    first_sid = str(uuid.uuid4())
+    st.session_state.sessions = {
+        first_sid: {
+            "title": "New Chat",
+            "messages": []
         }
-    </style>
-    """, unsafe_allow_html=True)
-    
-    st.markdown('<div class="login-box">', unsafe_allow_html=True)
-    st.markdown('<p class="metaverse-login-header">Metaverse_AI</p>', unsafe_allow_html=True)
-    st.markdown('<p style="color: #a0a0a0; font-size: 1.1rem; margin-bottom: 30px;">Sign in with your Google account to start chatting.</p>', unsafe_allow_html=True)
-    
-    if st.button("🔵 Sign in with Google", use_container_width=True):
-        st.login()
-        
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.stop()
+    }
+    st.session_state.current_session_id = first_sid
 
-# 3. Dynamic Theme Styling (True Dark vs Light Mode Opposites)
+if st.session_state.current_session_id not in st.session_state.sessions:
+    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
+
+# 2. Dynamic Theme Styling (True Dark vs Light Mode Opposites)
 if st.session_state.theme == "Dark":
     bg_color = "#000000"
     text_color = "#ffffff"
@@ -86,22 +74,11 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# Initialize Multi-Chat Session Storage State
-if "sessions" not in st.session_state:
-    first_sid = str(uuid.uuid4())
-    st.session_state.sessions = {first_sid: {"title": "New Chat", "messages": []}}
-    st.session_state.current_session_id = first_sid
-
-if st.session_state.current_session_id not in st.session_state.sessions:
-    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
-
-# 4. Sidebar Configuration
+# 3. Sidebar Configuration (Chat History & Settings)
 with st.sidebar:
     st.markdown("### 👤 User Profile")
-    if hasattr(st.user, "picture") and st.user.picture:
-        st.image(st.user.picture, width=50)
-    st.write(f"**{getattr(st.user, 'name', 'User')}**")
-    st.write(f"<span style='font-size: 0.8rem; color: {sub_text};'>{getattr(st.user, 'email', '')}</span>", unsafe_allow_html=True)
+    st.write("**Local User**")
+    st.write(f"<span style='font-size: 0.8rem; color: {sub_text};'>Metaverse AI Session</span>", unsafe_allow_html=True)
     
     st.markdown("---")
     
@@ -114,7 +91,7 @@ with st.sidebar:
         
     st.markdown("### 💬 Chat History")
     
-    # --- RENDER CHAT LIST WITH SELECT & DELETE BUTTONS ---
+    # --- RENDER CHAT HISTORY LIST WITH SELECT & DELETE BUTTONS ---
     for sid, sdata in list(st.session_state.sessions.items()):
         col1, col2 = st.columns([0.75, 0.25])
         with col1:
@@ -124,7 +101,7 @@ with st.sidebar:
                 st.session_state.current_session_id = sid
                 st.rerun()
         with col2:
-            if st.button("🗑️", key=f"del_{sid}", help="Delete chat"):
+            if st.button("🗑️", key=f"del_{sid}", help="Delete chat history"):
                 del st.session_state.sessions[sid]
                 if not st.session_state.sessions:
                     fresh_sid = str(uuid.uuid4())
@@ -139,7 +116,7 @@ with st.sidebar:
     
     selected_model = st.selectbox(
         "Choose Model",
-        ["gemini-3.6-flash", "gemini-3.1-pro-preview"],
+        ["gemini-2.5-flash", "gemini-2.5-pro"],
         index=0
     )
     
@@ -163,30 +140,26 @@ with st.sidebar:
     if lang_choice != st.session_state.language:
         st.session_state.language = lang_choice
         st.rerun()
-    
-    st.markdown("---")
-    if st.button("🚪 Sign Out", use_container_width=True):
-        st.logout()
 
 if not api_key:
     st.error("⚠️ GEMINI_API_KEY is missing! Please configure it in your secrets.")
     st.stop()
 
-# 5. Main UI Layout
-user_first_name = getattr(st.user, 'name', 'human').split()[0]
+# 4. Main UI Layout
 st.markdown(f'<p class="metaverse-header">Metaverse_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subheader">Welcome back, {user_first_name}! (Language: {st.session_state.language})</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subheader">Welcome! (Language: {st.session_state.language})</p>', unsafe_allow_html=True)
 
 current_sid = st.session_state.current_session_id
 current_messages = st.session_state.sessions[current_sid]["messages"]
 
-# Display Prior Chat Messages for Current Session
+# Display Prior Chat Messages for Current Active Session
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 6. Handle Prompt Submission & Streaming
+# 5. Handle Prompt Submission, History Persistence, & Streaming
 if prompt := st.chat_input("Enter a prompt here..."):
+    # Automatically rename chat history title based on the first prompt
     if len(current_messages) == 0:
         st.session_state.sessions[current_sid]["title"] = prompt[:25]
 
