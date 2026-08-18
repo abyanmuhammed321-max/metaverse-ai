@@ -24,7 +24,7 @@ except Exception:
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences if not present
+# Initialize default preferences with latest free Gemini models
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-2.5-flash",
@@ -55,7 +55,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. High-Tech Neon Cyber Grid Background with Advanced UI & Typing Bar Pill styling
+# 3. High-Tech Neon Cyber Grid Background with Advanced UI Styling
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -348,12 +348,27 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Language Matrix Only)
+# 6. Animated Settings Modal Popup Dialog (Including Model Core & Language Matrices)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure linguistic response matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
+    # Free Gemini Versions / Models Selection
+    models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
+    model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
+
+    selected_model_input = st.selectbox(
+        "⚡ Quantum Model Core (Free Gemini)",
+        models_list,
+        index=model_index,
+        key="modal_model_select"
+    )
+
+    st.markdown("---")
+
+    # Language Selection
     languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
     current_saved_lang = st.session_state[prefs_storage_key].get("lang_choice", "English")
     lang_index = languages.index(current_saved_lang) if current_saved_lang in languages else 0
@@ -367,6 +382,7 @@ def settings_modal():
     
     st.markdown("---")
     if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
+        st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
         st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
         st.session_state["show_settings_modal"] = False
         st.rerun()
@@ -375,11 +391,12 @@ if st.session_state.get("show_settings_modal", False):
     settings_modal()
 
 # Retrieve active persistent preferences
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Neon Cyberpunk Edition • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
@@ -392,23 +409,7 @@ for msg_idx, message in enumerate(current_messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Model Selector positioned right above Typing Bar (Original Position Restored)
-col_mod1, col_mod2, col_mod3 = st.columns([0.35, 0.35, 0.30])
-with col_mod1:
-    models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
-    model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
-
-    selected_model = st.selectbox(
-        "⚡ Quantum Model Core",
-        models_list,
-        index=model_index,
-        key="inline_model_select"
-    )
-    if selected_model != current_saved_model:
-        st.session_state[prefs_storage_key]["selected_model"] = selected_model
-
-# 9. Realtime Prompt Processing & Automated State Archiving
+# 8. Realtime Prompt Processing & Automated State Archiving
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
