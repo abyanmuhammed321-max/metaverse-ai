@@ -29,8 +29,7 @@ if storage_key not in st.session_state:
     st.session_state[storage_key] = {
         first_sid: {
             "title": "🔮 Metaverse Node 1",
-            "messages": [],
-            "selected_snippets": []
+            "messages": []
         }
     }
 
@@ -44,6 +43,10 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
+# Initialize Settings Dialog State
+if "show_settings_modal" not in st.session_state:
+    st.session_state["show_settings_modal"] = False
+
 # 3. High-Tech Neon Cyber Grid Background with 100% Solid & Crystal Clear Visibility
 st.markdown("""
 <style>
@@ -55,7 +58,7 @@ st.markdown("""
         font-family: 'Inter', sans-serif;
     }
 
-    /* --- CYBERPUNK NEON GRID & AMBIENT GLOW ANIMATION (SITS WAY BEHIND TEXT) --- */
+    /* --- CYBERPUNK NEON GRID & AMBIENT GLOW ANIMATION --- */
     @keyframes neonGlowPulse {
         0%, 100% { opacity: 0.2; transform: scale(1); }
         50% { opacity: 0.45; transform: scale(1.04); }
@@ -140,7 +143,7 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* 100% Solid & Crisp Neon-Bordered Chat Bubbles (Zero Blur / Maximum Visibility) */
+    /* 100% Solid & Crisp Neon-Bordered Chat Bubbles */
     .stChatMessage {
         background-color: #0f172a !important;
         border: 1px solid #334155 !important;
@@ -152,7 +155,6 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* Guarantee absolute clarity for all text inside messages */
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
         color: #f8fafc !important;
         font-size: 1.02rem !important;
@@ -222,7 +224,7 @@ st.markdown("""
 <div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
+# 4. Sidebar Professional Navigation & Persistent Chat Archive Panel (Saved Section Removed)
 with st.sidebar:
     st.markdown("### 🔮 METAVERSE IDENTITY")
     
@@ -241,8 +243,7 @@ with st.sidebar:
         new_sid = str(uuid.uuid4())
         st.session_state[storage_key][new_sid] = {
             "title": f"Node {len(st.session_state[storage_key]) + 1}",
-            "messages": [],
-            "selected_snippets": []
+            "messages": []
         }
         st.session_state[f"{storage_key}_current_sid"] = new_sid
         st.rerun()
@@ -262,46 +263,56 @@ with st.sidebar:
                 del st.session_state[storage_key][sid]
                 if not st.session_state[storage_key]:
                     fresh_sid = str(uuid.uuid4())
-                    st.session_state[storage_key][fresh_sid] = {"title": "Node 1", "messages": [], "selected_snippets": []}
+                    st.session_state[storage_key][fresh_sid] = {"title": "Node 1", "messages": []}
                     st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                 else:
                     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                 st.rerun()
 
-    st.markdown("---")
-    st.markdown("### 📌 SAVED SELECTIONS & CLIPS")
-    
-    saved_snippets = current_session_data.get("selected_snippets", [])
-    if not saved_snippets:
-        st.info("No selections or chat points saved in this node yet.")
-    else:
-        for idx, clip in enumerate(saved_snippets):
-            st.markdown(f"<div style='background-color: #1e293b; border-left: 3px solid #38bdf8; padding: 6px 10px; font-size: 0.78rem; margin-bottom: 6px; border-radius: 4px; color: #f1f5f9;'>{clip[:70]}...</div>", unsafe_allow_html=True)
-        if st.button("🧹 Clear Saved Clips", use_container_width=True):
-            current_session_data["selected_snippets"] = []
-            st.rerun()
+if not api_key:
+    st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
+    st.stop()
 
+# 5. Top Bar with Settings Icon Pop-up Trigger
+col_top1, col_top2 = st.columns([0.92, 0.08])
+with col_top2:
+    if st.button("⚙️", help="System Settings Matrix"):
+        st.session_state["show_settings_modal"] = True
+
+# 6. Settings Modal Popup Dialog
+@st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
+def settings_modal():
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure quantum model parameters and linguistic matrices below.</span>", unsafe_allow_html=True)
     st.markdown("---")
-    st.markdown("### ⚙️ SYSTEM SETTINGS")
     
     selected_model = st.selectbox(
         "Quantum Core",
         ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.1-flash-lite"],
-        index=0
+        index=0,
+        key="modal_model_select"
     )
 
     languages = ["English", "Malayalam", "Spanish", "French", "German", "Hindi", "Japanese", "Chinese", "Portuguese", "Arabic"]
     lang_choice = st.selectbox(
         "Language Matrix",
         languages,
-        index=0
+        index=0,
+        key="modal_lang_select"
     )
+    
+    st.markdown("---")
+    if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
+        st.session_state["show_settings_modal"] = False
+        st.rerun()
 
-if not api_key:
-    st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
-    st.stop()
+if st.session_state.get("show_settings_modal", False):
+    settings_modal()
 
-# 5. Main Canvas Interface Layout
+# Retrieve saved configuration values from session state or defaults
+selected_model = st.session_state.get("modal_model_select", "gemini-3.7-flash")
+lang_choice = st.session_state.get("modal_lang_select", "English")
+
+# 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="metaverse-subtitle">Neon Cyberpunk Edition • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
@@ -311,21 +322,12 @@ if not is_logged_in:
 
 current_messages = current_session_data["messages"]
 
-# Render Existing Saved Chat Messages & Selections
+# Render Existing Saved Chat Messages
 for msg_idx, message in enumerate(current_messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        
-        # Interactive Option: Save specific AI response points/answers directly
-        if message["role"] == "model":
-            save_btn_key = f"save_clip_{current_sid}_{msg_idx}"
-            if st.button("📌 Save this Output Point", key=save_btn_key):
-                if message["content"] not in current_session_data["selected_snippets"]:
-                    current_session_data["selected_snippets"].append(message["content"])
-                    st.success("Successfully saved to Selections Vault!")
-                    st.rerun()
 
-# 6. Realtime Prompt Processing & Automated State Archiving
+# 8. Realtime Prompt Processing & Automated State Archiving
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
