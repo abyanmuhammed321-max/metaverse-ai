@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style with Fully Responsive Mobile Breakpoints & Bottom Signature
+# 3. Cyberpunk Neon UI/UX Matrix Style with Neon Edge Glow & Sidebar Signature
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -79,6 +79,9 @@ st.markdown("""
         background-color: #03050c !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
+        box-shadow: inset 0 0 30px rgba(0, 243, 255, 0.25), inset 0 0 60px rgba(188, 19, 254, 0.15);
+        border: 2px solid rgba(0, 243, 255, 0.6);
+        min-height: 100vh;
     }
 
     /* --- ADVANCED CYBERPUNK NEON GLOW GRID & AMBIENT ORBS --- */
@@ -224,20 +227,34 @@ st.markdown("""
         font-size: 0.95rem !important;
     }
 
-    /* --- PERMANENT BOTTOM CREATOR SIGNATURE --- */
+    /* --- SIDEBAR & BOTTOM NEON CREATOR SIGNATURE --- */
     .metaverse-footer-signature {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
         font-size: clamp(0.68rem, 2vw, 0.78rem);
         color: #00f3ff;
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.45);
+        text-shadow: 0 0 12px #00f3ff, 0 0 25px rgba(0, 243, 255, 0.6);
         letter-spacing: 2px;
         margin-top: 15px;
         margin-bottom: 10px;
         padding: 8px 0;
-        border-top: 1px solid rgba(0, 243, 255, 0.15);
+        border-top: 1px solid rgba(0, 243, 255, 0.3);
         position: relative;
         z-index: 2;
+        text-transform: uppercase;
+    }
+
+    .sidebar-signature {
+        text-align: center;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.72rem;
+        color: #bc13fe;
+        text-shadow: 0 0 10px #bc13fe, 0 0 20px rgba(188, 19, 254, 0.5);
+        letter-spacing: 1.5px;
+        padding: 10px 0;
+        margin-top: 20px;
+        border-top: 1px solid rgba(188, 19, 254, 0.3);
+        border-bottom: 1px solid rgba(188, 19, 254, 0.3);
         text-transform: uppercase;
     }
 
@@ -408,6 +425,14 @@ with st.sidebar:
                     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                 st.rerun()
 
+    # Sidebar Neon Creator Signature
+    st.markdown(
+        """<div class="sidebar-signature">
+        MADE BY ABYAN
+        </div>""",
+        unsafe_allow_html=True
+    )
+
 if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
@@ -567,7 +592,7 @@ if prompt := st.chat_input("Transmit prompt..."):
 
         current_messages.append({"role": "model", "content": full_response})
 
-# 9. Permanent Bottom Creator Signature Banner
+# 9. Permanent Bottom Creator Signature Banner with Vivid Neon Glow Edge
 st.markdown(
     """<div class="metaverse-footer-signature">
     MADE BY ABYAN
