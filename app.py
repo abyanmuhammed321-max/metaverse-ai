@@ -1,9 +1,8 @@
 import uuid
 import streamlit as st
 from google import genai
-from google.genai import errors as gemini_errors
+from google.genai import errors
 from google.genai import types
-from openai import OpenAI
 
 # 1. Page Configuration
 st.set_page_config(
@@ -13,8 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-gemini_api_key = st.secrets.get("GEMINI_API_KEY")
-openai_api_key = st.secrets.get("OPENAI_API_KEY")
+api_key = st.secrets.get("GEMINI_API_KEY")
 
 try:
     is_logged_in = getattr(st.user, "is_logged_in", False)
@@ -26,12 +24,10 @@ except Exception:
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences
+# Initialize default preferences (Google Gemini core only)
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "provider": "Gemini (Google)",
         "selected_model": "gemini-3.1-flash-lite",
-        "openai_model": "gpt-4o",
         "lang_choice": "English"
     }
 
@@ -59,7 +55,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style (Clean standard text box, NO neon glow on inputs)
+# 3. Cyberpunk Neon UI/UX Matrix Style with Live AI Typing Orb & Pulse Animation
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -213,7 +209,7 @@ st.markdown("""
         transform: translateY(-1px);
     }
 
-    /* --- CLEAN STANDARD CHAT INPUT FIELD (NO NEON GLOW) --- */
+    /* --- CLEAN STANDARD CHAT INPUT FIELD --- */
     [data-testid="stChatInput"] textarea {
         background-color: #0d111a !important;
         color: #e2e8f0 !important;
@@ -226,6 +222,37 @@ st.markdown("""
     [data-testid="stChatInput"] textarea:focus {
         border-color: #64748b !important;
         box-shadow: none !important;
+    }
+
+    /* --- LIVE STREAMING AI ANIMATION BADGE & PULSING ORB --- */
+    .ai-streaming-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 14px;
+        margin-bottom: 12px;
+        background: rgba(0, 243, 255, 0.08);
+        border: 1px solid rgba(0, 243, 255, 0.4);
+        border-radius: 20px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.755rem;
+        color: #00f3ff;
+        letter-spacing: 1.2px;
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+    }
+
+    .pulse-orb {
+        width: 10px;
+        height: 10px;
+        background-color: #00f3ff;
+        border-radius: 50%;
+        box-shadow: 0 0 10px #00f3ff, 0 0 20px #bc13fe;
+        animation: orbPulseAnim 1.2s infinite ease-in-out;
+    }
+
+    @keyframes orbPulseAnim {
+        0%, 100% { transform: scale(0.8); opacity: 0.6; box-shadow: 0 0 5px #00f3ff; }
+        50% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 20px #00f3ff, 0 0 30px #bc13fe; }
     }
 
     /* --- ADVANCED HOLOGRAPHIC AI LOADING BOX --- */
@@ -357,52 +384,32 @@ with st.sidebar:
                     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                 st.rerun()
 
+if not api_key:
+    st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
+    st.stop()
+
 # 5. Top Bar with Settings Icon Pop-up Trigger (Corner)
 col_top1, col_top2 = st.columns([0.92, 0.08])
 with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Switch between Gemini API & OpenAI ChatGPT API)
+# 6. Animated Settings Modal Popup Dialog (Gemini Core & Language Settings)
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
-    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Switch between Google Gemini API and OpenAI ChatGPT API cores below. Preferences save automatically.</span>", unsafe_allow_html=True)
+    st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically.</span>", unsafe_allow_html=True)
     st.markdown("---")
 
-    providers = ["Gemini (Google)", "ChatGPT (OpenAI API)"]
-    current_saved_provider = st.session_state[prefs_storage_key].get("provider", "Gemini (Google)")
-    provider_index = providers.index(current_saved_provider) if current_saved_provider in providers else 0
+    models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+    current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+    model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
 
-    provider_choice = st.selectbox(
-        "🌐 AI Provider Architecture",
-        providers,
-        index=provider_index,
-        key="modal_provider_select"
+    selected_model_input = st.selectbox(
+        "⚡ Quantum Model Core (Gemini)",
+        models_list,
+        index=model_index,
+        key="modal_model_select"
     )
-
-    st.markdown("---")
-
-    selected_model_input = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
-    openai_model_input = st.session_state[prefs_storage_key].get("openai_model", "gpt-4o")
-
-    if provider_choice == "Gemini (Google)":
-        models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
-        model_index = models_list.index(selected_model_input) if selected_model_input in models_list else 0
-        selected_model_input = st.selectbox(
-            "⚡ Gemini Model Core",
-            models_list,
-            index=model_index,
-            key="modal_gemini_model_select"
-        )
-    else:
-        openai_models = ["gpt-4o", "gpt-4o-mini", "o3-mini", "gpt-4-turbo"]
-        openai_index = openai_models.index(openai_model_input) if openai_model_input in openai_models else 0
-        openai_model_input = st.selectbox(
-            "🧠 ChatGPT Model (OpenAI API)",
-            openai_models,
-            index=openai_index,
-            key="modal_openai_model_select"
-        )
 
     st.markdown("---")
 
@@ -420,9 +427,7 @@ def settings_modal():
     
     st.markdown("---")
     if st.button("💾 Save & Close Matrix", use_container_width=True, type="primary"):
-        st.session_state[prefs_storage_key]["provider"] = provider_choice
         st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
-        st.session_state[prefs_storage_key]["openai_model"] = openai_model_input
         st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
         st.session_state["show_settings_modal"] = False
         st.rerun()
@@ -431,23 +436,12 @@ if st.session_state.get("show_settings_modal", False):
     settings_modal()
 
 # Retrieve active persistent preferences
-active_provider = st.session_state[prefs_storage_key].get("provider", "Gemini (Google)")
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
-openai_model = st.session_state[prefs_storage_key].get("openai_model", "gpt-4o")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# Validate required API keys based on active provider
-if active_provider == "Gemini (Google)" and not gemini_api_key:
-    st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
-    st.stop()
-elif active_provider == "ChatGPT (OpenAI API)" and not openai_api_key:
-    st.error("⚠️ OPENAI_API_KEY configuration missing in `.streamlit/secrets.toml`. Please add your OpenAI API key to use ChatGPT intelligence.")
-    st.stop()
-
 # 7. Main Canvas Interface Layout
-display_model_name = selected_model if active_provider == "Gemini (Google)" else openai_model
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Provider: {active_provider} • Engine: {display_model_name} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
@@ -460,7 +454,7 @@ for msg_idx, message in enumerate(current_messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Prompt Processing & Automated State Archiving
+# 8. Realtime Prompt Processing & Automated State Archiving with Pulsing Animation Badge
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
@@ -487,53 +481,41 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
         full_response = ""
         
         try:
-            if active_provider == "Gemini (Google)":
-                client = genai.Client(api_key=gemini_api_key)
-                chat_history_formatted = [
-                    {"role": m["role"], "parts": [{"text": m["content"]}]} 
-                    for m in current_messages
-                ]
-                system_instruction = f"You are METAVERSE_AI, an advanced high-visibility AI assistant. Respond natively in {lang_choice}."
-                config = types.GenerateContentConfig(system_instruction=system_instruction)
-                
-                response_stream = client.models.generate_content_stream(
-                    model=selected_model,
-                    contents=chat_history_formatted,
-                    config=config
-                )
-                
-                loader_placeholder.empty()
-                for chunk in response_stream:
-                    if chunk.text:
-                        full_response += chunk.text
-                        message_placeholder.markdown(full_response + "▌")
-                message_placeholder.markdown(full_response)
-                
-            else:
-                # OpenAI ChatGPT API Integration
-                openai_client = OpenAI(api_key=openai_api_key)
-                openai_messages = [{"role": "system", "content": f"You are METAVERSE_AI powered by OpenAI ChatGPT intelligence. Respond natively in {lang_choice}."}]
-                for m in current_messages:
-                    role_mapping = "assistant" if m["role"] == "model" else m["role"]
-                    openai_messages.append({"role": role_mapping, "content": m["content"]})
-                
-                response_stream = openai_client.chat.completions.create(
-                    model=openai_model,
-                    messages=openai_messages,
-                    stream=True
-                )
-                
-                loader_placeholder.empty()
-                for chunk in response_stream:
-                    delta_text = chunk.choices[0].delta.content
-                    if delta_text:
-                        full_response += delta_text
-                        message_placeholder.markdown(full_response + "▌")
-                message_placeholder.markdown(full_response)
+            client = genai.Client(api_key=api_key)
             
-        except gemini_errors.APIError as e:
+            chat_history_formatted = [
+                {"role": m["role"], "parts": [{"text": m["content"]}]} 
+                for m in current_messages
+            ]
+            
+            system_instruction = f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}."
+            config = types.GenerateContentConfig(
+                system_instruction=system_instruction
+            )
+            
+            response_stream = client.models.generate_content_stream(
+                model=selected_model,
+                contents=chat_history_formatted,
+                config=config
+            )
+            
             loader_placeholder.empty()
-            full_response = f"❌ **Gemini API Error:** {e}"
+            
+            for chunk in response_stream:
+                if chunk.text:
+                    full_response += chunk.text
+                    # Render live typing with pulsing live animation badge above response
+                    message_placeholder.markdown(
+                        f"""<div class="ai-streaming-badge"><div class="pulse-orb"></div>METAVERSE AI GENERATING...</div>\n\n{full_response}▌""",
+                        unsafe_allow_html=True
+                    )
+            
+            # Final rendered response without cursor
+            message_placeholder.markdown(full_response)
+            
+        except errors.APIError as e:
+            loader_placeholder.empty()
+            full_response = f"❌ **API Error:** {e}"
             message_placeholder.markdown(full_response)
         except Exception as e:
             loader_placeholder.empty()
