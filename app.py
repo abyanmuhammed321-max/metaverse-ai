@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration with Mobile Viewport Scaler
+# 1. Page Configuration
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
@@ -12,10 +12,8 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Load Gemini API Key from secrets
 api_key = st.secrets.get("GEMINI_API_KEY")
 
-# Check native Streamlit OIDC login status & retrieve user identity
 try:
     is_logged_in = getattr(st.user, "is_logged_in", False)
     user_email = getattr(st.user, "email", "default_guest_user")
@@ -23,10 +21,9 @@ except Exception:
     is_logged_in = False
     user_email = "default_guest_user"
 
-# Create a unique persistent storage namespace key based on user email
 storage_key = f"user_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# 2. Persistent Storage Initialization across browser/day closures
+# 2. Resilient Persistent Session Initialization
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
@@ -36,7 +33,6 @@ if storage_key not in st.session_state:
         }
     }
 
-# Ensure active session pointer exists
 if f"{storage_key}_current_sid" not in st.session_state:
     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
 
@@ -45,14 +41,13 @@ if current_sid not in st.session_state[storage_key]:
     st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
     current_sid = st.session_state[f"{storage_key}_current_sid"]
 
-# Global Preferences Persistence
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
 
-# 3. Dynamic Gemini UI Theme & Mobile/Laptop Responsive Media Query Engine
+# 3. UI Theme Stylesheet
 if st.session_state.theme == "Dark":
     bg_color = "#131314"
     text_color = "#e3e3e3"
@@ -93,44 +88,6 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
-    /* --- RESPONSIVE OPENING ANIMATION & AUTO-RESIZING FOR PHONE & LAPTOP --- */
-    @keyframes geminiEntrance {{
-        0% {{
-            opacity: 0;
-            transform: translateY(20px) scale(0.98);
-        }}
-        100% {{
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }}
-    }}
-
-    .stApp, .block-container {{
-        animation: geminiEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }}
-
-    /* Mobile Adaptive Fluid Scaling Rules */
-    @media (max-width: 768px) {{
-        .block-container {{
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1.5rem !important;
-            max-width: 100% !important;
-        }}
-        .gemini-title {{
-            font-size: 2.1rem !important;
-        }}
-        .gemini-subtitle {{
-            font-size: 0.95rem !important;
-            margin-bottom: 20px !important;
-        }}
-        .stChatMessage {{
-            padding: 12px !important;
-            font-size: 0.95rem !important;
-        }}
-    }}
-
-    /* --- HIGH-TECH NEURAL PULSATING STREAM LOADER --- */
     .high-tech-loader {{
         display: flex;
         align-items: center;
@@ -161,7 +118,6 @@ st.markdown(f"""
         40% {{ transform: scale(1.0); opacity: 1; box-shadow: 0 0 10px {wave_color}; }}
     }}
 
-    /* Modern Gemini Style Message Bubbles */
     .stChatMessage {{
         background-color: transparent !important;
         border-radius: 20px;
@@ -171,7 +127,6 @@ st.markdown(f"""
         box-shadow: 0 2px 12px {accent_glow};
     }}
 
-    /* Google Gemini Signature Multi-Color Gradient Title */
     .gemini-title {{
         text-align: center;
         background: linear-gradient(135deg, #4285F4 0%, #9B72CB 50%, #EA4335 100%);
@@ -191,30 +146,15 @@ st.markdown(f"""
         margin-bottom: 30px;
         font-weight: 400;
     }}
-
-    /* Custom Input and Button Styles */
-    .stButton button {{
-        border-radius: 24px;
-        font-weight: 500;
-        border: 1px solid {border_col};
-        background-color: {sidebar_bg};
-        transition: all 0.2s ease-in-out;
-    }}
-    
-    .stButton button:hover {{
-        border-color: #4285F4;
-        background-color: {user_bubble};
-        box-shadow: 0 0 8px rgba(66, 133, 244, 0.2);
-    }}
 </style>
 """, unsafe_allow_html=True)
 
-# 4. Sidebar Configuration (Authentication, History & Model Parameters)
+# 4. Sidebar Configuration
 with st.sidebar:
     st.markdown("### ✨ Google Account")
     
     if not is_logged_in:
-        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in with Google to save your chats and access Metaverse_AI.</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in with Google to save chat history permanently.</span>", unsafe_allow_html=True)
         st.button("🌐 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         user_name = getattr(st.user, "name", "Google User")
@@ -224,7 +164,6 @@ with st.sidebar:
             
     st.markdown("---")
     
-    # --- SMART NEW CHAT CREATOR ---
     if st.button("➕ New Chat", use_container_width=True, type="primary"):
         new_sid = str(uuid.uuid4())
         st.session_state[storage_key][new_sid] = {"title": "New Chat", "messages": []}
@@ -233,7 +172,6 @@ with st.sidebar:
         
     st.markdown("### 💬 Saved Chats")
     
-    # Display all saved chat sessions sorted or listed with custom titles
     for sid, sdata in list(st.session_state[storage_key].items()):
         col1, col2 = st.columns([0.78, 0.22])
         with col1:
@@ -285,35 +223,34 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration is missing inside your `.streamlit/secrets.toml` file.")
     st.stop()
 
-# 5. Main Canvas Interface Layout
+# 5. Main Canvas Layout
 st.markdown(f'<p class="gemini-title">Metaverse_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="gemini-subtitle">Explore, create, and chat • ({st.session_state.language})</p>', unsafe_allow_html=True)
 
-# Strict Authentication Gate: Require Google Sign In before chatting
 if not is_logged_in:
     st.info("🔒 **Authentication Required:** Please click **'Sign in with Google'** in the sidebar to securely unlock and save your Metaverse_AI chats.")
     st.stop()
 
-current_messages = st.session_state[storage_key][current_sid]["messages"]
+current_session_data = st.session_state[storage_key][current_sid]
+current_messages = current_session_data["messages"]
 
-# Render Existing Saved Conversation Messages for Active Session
+# Render Existing Conversation History Immediately (Survives Reloads Instantly)
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 6. Handle Realtime Prompt Submissions & Instant Session History Saving
+# 6. Realtime Input Handling & Safe State Commit Before Streaming Finishes
 if prompt := st.chat_input("Enter a prompt here..."):
-    # Automatically name the saved chat title after the user's first prompt text
+    # Set chat title automatically from the first query
     if len(current_messages) == 0:
-        st.session_state[storage_key][current_sid]["title"] = prompt[:24]
+        current_session_data["title"] = prompt[:24]
 
-    # Append user question to persistent session history
+    # Save user message immediately to session state
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
-        # High-Tech Neural Loading Animation Container
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
             <div class="high-tech-loader">
@@ -346,7 +283,6 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 config=config
             )
             
-            # Clear high-tech loader once response chunks stream in
             loader_placeholder.empty()
             
             for chunk in response_stream:
@@ -365,5 +301,5 @@ if prompt := st.chat_input("Enter a prompt here..."):
             full_response = f"❌ **Error:** {str(e)}"
             message_placeholder.markdown(full_response)
 
-        # Append model response to persistent session storage
+        # Append assistant response to session history right after generation completes
         current_messages.append({"role": "model", "content": full_response})
