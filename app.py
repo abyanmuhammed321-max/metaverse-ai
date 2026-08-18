@@ -70,13 +70,15 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Modern Gemini-Inspired Clean UI Style with Animated Neon Background Glow & Authentic Gemini Loading Sparkle Animation
+# 3. Modern Gemini-Inspired Clean UI Style with Full Colorful Animated Neon Background & Authentic Sparkle Loading
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #131314 !important;
+        background: linear-gradient(135deg, #0d0f18, #131314, #180d16) !important;
+        background-size: 400% 400% !important;
+        animation: fullNeonGradientShift 14s ease infinite !important;
         color: #e3e3e3 !important;
         font-family: 'Google Sans', 'Inter', sans-serif;
         position: relative;
@@ -84,51 +86,81 @@ st.markdown("""
         overflow-x: hidden;
     }
 
-    /* --- ANIMATED BACKGROUND NEON GLOW ORBS --- */
-    @keyframes neonPulseOrb1 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
-        50% { transform: translate(120px, 160px) scale(1.35); opacity: 0.35; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
+    @keyframes fullNeonGradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
-    @keyframes neonPulseOrb2 {
-        0% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
-        50% { transform: translate(-140px, -120px) scale(1.45); opacity: 0.3; }
-        100% { transform: translate(0px, 0px) scale(1); opacity: 0.2; }
+    /* --- MASSIVE COLORFUL ANIMATED NEON GLOW ORBS ACROSS ENTIRE VIEWPORT --- */
+    @keyframes neonFloatOrb1 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+        33% { transform: translate(250px, 350px) scale(1.4); opacity: 0.5; }
+        66% { transform: translate(-100px, 200px) scale(1.2); opacity: 0.4; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+    }
+
+    @keyframes neonFloatOrb2 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+        33% { transform: translate(-300px, -250px) scale(1.5); opacity: 0.5; }
+        66% { transform: translate(-150px, 150px) scale(1.3); opacity: 0.45; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.35; }
+    }
+
+    @keyframes neonFloatOrb3 {
+        0% { transform: translate(0px, 0px) scale(1); opacity: 0.3; }
+        50% { transform: translate(200px, -300px) scale(1.6); opacity: 0.45; }
+        100% { transform: translate(0px, 0px) scale(1); opacity: 0.3; }
     }
 
     .stApp::after {
         content: "";
         position: fixed;
-        top: -150px;
-        left: -150px;
-        width: 500px;
-        height: 500px;
-        background: radial-gradient(circle, rgba(66, 133, 244, 0.45) 0%, rgba(52, 168, 83, 0.15) 50%, transparent 80%);
+        top: -200px;
+        left: -200px;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(66, 133, 244, 0.6) 0%, rgba(52, 168, 83, 0.25) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: neonPulseOrb1 9s infinite ease-in-out;
+        animation: neonFloatOrb1 10s infinite ease-in-out;
     }
 
     .stApp::before {
         content: "";
         position: fixed;
-        bottom: -150px;
-        right: -150px;
-        width: 550px;
-        height: 550px;
-        background: radial-gradient(circle, rgba(234, 67, 53, 0.4) 0%, rgba(251, 188, 5, 0.2) 50%, transparent 80%);
+        bottom: -200px;
+        right: -200px;
+        width: 650px;
+        height: 650px;
+        background: radial-gradient(circle, rgba(234, 67, 53, 0.55) 0%, rgba(251, 188, 5, 0.3) 50%, transparent 75%);
         border-radius: 50%;
         pointer-events: none;
         z-index: 1;
-        animation: neonPulseOrb2 11s infinite ease-in-out;
+        animation: neonFloatOrb2 12s infinite ease-in-out;
+    }
+
+    /* Additional Dynamic Floating Orb Layer via pseudo element wrapper */
+    .neon-center-glow {
+        position: fixed;
+        top: 40%;
+        left: 50%;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(circle, rgba(138, 43, 226, 0.3) 0%, rgba(0, 255, 255, 0.15) 60%, transparent 80%);
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 1;
+        transform: translate(-50%, -50%);
+        animation: neonFloatOrb3 15s infinite ease-in-out;
     }
 
     /* --- SIDEBAR SCROLL OPTIMIZATION FOR PHONES & MOBILE DEVICES --- */
     [data-testid="stSidebar"] {
-        background-color: #1e1f20 !important;
-        border-right: 1px solid #333537;
+        background-color: rgba(30, 31, 32, 0.95) !important;
+        backdrop-filter: blur(12px);
+        border-right: 1px solid rgba(255, 255, 255, 0.1);
         z-index: 1000;
         overflow-y: auto !important;
         max-height: 100vh !important;
@@ -163,14 +195,15 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* --- MINIMALIST CLEAN CHAT BUBBLES --- */
+    /* --- MINIMALIST CLEAN CHAT BUBBLES WITH GLASSMORPHISM --- */
     .stChatMessage {
-        background-color: #1e1f20 !important;
-        border: 1px solid #333537 !important;
+        background-color: rgba(30, 31, 32, 0.85) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
         border-radius: 16px !important;
         padding: 16px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
         position: relative;
         z-index: 2;
     }
@@ -187,8 +220,8 @@ st.markdown("""
         font-family: 'Google Sans', sans-serif !important;
         font-weight: 500 !important;
         font-size: 0.82rem !important;
-        border: 1px solid #444746 !important;
-        background-color: #28292a !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        background-color: rgba(40, 41, 42, 0.8) !important;
         color: #e3e3e3 !important;
         transition: all 0.2s ease !important;
         position: relative;
@@ -196,9 +229,9 @@ st.markdown("""
     }
     
     .stButton button:hover {
-        background-color: #333537 !important;
-        border-color: #8e918f !important;
-        box-shadow: 0 0 12px rgba(66, 133, 244, 0.4);
+        background-color: rgba(60, 62, 65, 0.9) !important;
+        border-color: #8ab4f8 !important;
+        box-shadow: 0 0 15px rgba(66, 133, 244, 0.5);
     }
 
     /* --- FLOATING CHAT INPUT BOX STYLE --- */
@@ -209,14 +242,15 @@ st.markdown("""
     }
 
     [data-testid="stChatInput"] textarea {
-        background-color: #1e1f20 !important;
+        background-color: rgba(30, 31, 32, 0.9) !important;
+        backdrop-filter: blur(10px);
         color: #e3e3e3 !important;
-        border: 1px solid #444746 !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 12px 16px !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.6);
     }
 
     /* --- CREATOR SIGNATURE IN SIDEBAR --- */
@@ -240,20 +274,21 @@ st.markdown("""
         align-items: center;
         gap: 12px;
         padding: 14px 18px;
-        background-color: #1e1f20;
-        border: 1px solid #333537;
+        background-color: rgba(30, 31, 32, 0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         border-radius: 16px;
         width: fit-content;
         margin: 10px 0;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.4);
         position: relative;
         z-index: 2;
     }
 
     @keyframes geminiSparkleGlow {
-        0% { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 2px #4285f4); opacity: 0.6; }
-        50% { transform: scale(1.3) rotate(180deg); filter: drop-shadow(0 0 12px #ea4335) drop-shadow(0 0 18px #fbbc05); opacity: 1; }
-        100% { transform: scale(0.85) rotate(360deg); filter: drop-shadow(0 0 2px #34a853); opacity: 0.6; }
+        0% { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 4px #4285f4); opacity: 0.7; }
+        50% { transform: scale(1.35) rotate(180deg); filter: drop-shadow(0 0 15px #ea4335) drop-shadow(0 0 22px #fbbc05); opacity: 1; }
+        100% { transform: scale(0.85) rotate(360deg); filter: drop-shadow(0 0 4px #34a853); opacity: 0.7; }
     }
 
     .gemini-sparkle-loader {
@@ -284,14 +319,17 @@ st.markdown("""
         gap: 8px;
         padding: 4px 12px;
         margin-bottom: 10px;
-        background-color: rgba(66, 133, 244, 0.1);
-        border: 1px solid rgba(66, 133, 244, 0.3);
+        background-color: rgba(66, 133, 244, 0.15);
+        border: 1px solid rgba(66, 133, 244, 0.4);
         border-radius: 12px;
         font-family: 'Google Sans', sans-serif;
         font-size: 0.75rem;
         color: #8ab4f8;
     }
 </style>
+
+<!-- Injecting Central Neon Orb Layer -->
+<div class="neon-center-glow"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
@@ -369,7 +407,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
+            <div style="background-color: rgba(30, 31, 32, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -399,7 +437,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
+            <div style="background-color: rgba(30, 31, 32, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 20px; margin-bottom: 20px; position: relative; z-index: 2;">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -430,7 +468,7 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
     st.markdown("""
-        <div style="background-color: #1e1f20; border: 1px solid #333537; border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
+        <div style="background-color: rgba(30, 31, 32, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px; position: relative; z-index: 2;">
             <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
             <p style="color: #8e918f; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
