@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a lightning-fast, futuristic experience inspired by modern AI aesthetics with Native Web Speech Voice Dictation."
+        "Core Objective: Deliver a lightning-fast futuristic experience with Toggleable Click-to-Start / Click-to-Stop Voice Dictation."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI Styles with Perfectly Aligned Floating Mic Button
+# 3. Enhanced Ultra-Futuristic UI Styles with Toggle Mic Button
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -279,11 +279,11 @@ st.markdown("""
         animation: inputNeonBorderGlow 6s infinite ease-in-out;
     }
 
-    /* --- PERFECTLY POSITIONED MIC BUTTON OVERLAY (ALIGNED WITH SUBMIT BUTTON) --- */
+    /* --- TOGGLEABLE MIC BUTTON OVERLAY (CLICK TO START, CLICK AGAIN TO STOP) --- */
     .mic-overlay-btn {
         position: absolute;
         bottom: 21px;
-        right: 64px; /* Positioned directly to the left of Streamlit's send button */
+        right: 64px; /* Positioned right next to Streamlit's send button */
         width: 36px;
         height: 36px;
         background: linear-gradient(135deg, #4285f4, #34a853);
@@ -310,9 +310,9 @@ st.markdown("""
     }
 
     @keyframes micPulse {
-        0% { transform: scale(1); box-shadow: 0 0 10px #ea4335; }
-        50% { transform: scale(1.2); box-shadow: 0 0 25px #fbbc05; }
-        100% { transform: scale(1); box-shadow: 0 0 10px #ea4335; }
+        0% { transform: scale(1); box-shadow: 0 0 12px #ea4335; }
+        50% { transform: scale(1.25); box-shadow: 0 0 28px #fbbc05; }
+        100% { transform: scale(1); box-shadow: 0 0 12px #ea4335; }
     }
 
     /* --- CREATOR SIGNATURE --- */
@@ -548,7 +548,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Native Speech Voice-to-Text Input) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Toggle Mic: Click to Start / Click again to Stop) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
@@ -568,14 +568,13 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 8. Render Chat Input Bar FIRST so st.chat_input is mounted
-prompt = st.chat_input("Ask anything or click the microphone to speak...")
+prompt = st.chat_input("Ask anything or click the microphone to start/stop speaking...")
 
-# 9. Fully Integrated Native Voice-to-Text DOM Script
-# This script injects the glowing mic button right inside the chat bar next to the send button,
-# captures speech in real-time, and feeds it straight into Streamlit's textarea state (live typing effect).
-native_mic_injection_html = """
+# 9. Toggleable Click-to-Start / Click-to-Stop Voice Recognition Script
+# Clicking the mic once starts recording (turns red and pulses). Clicking it again stops recording and keeps transcribed text in the input box.
+native_mic_toggle_html = """
 <script>
-    function setupMicOverlay() {
+    function setupToggleMic() {
         const chatInputContainer = window.parent.document.querySelector('[data-testid="stChatInput"]');
         if (!chatInputContainer) return;
 
@@ -586,10 +585,11 @@ native_mic_injection_html = """
         micButton.id = 'embedded-mic-btn';
         micButton.className = 'mic-overlay-btn';
         micButton.innerHTML = '🎙️';
-        micButton.title = 'Click to speak';
+        micButton.title = 'Click to start speaking';
 
         let recognition = null;
         let isListening = false;
+        let finalTranscriptAccumulator = '';
 
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -602,31 +602,34 @@ native_mic_injection_html = """
                 isListening = true;
                 micButton.classList.add('listening');
                 micButton.innerHTML = '🔴';
+                micButton.title = 'Click again to stop speaking';
             };
 
             recognition.onresult = function(event) {
                 let interimTranscript = '';
-                let finalTranscript = '';
+                let currentSessionFinal = '';
                 
                 for (let i = event.resultIndex; i < event.results.length; ++i) {
                     if (event.results[i].isFinal) {
-                        finalTranscript += event.results[i][0].transcript;
+                        currentSessionFinal += event.results[i][0].transcript;
                     } else {
                         interimTranscript += event.results[i][0].transcript;
                     }
                 }
                 
-                const spokenText = finalTranscript || interimTranscript;
-                if (spokenText) {
-                    const textarea = chatInputContainer.querySelector('textarea');
-                    if (textarea) {
-                        textarea.value = spokenText;
-                        textarea.dispatchEvent(new Event('input', { bubbles: true }));
-                    }
+                if (currentSessionFinal) {
+                    finalTranscriptAccumulator += ' ' + currentSessionFinal;
+                }
+                
+                const combinedText = (finalTranscriptAccumulator + ' ' + interimTranscript).trim();
+                const textarea = chatInputContainer.querySelector('textarea');
+                if (textarea) {
+                    textarea.value = combinedText;
+                    textarea.dispatchEvent(new Event('input', { bubbles: true }));
                 }
             };
 
-            recognition.onerror = function() {
+            recognition.onerror = function(e) {
                 stopListeningUI();
             };
 
@@ -639,6 +642,7 @@ native_mic_injection_html = """
             isListening = false;
             micButton.classList.remove('listening');
             micButton.innerHTML = '🎙️';
+            micButton.title = 'Click to start speaking';
         }
 
         micButton.onclick = function(e) {
@@ -649,9 +653,21 @@ native_mic_injection_html = """
                 return;
             }
             if (isListening) {
+                // Click again to STOP
                 recognition.stop();
+                stopListeningUI();
             } else {
-                recognition.start();
+                // Click to START
+                finalTranscriptAccumulator = '';
+                const textarea = chatInputContainer.querySelector('textarea');
+                if (textarea) {
+                    finalTranscriptAccumulator = textarea.value; // Keep any existing typed text
+                }
+                try {
+                    recognition.start();
+                } catch(err) {
+                    // Handle if already started
+                }
             }
         };
 
@@ -660,14 +676,14 @@ native_mic_injection_html = """
     }
 
     // Initialize immediately and watch for DOM re-renders
-    setupMicOverlay();
+    setupToggleMic();
     const observer = new MutationObserver(() => {
-        setupMicOverlay();
+        setupToggleMic();
     });
     observer.observe(window.parent.document.body, { childList: true, subtree: true });
 </script>
 """
-st.components.v1.html(native_mic_injection_html, height=0)
+st.components.v1.html(native_mic_toggle_html, height=0)
 
 # 10. Realtime Message Handling & Animated AI Reply Engine
 if prompt:
