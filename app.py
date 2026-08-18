@@ -17,19 +17,30 @@ api_key = st.secrets.get("GEMINI_API_KEY")
 try:
     is_logged_in = getattr(st.user, "is_logged_in", False)
     user_email = getattr(st.user, "email", "default_guest_user")
+    user_display_name = getattr(st.user, "name", "Meta Operative")
 except Exception:
     is_logged_in = False
     user_email = "default_guest_user"
+    user_display_name = "Meta Operative"
 
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize default preferences (Google Gemini core only)
+# Initialize default preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English"
     }
+
+# Initialize Persistent Brain / Memory Bank across chats
+if memory_storage_key not in st.session_state:
+    st.session_state[memory_storage_key] = [
+        "User signed in as Google Identity: " + user_display_name,
+        "Email registered: " + user_email,
+        "Core Objective: Build and expand the METAVERSE_AI quantum ecosystem."
+    ]
 
 # 2. Comprehensive Persistent Storage (Chats & State Sync)
 if storage_key not in st.session_state:
@@ -51,9 +62,12 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# Initialize Settings Dialog State using standard session state variable
+# Initialize Settings & Brain Modal State
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
+
+if "show_brain_modal" not in st.session_state:
+    st.session_state["show_brain_modal"] = False
 
 # 3. Cyberpunk Neon UI/UX Matrix Style with Iconic Rotating Quantum Core & Wave Animation
 st.markdown("""
@@ -332,17 +346,21 @@ with st.sidebar:
         st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Authenticate with Google to activate permanent cloud synchronization.</span>", unsafe_allow_html=True)
         st.button("🌐 Connect Google ID", on_click=st.login, use_container_width=True, type="primary")
     else:
-        user_name = getattr(st.user, "name", "Meta Operative")
-        st.success(f"**{user_name}**")
+        st.success(f"**{user_display_name}**")
         st.write(f"<span style='font-size: 0.72rem; color: #94a3b8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Disconnect Node", on_click=st.logout, use_container_width=True)
             
     st.markdown("---")
     
-    # Checkbox toggle for settings (Fully avoids button focus/Enter-key hijacking bugs in Streamlit)
+    # Checkbox toggles for modals (Avoiding Enter-key focus collision bugs in Streamlit)
     show_settings = st.checkbox("⚙️ Open System Settings Matrix", value=st.session_state["show_settings_modal"])
     if show_settings != st.session_state["show_settings_modal"]:
         st.session_state["show_settings_modal"] = show_settings
+        st.rerun()
+
+    show_brain = st.checkbox("🧠 View AI Brain & Memory Bank", value=st.session_state["show_brain_modal"])
+    if show_brain != st.session_state["show_brain_modal"]:
+        st.session_state["show_brain_modal"] = show_brain
         st.rerun()
 
     st.markdown("---")
@@ -385,7 +403,7 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Expander Panel inside Main Area (Rendered only when toggled on)
+# 5. Settings Panel (Main Area)
 if st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
@@ -425,16 +443,52 @@ if st.session_state.get("show_settings_modal", False):
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
-            if st.button("❌ Close", use_container_width=True):
+            if st.button("❌ Close Settings", use_container_width=True):
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         st.markdown("---")
 
-# Re-fetch active preferences in case they were updated
+# 6. Persistent AI Brain & Memory Bank Panel (Main Area)
+if st.session_state.get("show_brain_modal", False):
+    with st.container():
+        st.markdown("""
+            <div style="background: rgba(18, 8, 38, 0.95); border: 1px solid #bc13fe; border-radius: 12px; padding: 20px; margin-bottom: 25px; box-shadow: 0 0 25px rgba(188, 19, 254, 0.3);">
+                <h3 style="font-family: 'Orbitron', sans-serif; color: #bc13fe; margin-top: 0;">🧠 METAVERSE AI BRAIN & MEMORY BANK</h3>
+                <p style="color: #94a3b8; font-size: 0.88rem;">All facts, insights, and user context remembered by the AI are permanently indexed here.</p>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        # Display memory items
+        memory_list = st.session_state[memory_storage_key]
+        for idx, mem in enumerate(memory_list):
+            col_m1, col_m2 = st.columns([0.88, 0.12])
+            with col_m1:
+                st.code(mem, language="text")
+            with col_m2:
+                if st.button("🗑️", key=f"del_mem_{idx}", help="Forget Memory"):
+                    memory_list.pop(idx)
+                    st.rerun()
+
+        # Add new memory manually
+        new_memory_input = st.text_input("➕ Inject New Memory into AI Brain", placeholder="e.g., User's favorite programming language is Python...")
+        col_bm1, col_bm2 = st.columns(2)
+        with col_bm1:
+            if st.button("💾 Save Memory", use_container_width=True, type="primary"):
+                if new_memory_input.strip():
+                    memory_list.append(new_memory_input.strip())
+                    st.success("Memory successfully encoded into AI Brain!")
+                    st.rerun()
+        with col_bm2:
+            if st.button("❌ Close Brain Matrix", use_container_width=True):
+                st.session_state["show_brain_modal"] = False
+                st.rerun()
+        st.markdown("---")
+
+# Re-fetch active preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 6. Main Canvas Interface Layout
+# 7. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="metaverse-subtitle">Model: {selected_model} • Lang: {lang_choice}</p>', unsafe_allow_html=True)
 
@@ -449,7 +503,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 7. Realtime Prompt Processing & Automated State Archiving with Iconic Rotating Quantum Core Animation
+# 8. Realtime Prompt Processing & Automated Memory Extraction & Archiving
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
@@ -478,12 +532,24 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
         try:
             client = genai.Client(api_key=api_key)
             
+            # Combine Google identity and persistent brain/memories into system instructions
+            brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
+            system_instruction = (
+                f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}.\n"
+                f"USER AUTHENTICATION PROFILE:\n"
+                f"- Full Name: {user_display_name}\n"
+                f"- Email: {user_email}\n\n"
+                f"PERSISTENT AI BRAIN / MEMORY BANK:\n{brain_memories_str}\n\n"
+                f"Guidelines:\n"
+                f"1. When the user asks for their name or who they are signed in as, instantly recognize and state their Google account name ({user_display_name}).\n"
+                f"2. Utilize the persistent brain/memory bank to retain context across sessions."
+            )
+            
             chat_history_formatted = [
                 {"role": m["role"], "parts": [{"text": m["content"]}]} 
                 for m in current_messages
             ]
             
-            system_instruction = f"You are METAVERSE_AI, an advanced high-visibility AI assistant built on cutting-edge Google architecture. Respond natively in {lang_choice}."
             config = types.GenerateContentConfig(
                 system_instruction=system_instruction
             )
@@ -499,7 +565,6 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Render live typing with iconic rotating quantum crystal/core emoji and glow pulse animation
                     message_placeholder.markdown(
                         f"""<div class="ai-streaming-badge"><span class="quantum-core-icon">⚛️</span>METAVERSE AI GENERATING...</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
@@ -507,6 +572,10 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
             
             # Final rendered response without cursor
             message_placeholder.markdown(full_response)
+            
+            # Automatically extract any significant preferences or facts from the prompt/response to save into Brain Memory Bank
+            if len(prompt) > 10 and not any(prompt.lower() in m.lower() for m in st.session_state[memory_storage_key]):
+                st.session_state[memory_storage_key].append(f"Recent User Interaction Note: {prompt}")
             
         except errors.APIError as e:
             loader_placeholder.empty()
