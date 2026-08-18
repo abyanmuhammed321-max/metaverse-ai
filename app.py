@@ -55,7 +55,7 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style with Live AI Typing Orb & Pulse Animation
+# 3. Cyberpunk Neon UI/UX Matrix Style with Iconic Rotating Quantum Core & Wave Animation
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -210,35 +210,34 @@ st.markdown("""
         box-shadow: none !important;
     }
 
-    /* --- LIVE STREAMING AI ANIMATION BADGE & PULSING ORB --- */
+    /* --- ICONIC QUANTUM CORE ROTATING ANIMATION BADGE --- */
     .ai-streaming-badge {
         display: inline-flex;
         align-items: center;
-        gap: 10px;
-        padding: 6px 14px;
-        margin-bottom: 12px;
-        background: rgba(0, 243, 255, 0.08);
-        border: 1px solid rgba(0, 243, 255, 0.4);
-        border-radius: 20px;
+        gap: 12px;
+        padding: 8px 16px;
+        margin-bottom: 14px;
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(188, 19, 254, 0.1));
+        border: 1px solid rgba(0, 243, 255, 0.5);
+        border-radius: 25px;
         font-family: 'Orbitron', sans-serif;
-        font-size: 0.755rem;
+        font-size: 0.78rem;
         color: #00f3ff;
-        letter-spacing: 1.2px;
-        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        letter-spacing: 1.5px;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.25);
     }
 
-    .pulse-orb {
-        width: 10px;
-        height: 10px;
-        background-color: #00f3ff;
-        border-radius: 50%;
-        box-shadow: 0 0 10px #00f3ff, 0 0 20px #bc13fe;
-        animation: orbPulseAnim 1.2s infinite ease-in-out;
+    .quantum-core-icon {
+        display: inline-block;
+        font-size: 1.1rem;
+        animation: quantumSpin 2.5s linear infinite;
+        filter: drop-shadow(0 0 8px #00f3ff);
     }
 
-    @keyframes orbPulseAnim {
-        0%, 100% { transform: scale(0.8); opacity: 0.6; box-shadow: 0 0 5px #00f3ff; }
-        50% { transform: scale(1.35); opacity: 1; box-shadow: 0 0 20px #00f3ff, 0 0 30px #bc13fe; }
+    @keyframes quantumSpin {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.2); filter: drop-shadow(0 0 15px #bc13fe); }
+        100% { transform: rotate(360deg) scale(1); }
     }
 
     /* --- ADVANCED HOLOGRAPHIC AI LOADING BOX --- */
@@ -450,7 +449,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 7. Realtime Prompt Processing & Automated State Archiving with Pulsing Animation Badge
+# 7. Realtime Prompt Processing & Automated State Archiving with Iconic Rotating Quantum Core Animation
 if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
@@ -500,9 +499,9 @@ if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Render live typing with pulsing live animation badge above response
+                    # Render live typing with iconic rotating quantum crystal/core emoji and glow pulse animation
                     message_placeholder.markdown(
-                        f"""<div class="ai-streaming-badge"><div class="pulse-orb"></div>METAVERSE AI GENERATING...</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-streaming-badge"><span class="quantum-core-icon">⚛️</span>METAVERSE AI GENERATING...</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
