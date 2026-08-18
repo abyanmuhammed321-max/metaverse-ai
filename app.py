@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Cyberpunk Neon UI/UX Matrix Style with Fully Responsive Mobile Breakpoints
+# 3. Cyberpunk Neon UI/UX Matrix Style with Fully Responsive Mobile Breakpoints & Bottom Signature
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
@@ -212,7 +212,7 @@ st.markdown("""
 
     /* --- MOBILE RESPONSIVE CHAT INPUT FIX --- */
     [data-testid="stChatInput"] {
-        padding: 0 8px 10px 8px !important;
+        padding: 0 8px 5px 8px !important;
     }
 
     [data-testid="stChatInput"] textarea {
@@ -222,6 +222,23 @@ st.markdown("""
         border-radius: 8px !important;
         font-family: 'Inter', sans-serif !important;
         font-size: 0.95rem !important;
+    }
+
+    /* --- PERMANENT BOTTOM CREATOR SIGNATURE --- */
+    .metaverse-footer-signature {
+        text-align: center;
+        font-family: 'Orbitron', sans-serif;
+        font-size: clamp(0.68rem, 2vw, 0.78rem);
+        color: #00f3ff;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.45);
+        letter-spacing: 2px;
+        margin-top: 15px;
+        margin-bottom: 10px;
+        padding: 8px 0;
+        border-top: 1px solid rgba(0, 243, 255, 0.15);
+        position: relative;
+        z-index: 2;
+        text-transform: uppercase;
     }
 
     /* --- ICONIC QUANTUM CORE ROTATING ANIMATION BADGE --- */
@@ -323,7 +340,6 @@ st.markdown("""
         100% { left: 100%; }
     }
     
-    /* Mobile responsive tweaks */
     @media (max-width: 640px) {
         .metaverse-title { font-size: 1.7rem; }
         .metaverse-subtitle { font-size: 0.7rem; }
@@ -550,3 +566,11 @@ if prompt := st.chat_input("Transmit prompt..."):
             message_placeholder.markdown(full_response)
 
         current_messages.append({"role": "model", "content": full_response})
+
+# 9. Permanent Bottom Creator Signature Banner
+st.markdown(
+    """<div class="metaverse-footer-signature">
+    MADE BY ABYAN MUHAMMED
+    </div>""",
+    unsafe_allow_html=True
+)
