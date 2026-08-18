@@ -55,21 +55,21 @@ current_session_data = st.session_state[storage_key][current_sid]
 if "show_settings_modal" not in st.session_state:
     st.session_state["show_settings_modal"] = False
 
-# 3. High-Tech Neon Cyber Grid Background with Advanced UI Styling
+# 3. High-Tech Cyberpunk Neon UI/UX Matrix Style
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #070913 !important;
+        background-color: #03050c !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
     }
 
-    /* --- CYBERPUNK NEON GRID & AMBIENT GLOW ANIMATION --- */
+    /* --- ADVANCED CYBERPUNK NEON GLOW GRID & AMBIENT ORBS --- */
     @keyframes neonGlowPulse {
-        0%, 100% { opacity: 0.2; transform: scale(1); }
-        50% { opacity: 0.45; transform: scale(1.04); }
+        0%, 100% { opacity: 0.18; transform: scale(1); }
+        50% { opacity: 0.4; transform: scale(1.06); }
     }
 
     .cyber-grid-bg {
@@ -79,62 +79,57 @@ st.markdown("""
         width: 100vw;
         height: 100vh;
         background-image: 
-            linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
-        background-size: 40px 40px;
+            linear-gradient(rgba(0, 243, 255, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(188, 19, 254, 0.035) 1px, transparent 1px);
+        background-size: 35px 35px;
         z-index: 0;
         pointer-events: none;
     }
 
     .neon-orb-top {
         position: fixed;
-        top: 10vh;
-        left: 15vw;
-        width: 30vw;
-        height: 30vw;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+        top: 5vh;
+        left: 10vw;
+        width: 35vw;
+        height: 35vw;
+        background: radial-gradient(circle, rgba(0, 243, 255, 0.15) 0%, transparent 70%);
         border-radius: 50%;
-        animation: neonGlowPulse 8s infinite ease-in-out;
+        animation: neonGlowPulse 7s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
     }
 
     .neon-orb-bottom {
         position: fixed;
-        bottom: 10vh;
-        right: 15vw;
-        width: 30vw;
-        height: 30vw;
-        background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%);
+        bottom: 5vh;
+        right: 10vw;
+        width: 35vw;
+        height: 35vw;
+        background: radial-gradient(circle, rgba(255, 0, 127, 0.15) 0%, transparent 70%);
         border-radius: 50%;
-        animation: neonGlowPulse 10s infinite ease-in-out;
+        animation: neonGlowPulse 9s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
     }
 
-    /* --- SMOOTH POPUP ANIMATION KEYFRAMES FOR STREAMLIT DIALOGS/MODALS --- */
+    /* --- SMOOTH POPUP ANIMATION FOR MODALS --- */
     @keyframes modalPopupFadeIn {
-        0% {
-            opacity: 0;
-            transform: scale(0.85) translateY(20px);
-        }
-        100% {
-            opacity: 1;
-            transform: scale(1) translateY(0);
-        }
+        0% { opacity: 0; transform: scale(0.85) translateY(20px); }
+        100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     div[data-testid="stModal"] > div {
-        animation: modalPopupFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-        background-color: #0c1222 !important;
-        border: 1px solid #38bdf8 !important;
-        box-shadow: 0 0 35px rgba(56, 189, 248, 0.25) !important;
-        border-radius: 14px !important;
+        animation: modalPopupFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+        background-color: #080c19 !important;
+        border: 1px solid #00f3ff !important;
+        box-shadow: 0 0 40px rgba(0, 243, 255, 0.35) !important;
+        border-radius: 16px !important;
     }
 
+    /* --- SIDEBAR NEON UX STYLING --- */
     [data-testid="stSidebar"] {
-        background-color: #0c1222 !important;
-        border-right: 1px solid #1e293b;
+        background-color: #060913 !important;
+        border-right: 1px solid rgba(0, 243, 255, 0.15);
         z-index: 10;
     }
     
@@ -142,17 +137,17 @@ st.markdown("""
         color: #f1f5f9 !important;
     }
 
-    /* METAVERSE_AI Solid Neon Title */
+    /* --- METAVERSE HEADER GLOW TITLE --- */
     .metaverse-title {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
-        font-size: 2.8rem;
+        font-size: 2.9rem;
         font-weight: 900;
-        background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
+        background: linear-gradient(135deg, #00f3ff 0%, #bc13fe 50%, #ff007f 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
-        letter-spacing: 2px;
+        text-shadow: 0 0 30px rgba(0, 243, 255, 0.45);
+        letter-spacing: 2.5px;
         margin-bottom: 0px;
         padding-top: 10px;
         position: relative;
@@ -162,91 +157,110 @@ st.markdown("""
     .metaverse-subtitle {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
-        color: #94a3b8;
-        font-size: 0.9rem;
-        letter-spacing: 1.5px;
+        color: #00f3ff;
+        font-size: 0.88rem;
+        letter-spacing: 2px;
         margin-bottom: 25px;
         text-transform: uppercase;
         position: relative;
         z-index: 2;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
     }
 
-    /* 100% Solid & Crisp Neon-Bordered Chat Bubbles */
+    /* --- NEON-BORDERED HOLOGRAPHIC CHAT BUBBLES --- */
     .stChatMessage {
-        background-color: #0f172a !important;
-        border: 1px solid #334155 !important;
-        border-radius: 12px !important;
-        padding: 16px !important;
-        margin-bottom: 14px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(56, 189, 248, 0.03);
+        background-color: rgba(10, 15, 30, 0.85) !important;
+        border: 1px solid rgba(0, 243, 255, 0.25) !important;
+        border-radius: 14px !important;
+        padding: 18px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(0, 243, 255, 0.04);
         position: relative;
+        backdrop-filter: blur(10px);
         z-index: 2;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
         color: #f8fafc !important;
         font-size: 1.02rem !important;
-        line-height: 1.6 !important;
+        line-height: 1.65 !important;
     }
 
-    /* Modern Professional Neon Buttons */
+    /* --- CYBERPUNK NEON BUTTONS --- */
     .stButton button {
         border-radius: 8px !important;
         font-family: 'Orbitron', sans-serif !important;
         font-weight: 600 !important;
-        font-size: 0.8rem !important;
-        letter-spacing: 0.5px !important;
-        border: 1px solid #475569 !important;
-        background-color: #1e293b !important;
-        color: #38bdf8 !important;
-        box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
-        transition: all 0.2s ease !important;
+        font-size: 0.78rem !important;
+        letter-spacing: 0.8px !important;
+        border: 1px solid rgba(0, 243, 255, 0.4) !important;
+        background: linear-gradient(135deg, rgba(13, 22, 43, 0.9), rgba(26, 11, 46, 0.9)) !important;
+        color: #00f3ff !important;
+        box-shadow: 0 0 12px rgba(0, 243, 255, 0.15);
+        transition: all 0.25s ease !important;
         z-index: 2;
     }
     
     .stButton button:hover {
-        border-color: #38bdf8 !important;
-        background-color: #334155 !important;
+        border-color: #00f3ff !important;
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(188, 19, 254, 0.2)) !important;
         color: #ffffff !important;
-        box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.5), inset 0 0 8px rgba(0, 243, 255, 0.3);
+        transform: translateY(-1px);
     }
 
-    /* --- ADVANCED HOLOGRAPHIC AI LOADING ANIMATION --- */
+    /* --- HOLOGRAPHIC CHAT INPUT FIELD --- */
+    [data-testid="stChatInput"] textarea {
+        background-color: rgba(8, 13, 26, 0.95) !important;
+        color: #00f3ff !important;
+        border: 1px solid rgba(0, 243, 255, 0.4) !important;
+        border-radius: 12px !important;
+        font-family: 'Inter', sans-serif !important;
+        box-shadow: inset 0 0 12px rgba(0, 243, 255, 0.08), 0 0 15px rgba(0, 243, 255, 0.1);
+    }
+    
+    [data-testid="stChatInput"] textarea:focus {
+        border-color: #00f3ff !important;
+        box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.15), 0 0 25px rgba(0, 243, 255, 0.4) !important;
+    }
+
+    /* --- ADVANCED HOLOGRAPHIC AI LOADING BOX --- */
     .metaverse-loader-box {
         display: flex;
         flex-direction: column;
         gap: 12px;
         padding: 18px 22px;
-        background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
-        border: 1px solid #38bdf8;
-        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(8, 13, 26, 0.95), rgba(20, 10, 38, 0.95));
+        border: 1px solid #00f3ff;
+        border-radius: 14px;
         width: 100%;
         max-width: 320px;
         margin: 12px 0;
         position: relative;
         z-index: 2;
-        box-shadow: 0 0 20px rgba(56, 189, 248, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.1);
+        box-shadow: 0 0 25px rgba(0, 243, 255, 0.3), inset 0 0 12px rgba(0, 243, 255, 0.12);
         animation: boxGlowPulse 2s infinite ease-in-out;
     }
 
     @keyframes boxGlowPulse {
-        0%, 100% { border-color: rgba(56, 189, 248, 0.5); box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
-        50% { border-color: rgba(168, 85, 247, 0.8); box-shadow: 0 0 25px rgba(168, 85, 247, 0.4); }
+        0%, 100% { border-color: rgba(0, 243, 255, 0.6); box-shadow: 0 0 20px rgba(0, 243, 255, 0.25); }
+        50% { border-color: rgba(188, 19, 254, 0.9); box-shadow: 0 0 30px rgba(188, 19, 254, 0.5); }
     }
 
     .loader-header {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 12px;
     }
 
     .m-core-ring {
-        width: 18px;
-        height: 18px;
-        border: 2px solid rgba(56, 189, 248, 0.2);
-        border-top: 2px solid #38bdf8;
+        width: 20px;
+        height: 20px;
+        border: 2px solid rgba(0, 243, 255, 0.2);
+        border-top: 2px solid #00f3ff;
         border-radius: 50%;
-        animation: spinRing 0.8s linear infinite;
+        animation: spinRing 0.75s linear infinite;
+        box-shadow: 0 0 10px #00f3ff;
     }
 
     @keyframes spinRing {
@@ -255,17 +269,18 @@ st.markdown("""
     }
 
     .loader-text {
-        font-size: 0.82rem;
+        font-size: 0.84rem;
         font-family: 'Orbitron', sans-serif;
-        color: #38bdf8;
-        letter-spacing: 1.2px;
-        font-weight: 600;
+        color: #00f3ff;
+        letter-spacing: 1.5px;
+        font-weight: 700;
+        text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
     }
 
     .loader-progress-track {
         width: 100%;
         height: 4px;
-        background-color: #1e293b;
+        background-color: #060913;
         border-radius: 4px;
         overflow: hidden;
         position: relative;
@@ -277,8 +292,8 @@ st.markdown("""
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, transparent, #38bdf8, #a855f7, #ec4899, transparent);
-        animation: progressWave 1.6s infinite linear;
+        background: linear-gradient(90deg, transparent, #00f3ff, #bc13fe, #ff007f, transparent);
+        animation: progressWave 1.5s infinite linear;
     }
 
     @keyframes progressWave {
@@ -348,7 +363,7 @@ with col_top2:
     if st.button("⚙️", help="System Settings Matrix"):
         st.session_state["show_settings_modal"] = True
 
-# 6. Animated Settings Modal Popup Dialog (Including gemini-3.1-flash-lite and newest versions)
+# 6. Animated Settings Modal Popup Dialog
 @st.dialog("⚙️ SYSTEM SETTINGS MATRIX")
 def settings_modal():
     st.markdown("<span style='color: #94a3b8; font-size: 0.85rem;'>Configure Quantum Model Cores and Linguistic matrices below. Preferences save automatically for future sessions.</span>", unsafe_allow_html=True)
