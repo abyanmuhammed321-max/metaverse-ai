@@ -44,52 +44,66 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
-# 3. High-Tech UI with Subtle Side Glow Animation (Keeps All Text 100% Crisp and Fully Visible)
+# 3. High-Tech Neon Cyber Grid Background with 100% Solid & Crystal Clear Visibility
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Inter:wght@400;500;600&display=swap');
 
     .stApp {
-        background-color: #060913 !important;
+        background-color: #070913 !important;
         color: #f1f5f9 !important;
         font-family: 'Inter', sans-serif;
     }
 
-    /* --- SAFE SIDE AMBIENT GLOW ANIMATION (SITS BEHIND CONTENT WITHOUT TOUCHING TEXT) --- */
-    @keyframes sideGlowPulse {
-        0%, 100% { opacity: 0.25; transform: scale(1); }
-        50% { opacity: 0.55; transform: scale(1.05); }
+    /* --- CYBERPUNK NEON GRID & AMBIENT GLOW ANIMATION (SITS WAY BEHIND TEXT) --- */
+    @keyframes neonGlowPulse {
+        0%, 100% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 0.45; transform: scale(1.04); }
     }
 
-    .ambient-glow-left {
+    .cyber-grid-bg {
         position: fixed;
-        top: 20vh;
-        left: -10vw;
-        width: 35vw;
-        height: 35vw;
-        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
-        border-radius: 50%;
-        animation: sideGlowPulse 8s infinite ease-in-out;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: 
+            linear-gradient(rgba(56, 189, 248, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(168, 85, 247, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
         z-index: 0;
         pointer-events: none;
     }
 
-    .ambient-glow-right {
+    .neon-orb-top {
+        position: fixed;
+        top: 10vh;
+        left: 15vw;
+        width: 30vw;
+        height: 30vw;
+        background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: neonGlowPulse 8s infinite ease-in-out;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .neon-orb-bottom {
         position: fixed;
         bottom: 10vh;
-        right: -10vw;
-        width: 35vw;
-        height: 35vw;
-        background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+        right: 15vw;
+        width: 30vw;
+        height: 30vw;
+        background: radial-gradient(circle, rgba(236, 72, 153, 0.12) 0%, transparent 70%);
         border-radius: 50%;
-        animation: sideGlowPulse 10s infinite ease-in-out;
+        animation: neonGlowPulse 10s infinite ease-in-out;
         z-index: 0;
         pointer-events: none;
     }
 
     [data-testid="stSidebar"] {
-        background-color: #0b1120 !important;
-        border-right: 1px solid #1f2937;
+        background-color: #0c1222 !important;
+        border-right: 1px solid #1e293b;
         z-index: 10;
     }
     
@@ -97,7 +111,7 @@ st.markdown("""
         color: #f1f5f9 !important;
     }
 
-    /* METAVERSE_AI Solid Title */
+    /* METAVERSE_AI Solid Neon Title */
     .metaverse-title {
         text-align: center;
         font-family: 'Orbitron', sans-serif;
@@ -106,6 +120,7 @@ st.markdown("""
         background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #ec4899 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
         letter-spacing: 2px;
         margin-bottom: 0px;
         padding-top: 10px;
@@ -125,14 +140,14 @@ st.markdown("""
         z-index: 2;
     }
 
-    /* 100% Solid & Crisp Chat Bubbles (Zero Overlays / Full Visibility) */
+    /* 100% Solid & Crisp Neon-Bordered Chat Bubbles (Zero Blur / Maximum Visibility) */
     .stChatMessage {
         background-color: #0f172a !important;
         border: 1px solid #334155 !important;
         border-radius: 12px !important;
         padding: 16px !important;
         margin-bottom: 14px !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(56, 189, 248, 0.03);
         position: relative;
         z-index: 2;
     }
@@ -144,7 +159,7 @@ st.markdown("""
         line-height: 1.6 !important;
     }
 
-    /* Modern Professional Buttons */
+    /* Modern Professional Neon Buttons */
     .stButton button {
         border-radius: 8px !important;
         font-family: 'Orbitron', sans-serif !important;
@@ -154,6 +169,7 @@ st.markdown("""
         border: 1px solid #475569 !important;
         background-color: #1e293b !important;
         color: #38bdf8 !important;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.1);
         transition: all 0.2s ease !important;
         z-index: 2;
     }
@@ -162,6 +178,7 @@ st.markdown("""
         border-color: #38bdf8 !important;
         background-color: #334155 !important;
         color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
     }
 
     /* High-Tech Loader */
@@ -177,6 +194,7 @@ st.markdown("""
         margin: 10px 0;
         position: relative;
         z-index: 2;
+        box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
     }
 
     .m-dot {
@@ -184,6 +202,7 @@ st.markdown("""
         height: 8px;
         background-color: #38bdf8;
         border-radius: 50%;
+        box-shadow: 0 0 8px #38bdf8;
         animation: mPulse 1.2s infinite ease-in-out both;
     }
 
@@ -197,9 +216,10 @@ st.markdown("""
     }
 </style>
 
-<!-- Safe Non-Obstructive Ambient Glow Elements -->
-<div class="ambient-glow-left"></div>
-<div class="ambient-glow-right"></div>
+<!-- Neon Cyber Grid and Orb Layers -->
+<div class="cyber-grid-bg"></div>
+<div class="neon-orb-top"></div>
+<div class="neon-orb-bottom"></div>
 """, unsafe_allow_html=True)
 
 # 4. Sidebar Professional Navigation & Persistent Chat Archive Panel
@@ -283,7 +303,7 @@ if not api_key:
 
 # 5. Main Canvas Interface Layout
 st.markdown(f'<p class="metaverse-title">METAVERSE_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="metaverse-subtitle">Next-Gen Persistent Chat Matrix • Language: {lang_choice}</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="metaverse-subtitle">Neon Cyberpunk Edition • Language: {lang_choice}</p>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.warning("🔒 **Authorization Required:** Please click **'Connect Google ID'** in the sidebar to initialize secure persistent cloud storage across reloads.")
