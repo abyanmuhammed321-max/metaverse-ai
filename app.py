@@ -392,29 +392,24 @@ for msg_idx, message in enumerate(current_messages):
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Model Selector built directly inside the chat input footer (right beside the typing bar like the Gemini web UI)
-col_input, col_model = st.columns([0.74, 0.26], vertical_alignment="bottom")
-
-with col_model:
+# 8. Model Selector positioned right above Typing Bar (Original Position Restored)
+col_mod1, col_mod2, col_mod3 = st.columns([0.35, 0.35, 0.30])
+with col_mod1:
     models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
     current_saved_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
     model_index = models_list.index(current_saved_model) if current_saved_model in models_list else 0
 
     selected_model = st.selectbox(
-        "Model",
+        "⚡ Quantum Model Core",
         models_list,
         index=model_index,
-        key="inline_model_select",
-        label_visibility="collapsed"
+        key="inline_model_select"
     )
     if selected_model != current_saved_model:
         st.session_state[prefs_storage_key]["selected_model"] = selected_model
 
-with col_input:
-    prompt = st.chat_input("Transmit prompt to METAVERSE_AI...")
-
 # 9. Realtime Prompt Processing & Automated State Archiving
-if prompt:
+if prompt := st.chat_input("Transmit prompt to METAVERSE_AI..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
 
