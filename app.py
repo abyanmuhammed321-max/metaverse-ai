@@ -41,7 +41,7 @@ try:
 except Exception:
     is_logged_in = False
 
-# 2. Dynamic Gemini-Inspired UI Theme & Responsive Opening Animation Engine
+# 2. Dynamic Gemini-Inspired UI Theme & Responsive High-Tech Animations
 if st.session_state.theme == "Dark":
     bg_color = "#131314"
     text_color = "#e3e3e3"
@@ -51,6 +51,7 @@ if st.session_state.theme == "Dark":
     border_col = "#333538"
     sub_text = "#c4c7c5"
     accent_glow = "rgba(138, 180, 248, 0.08)"
+    wave_color = "#8ab4f8"
 else:
     bg_color = "#ffffff"
     text_color = "#1f1f1f"
@@ -60,6 +61,7 @@ else:
     border_col = "#e0e2e0"
     sub_text = "#444746"
     accent_glow = "rgba(26, 115, 232, 0.06)"
+    wave_color = "#1a73e8"
 
 st.markdown(f"""
 <style>
@@ -80,7 +82,7 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
-    /* --- RESPONSIVE OPENING ANIMATION FOR LAPTOP & MOBILE --- */
+    /* --- RESPONSIVE ENTRANCE ANIMATION FOR PHONE & LAPTOP --- */
     @keyframes geminiEntrance {{
         0% {{
             opacity: 0;
@@ -94,6 +96,37 @@ st.markdown(f"""
 
     .stApp, .block-container {{
         animation: geminiEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }}
+
+    /* --- HIGH-TECH NEURAL PULSATING STREAM LOADER --- */
+    .high-tech-loader {{
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        background: rgba(66, 133, 244, 0.05);
+        border: 1px solid {border_col};
+        border-radius: 16px;
+        width: fit-content;
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }}
+
+    .neural-dot {{
+        width: 8px;
+        height: 8px;
+        background-color: {wave_color};
+        border-radius: 50%;
+        animation: neuralPulse 1.4s infinite ease-in-out both;
+    }}
+
+    .neural-dot:nth-child(1) {{ animation-delay: -0.32s; }}
+    .neural-dot:nth-child(2) {{ animation-delay: -0.16s; }}
+    .neural-dot:nth-child(3) {{ animation-delay: 0s; }}
+
+    @keyframes neuralPulse {{
+        0%, 80%, 100% {{ transform: scale(0); opacity: 0.3; }}
+        40% {{ transform: scale(1.0); opacity: 1; box-shadow: 0 0 10px {wave_color}; }}
     }}
 
     /* Modern Gemini Style Message Bubbles */
@@ -236,7 +269,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 5. Handle Realtime Streaming Prompts
+# 5. Handle Realtime Streaming Prompts with High-Tech Neural Loader
 if prompt := st.chat_input("Enter a prompt here..."):
     if len(current_messages) == 0:
         st.session_state.sessions[current_sid]["title"] = prompt[:24]
@@ -246,6 +279,17 @@ if prompt := st.chat_input("Enter a prompt here..."):
         st.markdown(prompt)
 
     with st.chat_message("assistant"):
+        # High-Tech Neural Loading Animation Container
+        loader_placeholder = st.empty()
+        loader_placeholder.markdown("""
+            <div class="high-tech-loader">
+                <div class="neural-dot"></div>
+                <div class="neural-dot"></div>
+                <div class="neural-dot"></div>
+                <span style="font-size: 0.82rem; font-weight: 500; color: #8ab4f8; margin-left: 4px; font-family: 'Google Sans', sans-serif;">Synthesizing response...</span>
+            </div>
+        """, unsafe_allow_html=True)
+        
         message_placeholder = st.empty()
         full_response = ""
         
@@ -268,6 +312,9 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 config=config
             )
             
+            # Clear high-tech loader once response chunks arrive
+            loader_placeholder.empty()
+            
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
@@ -276,9 +323,11 @@ if prompt := st.chat_input("Enter a prompt here..."):
             message_placeholder.markdown(full_response)
             
         except errors.APIError as e:
+            loader_placeholder.empty()
             full_response = f"❌ **API Error:** {e}"
             message_placeholder.markdown(full_response)
         except Exception as e:
+            loader_placeholder.empty()
             full_response = f"❌ **Error:** {str(e)}"
             message_placeholder.markdown(full_response)
 
