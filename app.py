@@ -116,7 +116,7 @@ with st.sidebar:
     
     selected_model = st.selectbox(
         "Choose Model",
-        ["gemini-3.6-flash", "gemini-3.1-flash-lite"],
+        ["gemini-2.5-flash", "gemini-2.5-pro"],
         index=0
     )
     
@@ -159,6 +159,7 @@ for message in current_messages:
 
 # 5. Handle Prompt Submission, History Persistence, & Streaming
 if prompt := st.chat_input("Enter a prompt here..."):
+    # Automatically rename chat history title based on the first prompt
     if len(current_messages) == 0:
         st.session_state.sessions[current_sid]["title"] = prompt[:25]
 
