@@ -28,7 +28,6 @@ storage_key = f"user_sessions_{user_email.replace('@', '_at_').replace('.', '_')
 
 # 2. Persistent Storage Initialization across browser/day closures
 if storage_key not in st.session_state:
-    # Initialize with default blank session
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
@@ -225,7 +224,8 @@ with st.sidebar:
             
     st.markdown("---")
     
-    if st.button("➕ New Chat", use_container_width=True):
+    # --- SMART NEW CHAT CREATOR ---
+    if st.button("➕ New Chat", use_container_width=True, type="primary"):
         new_sid = str(uuid.uuid4())
         st.session_state[storage_key][new_sid] = {"title": "New Chat", "messages": []}
         st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -233,16 +233,17 @@ with st.sidebar:
         
     st.markdown("### 💬 Saved Chats")
     
+    # Display all saved chat sessions sorted or listed with custom titles
     for sid, sdata in list(st.session_state[storage_key].items()):
         col1, col2 = st.columns([0.78, 0.22])
         with col1:
             btn_type = "primary" if sid == current_sid else "secondary"
-            display_title = sdata["title"][:16] + ("..." if len(sdata["title"]) > 16 else "")
+            display_title = sdata["title"][:18] + ("..." if len(sdata["title"]) > 18 else "")
             if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
                 st.session_state[f"{storage_key}_current_sid"] = sid
                 st.rerun()
         with col2:
-            if st.button("🗑️", key=f"del_{sid}", help="Delete chat thread"):
+            if st.button("🗑️", key=f"del_{sid}", help="Delete saved chat thread"):
                 del st.session_state[storage_key][sid]
                 if not st.session_state[storage_key]:
                     fresh_sid = str(uuid.uuid4())
@@ -295,16 +296,18 @@ if not is_logged_in:
 
 current_messages = st.session_state[storage_key][current_sid]["messages"]
 
-# Render Conversation Stream
+# Render Existing Saved Conversation Messages for Active Session
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 6. Handle Realtime Streaming Prompts with High-Tech Neural Loader & Persistent Storage Update
+# 6. Handle Realtime Prompt Submissions & Instant Session History Saving
 if prompt := st.chat_input("Enter a prompt here..."):
+    # Automatically name the saved chat title after the user's first prompt text
     if len(current_messages) == 0:
         st.session_state[storage_key][current_sid]["title"] = prompt[:24]
 
+    # Append user question to persistent session history
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
         st.markdown(prompt)
@@ -343,7 +346,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 config=config
             )
             
-            # Clear high-tech loader once response chunks arrive
+            # Clear high-tech loader once response chunks stream in
             loader_placeholder.empty()
             
             for chunk in response_stream:
@@ -362,4 +365,5 @@ if prompt := st.chat_input("Enter a prompt here..."):
             full_response = f"❌ **Error:** {str(e)}"
             message_placeholder.markdown(full_response)
 
+        # Append model response to persistent session storage
         current_messages.append({"role": "model", "content": full_response})
