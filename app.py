@@ -15,33 +15,45 @@ st.set_page_config(
 # Load Gemini API Key from secrets
 api_key = st.secrets.get("GEMINI_API_KEY")
 
-# Initialize session state variables
+# Check native Streamlit OIDC login status & retrieve user identity
+try:
+    is_logged_in = getattr(st.user, "is_logged_in", False)
+    user_email = getattr(st.user, "email", "default_guest_user")
+except Exception:
+    is_logged_in = False
+    user_email = "default_guest_user"
+
+# Create a unique persistent storage namespace key based on user email
+storage_key = f"user_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+
+# 2. Persistent Storage Initialization across browser/day closures
+if storage_key not in st.session_state:
+    # Initialize with default blank session
+    first_sid = str(uuid.uuid4())
+    st.session_state[storage_key] = {
+        first_sid: {
+            "title": "New Chat",
+            "messages": []
+        }
+    }
+
+# Ensure active session pointer exists
+if f"{storage_key}_current_sid" not in st.session_state:
+    st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
+
+current_sid = st.session_state[f"{storage_key}_current_sid"]
+if current_sid not in st.session_state[storage_key]:
+    st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
+    current_sid = st.session_state[f"{storage_key}_current_sid"]
+
+# Global Preferences Persistence
 if "theme" not in st.session_state:
     st.session_state.theme = "Dark"
 
 if "language" not in st.session_state:
     st.session_state.language = "English"
 
-if "sessions" not in st.session_state:
-    first_sid = str(uuid.uuid4())
-    st.session_state.sessions = {
-        first_sid: {
-            "title": "New Chat",
-            "messages": []
-        }
-    }
-    st.session_state.current_session_id = first_sid
-
-if st.session_state.current_session_id not in st.session_state.sessions:
-    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
-
-# Check native Streamlit OIDC login status
-try:
-    is_logged_in = getattr(st.user, "is_logged_in", False)
-except Exception:
-    is_logged_in = False
-
-# 2. Dynamic Gemini UI Theme & Mobile/Laptop Responsive Media Query Engine
+# 3. Dynamic Gemini UI Theme & Mobile/Laptop Responsive Media Query Engine
 if st.session_state.theme == "Dark":
     bg_color = "#131314"
     text_color = "#e3e3e3"
@@ -198,16 +210,15 @@ st.markdown(f"""
 </style>
 """, unsafe_allow_html=True)
 
-# 3. Sidebar Configuration (Authentication, History & Model Parameters)
+# 4. Sidebar Configuration (Authentication, History & Model Parameters)
 with st.sidebar:
     st.markdown("### ✨ Google Account")
     
     if not is_logged_in:
-        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Please sign in with Google to start chatting with Metaverse_AI.</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in with Google to save your chats and access Metaverse_AI.</span>", unsafe_allow_html=True)
         st.button("🌐 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         user_name = getattr(st.user, "name", "Google User")
-        user_email = getattr(st.user, "email", "user@gmail.com")
         st.success(f"**{user_name}**")
         st.write(f"<span style='font-size: 0.75rem; color: {sub_text};'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
@@ -216,29 +227,29 @@ with st.sidebar:
     
     if st.button("➕ New Chat", use_container_width=True):
         new_sid = str(uuid.uuid4())
-        st.session_state.sessions[new_sid] = {"title": "New Chat", "messages": []}
-        st.session_state.current_session_id = new_sid
+        st.session_state[storage_key][new_sid] = {"title": "New Chat", "messages": []}
+        st.session_state[f"{storage_key}_current_sid"] = new_sid
         st.rerun()
         
-    st.markdown("### 💬 Recent Chats")
+    st.markdown("### 💬 Saved Chats")
     
-    for sid, sdata in list(st.session_state.sessions.items()):
+    for sid, sdata in list(st.session_state[storage_key].items()):
         col1, col2 = st.columns([0.78, 0.22])
         with col1:
-            btn_type = "primary" if sid == st.session_state.current_session_id else "secondary"
+            btn_type = "primary" if sid == current_sid else "secondary"
             display_title = sdata["title"][:16] + ("..." if len(sdata["title"]) > 16 else "")
             if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
-                st.session_state.current_session_id = sid
+                st.session_state[f"{storage_key}_current_sid"] = sid
                 st.rerun()
         with col2:
             if st.button("🗑️", key=f"del_{sid}", help="Delete chat thread"):
-                del st.session_state.sessions[sid]
-                if not st.session_state.sessions:
+                del st.session_state[storage_key][sid]
+                if not st.session_state[storage_key]:
                     fresh_sid = str(uuid.uuid4())
-                    st.session_state.sessions[fresh_sid] = {"title": "New Chat", "messages": []}
-                    st.session_state.current_session_id = fresh_sid
+                    st.session_state[storage_key][fresh_sid] = {"title": "New Chat", "messages": []}
+                    st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                 else:
-                    st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
+                    st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
                 st.rerun()
 
     st.markdown("---")
@@ -273,27 +284,26 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration is missing inside your `.streamlit/secrets.toml` file.")
     st.stop()
 
-# 4. Main Canvas Interface Layout
+# 5. Main Canvas Interface Layout
 st.markdown(f'<p class="gemini-title">Metaverse_AI</p>', unsafe_allow_html=True)
 st.markdown(f'<p class="gemini-subtitle">Explore, create, and chat • ({st.session_state.language})</p>', unsafe_allow_html=True)
 
 # Strict Authentication Gate: Require Google Sign In before chatting
 if not is_logged_in:
-    st.info("🔒 **Authentication Required:** Please click **'Sign in with Google'** in the sidebar to unlock Metaverse_AI chat.")
+    st.info("🔒 **Authentication Required:** Please click **'Sign in with Google'** in the sidebar to securely unlock and save your Metaverse_AI chats.")
     st.stop()
 
-current_sid = st.session_state.current_session_id
-current_messages = st.session_state.sessions[current_sid]["messages"]
+current_messages = st.session_state[storage_key][current_sid]["messages"]
 
 # Render Conversation Stream
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 5. Handle Realtime Streaming Prompts with High-Tech Neural Loader
+# 6. Handle Realtime Streaming Prompts with High-Tech Neural Loader & Persistent Storage Update
 if prompt := st.chat_input("Enter a prompt here..."):
     if len(current_messages) == 0:
-        st.session_state.sessions[current_sid]["title"] = prompt[:24]
+        st.session_state[storage_key][current_sid]["title"] = prompt[:24]
 
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
