@@ -70,7 +70,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & High-Speed Optimizations
+# 3. Enhanced Ultra-Futuristic UI with Full-Screen Neon Background, Dynamic Grid & Interactive AI Thinking / Typing Animations
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
@@ -296,33 +296,52 @@ st.markdown("""
         text-transform: uppercase;
     }
 
-    /* --- AUTHENTIC GEMINI MULTICOLOR SPARKLE LOADING ANIMATION --- */
-    .gemini-loading-container {
+    /* --- VIBRANT AI THINKING & REPLY ANIMATION WIDGETS --- */
+    .ai-thinking-box {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 14px 18px;
-        background-color: rgba(20, 22, 30, 0.9);
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        border-radius: 16px;
+        gap: 14px;
+        padding: 14px 20px;
+        background: rgba(20, 22, 30, 0.92);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(66, 133, 244, 0.4);
+        border-radius: 18px;
         width: fit-content;
-        margin: 10px 0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.45);
+        margin: 12px 0;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(66, 133, 244, 0.25);
         position: relative;
         z-index: 2;
+        animation: thinkingPulseBorder 2s infinite ease-in-out;
     }
 
-    @keyframes geminiSparkleGlow {
-        0% { transform: scale(0.85) rotate(0deg); filter: drop-shadow(0 0 4px #4285f4); opacity: 0.7; }
-        50% { transform: scale(1.35) rotate(180deg); filter: drop-shadow(0 0 18px #ea4335) drop-shadow(0 0 26px #fbbc05); opacity: 1; }
-        100% { transform: scale(0.85) rotate(360deg); filter: drop-shadow(0 0 4px #34a853); opacity: 0.7; }
+    @keyframes thinkingPulseBorder {
+        0% { border-color: rgba(66, 133, 244, 0.4); box-shadow: 0 0 15px rgba(66, 133, 244, 0.2); }
+        50% { border-color: rgba(234, 67, 53, 0.7); box-shadow: 0 0 25px rgba(234, 67, 53, 0.4); }
+        100% { border-color: rgba(66, 133, 244, 0.4); box-shadow: 0 0 15px rgba(66, 133, 244, 0.2); }
     }
 
-    .gemini-sparkle-loader {
-        font-size: 1.4rem;
-        display: inline-block;
-        animation: geminiSparkleGlow 1.5s infinite ease-in-out;
+    .ai-thinking-dots {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .ai-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background-color: #4285f4;
+        animation: aiDotBounce 1.4s infinite ease-in-out both;
+    }
+
+    .ai-dot:nth-child(1) { animation-delay: -0.32s; background-color: #4285f4; }
+    .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #ea4335; }
+    .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fbbc05; }
+    .ai-dot:nth-child(4) { animation-delay: 0.16s; background-color: #34a853; }
+
+    @keyframes aiDotBounce {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+        40% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 8px currentColor); }
     }
 
     @keyframes geminiTextShimmer {
@@ -330,29 +349,47 @@ st.markdown("""
         100% { background-position: 200% 0; }
     }
 
-    .gemini-loading-text {
+    .ai-thinking-text {
         font-family: 'Google Sans', sans-serif;
-        font-size: 0.9rem;
+        font-size: 0.92rem;
         font-weight: 500;
         background: linear-gradient(90deg, #4285f4, #ea4335, #fbbc05, #34a853, #4285f4);
         background-size: 200% auto;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: geminiTextShimmer 2s linear infinite;
+        animation: geminiTextShimmer 2.5s linear infinite;
     }
 
-    .ai-streaming-badge {
+    .ai-replying-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 4px 12px;
-        margin-bottom: 10px;
-        background-color: rgba(66, 133, 244, 0.2);
-        border: 1px solid rgba(66, 133, 244, 0.5);
-        border-radius: 12px;
+        padding: 5px 14px;
+        margin-bottom: 12px;
+        background: rgba(66, 133, 244, 0.18);
+        border: 1px solid rgba(66, 133, 244, 0.45);
+        border-radius: 14px;
         font-family: 'Google Sans', sans-serif;
-        font-size: 0.75rem;
+        font-size: 0.78rem;
         color: #8ab4f8;
+        box-shadow: 0 0 15px rgba(66, 133, 244, 0.25);
+        animation: badgeGlowPulse 1.8s infinite ease-in-out;
+    }
+
+    @keyframes badgeGlowPulse {
+        0%, 100% { box-shadow: 0 0 10px rgba(66, 133, 244, 0.2); }
+        50% { box-shadow: 0 0 20px rgba(66, 133, 244, 0.5); }
+    }
+
+    .sparkle-icon {
+        display: inline-block;
+        animation: sparkleSpin 2s infinite linear;
+    }
+
+    @keyframes sparkleSpin {
+        0% { transform: rotate(0deg) scale(1); filter: drop-shadow(0 0 4px #4285f4); }
+        50% { transform: rotate(180deg) scale(1.3); filter: drop-shadow(0 0 10px #ea4335); }
+        100% { transform: rotate(360deg) scale(1); filter: drop-shadow(0 0 4px #34a853); }
     }
 </style>
 
@@ -492,7 +529,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (Ultra-Fast Stream) • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} (High-Speed & Animated Reply) • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 # Feature gate: Hide all chat capabilities when logged out
 if not is_logged_in:
@@ -512,7 +549,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime High-Speed Message Handling & Creator Rules
+# 8. Realtime Message Handling & Animated AI Reply Engine
 if prompt := st.chat_input("Enter a prompt here..."):
     if len(current_messages) == 0:
         current_session_data["title"] = prompt[:22]
@@ -524,9 +561,14 @@ if prompt := st.chat_input("Enter a prompt here..."):
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="gemini-loading-container">
-                <span class="gemini-sparkle-loader">✨</span>
-                <span class="gemini-loading-text">Instant processing...</span>
+            <div class="ai-thinking-box">
+                <div class="ai-thinking-dots">
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                    <div class="ai-dot"></div>
+                </div>
+                <span class="ai-thinking-text">Metaverse_AI is thinking & formulating reply...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -538,7 +580,7 @@ if prompt := st.chat_input("Enter a prompt here..."):
             
             brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
-                f"You are Metaverse_AI, an advanced ultra-fast AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
+                f"You are Metaverse_AI, an advanced high-speed AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
                 f"USER PROFILE:\n"
                 f"- Name: {user_display_name}\n"
                 f"- Email: {user_email}\n\n"
@@ -570,11 +612,14 @@ if prompt := st.chat_input("Enter a prompt here..."):
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-streaming-badge"><span class="gemini-sparkle-loader" style="font-size: 0.9rem;">✨</span>Metaverse_AI</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-replying-badge"><span class="sparkle-icon">✨</span>Metaverse_AI Replying...</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
-            message_placeholder.markdown(full_response)
+            message_placeholder.markdown(
+                f"""<div class="ai-replying-badge"><span class="sparkle-icon">✨</span>Metaverse_AI Response Complete</div>\n\n{full_response}""",
+                unsafe_allow_html=True
+            )
             
         except errors.APIError as e:
             loader_placeholder.empty()
