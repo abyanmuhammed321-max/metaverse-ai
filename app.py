@@ -35,7 +35,13 @@ if "sessions" not in st.session_state:
 if st.session_state.current_session_id not in st.session_state.sessions:
     st.session_state.current_session_id = list(st.session_state.sessions.keys())[0]
 
-# 2. Dynamic Gemini-Inspired UI Theme Engine
+# Check native Streamlit OIDC login status
+try:
+    is_logged_in = getattr(st.user, "is_logged_in", False)
+except Exception:
+    is_logged_in = False
+
+# 2. Dynamic Gemini-Inspired UI Theme & Responsive Opening Animation Engine
 if st.session_state.theme == "Dark":
     bg_color = "#131314"
     text_color = "#e3e3e3"
@@ -74,6 +80,22 @@ st.markdown(f"""
         color: {text_color} !important;
     }}
 
+    /* --- RESPONSIVE OPENING ANIMATION FOR LAPTOP & MOBILE --- */
+    @keyframes geminiEntrance {{
+        0% {{
+            opacity: 0;
+            transform: translateY(20px) scale(0.98);
+        }}
+        100% {{
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }}
+    }}
+
+    .stApp, .block-container {{
+        animation: geminiEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }}
+
     /* Modern Gemini Style Message Bubbles */
     .stChatMessage {{
         background-color: transparent !important;
@@ -90,7 +112,7 @@ st.markdown(f"""
         background: linear-gradient(135deg, #4285F4 0%, #9B72CB 50%, #EA4335 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        font-size: 3rem;
+        font-size: 2.8rem;
         font-weight: 700;
         letter-spacing: -0.8px;
         margin-bottom: 0px;
@@ -100,7 +122,7 @@ st.markdown(f"""
     .gemini-subtitle {{
         text-align: center;
         color: {sub_text};
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         margin-bottom: 30px;
         font-weight: 400;
     }}
@@ -119,12 +141,6 @@ st.markdown(f"""
         background-color: {user_bubble};
         box-shadow: 0 0 8px rgba(66, 133, 244, 0.2);
     }}
-    
-    .stChatInputContainer {{
-        border-radius: 28px !important;
-        border: 1px solid {border_col} !important;
-        background-color: {sidebar_bg} !important;
-    }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -132,13 +148,8 @@ st.markdown(f"""
 with st.sidebar:
     st.markdown("### ✨ Google Account")
     
-    try:
-        is_logged_in = getattr(st.user, "is_logged_in", False)
-    except Exception:
-        is_logged_in = False
-
     if not is_logged_in:
-        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Sign in to sync your Gemini workspace.</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.85rem; color: {sub_text};'>Please sign in with Google to start chatting with Metaverse_AI.</span>", unsafe_allow_html=True)
         st.button("🌐 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         user_name = getattr(st.user, "name", "Google User")
@@ -177,13 +188,12 @@ with st.sidebar:
                 st.rerun()
 
     st.markdown("---")
-    st.markdown("### ⚙️ Gemini Settings")
+    st.markdown("### ⚙️ Settings")
     
     selected_model = st.selectbox(
         "Choose Model",
         ["gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.1-flash-lite"],
-        index=0,
-        help="Powered by the new free-tier Flash family models."
+        index=0
     )
     
     theme_choice = st.selectbox(
@@ -211,7 +221,12 @@ if not api_key:
 
 # 4. Main Canvas Interface Layout
 st.markdown(f'<p class="gemini-title">Metaverse_AI</p>', unsafe_allow_html=True)
-st.markdown(f'<p class="gemini-subtitle">What would you like to explore today? • ({st.session_state.language})</p>', unsafe_allow_html=True)
+st.markdown(f'<p class="gemini-subtitle">Explore, create, and chat • ({st.session_state.language})</p>', unsafe_allow_html=True)
+
+# Strict Authentication Gate: Require Google Sign In before chatting
+if not is_logged_in:
+    st.info("🔒 **Authentication Required:** Please click **'Sign in with Google'** in the sidebar to unlock Metaverse_AI chat.")
+    st.stop()
 
 current_sid = st.session_state.current_session_id
 current_messages = st.session_state.sessions[current_sid]["messages"]
