@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Colorful vibrant dark background gradient for Dark theme, and clean pristine opposite light background for Light theme."
+        "Core Objective: Flawless responsive layout optimized for mobile phone screens with full viewport scaling and touch-friendly padding."
     ]
 
 if storage_key not in st.session_state:
@@ -74,11 +74,20 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. COLORFUL DYNAMIC STYLING (Dark Theme = Dark Colorful Gradient Background, Light Theme = Pure Clean White/Light)
+# 3. FULLY RESPONSIVE & MOBILE-OPTIMIZED COLORFUL STYLING
 if current_theme == "Light":
     theme_css = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        /* Force responsive box-sizing & mobile zoom prevention */
+        html {
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
 
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
             background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf4ff 100%) !important;
@@ -86,7 +95,21 @@ if current_theme == "Light":
             color: #0f172a !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
-            overflow-x: hidden;
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .block-container {
+            max-width: 860px !important;
+            width: 100% !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7rem !important;
+            margin: 0 auto !important;
         }
 
         [data-testid="stMain"] > div {
@@ -95,26 +118,29 @@ if current_theme == "Light":
             border: 1px solid rgba(226, 232, 240, 0.8) !important;
             border-radius: 36px !important;
             padding: 32px !important;
-            margin: 20px auto !important;
-            max-width: 860px !important;
+            margin: 10px auto !important;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05) !important;
+            width: 100% !important;
         }
 
+        /* Mobile Phone Optimization */
         @media (max-width: 768px) {
-            [data-testid="stMain"] > div {
-                padding: 14px !important;
-                margin: 6px !important;
-                border-radius: 22px !important;
-            }
             .block-container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
                 padding-top: 0.5rem !important;
                 padding-bottom: 7rem !important;
-                max-width: 100% !important;
+            }
+            [data-testid="stMain"] > div {
+                padding: 16px !important;
+                margin: 4px auto !important;
+                border-radius: 20px !important;
+                border: none !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.5rem !important;
+                font-size: 1.6rem !important;
             }
             .gemini-subtitle {
                 font-size: 0.72rem !important;
@@ -122,8 +148,14 @@ if current_theme == "Light":
             }
             .stChatMessage {
                 padding: 14px !important;
-                border-radius: 20px !important;
+                border-radius: 18px !important;
                 margin-bottom: 12px !important;
+            }
+            [data-testid="stChatInput"] {
+                bottom: 8px !important;
+                left: 6px !important;
+                right: 6px !important;
+                width: calc(100% - 12px) !important;
             }
         }
 
@@ -170,6 +202,7 @@ if current_theme == "Light":
             color: #0f172a !important;
             font-size: 0.95rem !important;
             line-height: 1.6 !important;
+            word-break: break-word;
         }
 
         .stButton button {
@@ -191,7 +224,7 @@ if current_theme == "Light":
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 4px 4px 4px !important;
+            padding: 0 4px 8px 4px !important;
         }
 
         [data-testid="stChatInput"] textarea {
@@ -287,13 +320,36 @@ else:
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
+        /* Force responsive box-sizing & mobile zoom prevention */
+        html {
+            box-sizing: border-box;
+            -webkit-text-size-adjust: 100%;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
             background: linear-gradient(135deg, #090d16 0%, #111e2e 35%, #1a102f 70%, #0f172a 100%) !important;
             background-attachment: fixed !important;
             color: #f8fafc !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
-            overflow-x: hidden;
+            width: 100vw;
+            max-width: 100%;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        .block-container {
+            max-width: 860px !important;
+            width: 100% !important;
+            padding-left: 1.5rem !important;
+            padding-right: 1.5rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7rem !important;
+            margin: 0 auto !important;
         }
 
         [data-testid="stMain"] > div {
@@ -302,26 +358,29 @@ else:
             border: 1px solid rgba(56, 189, 248, 0.25) !important;
             border-radius: 36px !important;
             padding: 32px !important;
-            margin: 20px auto !important;
-            max-width: 860px !important;
+            margin: 10px auto !important;
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(120, 50, 255, 0.1) !important;
+            width: 100% !important;
         }
 
+        /* Mobile Phone Optimization */
         @media (max-width: 768px) {
-            [data-testid="stMain"] > div {
-                padding: 14px !important;
-                margin: 6px !important;
-                border-radius: 22px !important;
-            }
             .block-container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
+                padding-left: 10px !important;
+                padding-right: 10px !important;
                 padding-top: 0.5rem !important;
                 padding-bottom: 7rem !important;
-                max-width: 100% !important;
+            }
+            [data-testid="stMain"] > div {
+                padding: 16px !important;
+                margin: 4px auto !important;
+                border-radius: 20px !important;
+                border: none !important;
+                box-shadow: none !important;
+                background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.5rem !important;
+                font-size: 1.6rem !important;
             }
             .gemini-subtitle {
                 font-size: 0.72rem !important;
@@ -329,8 +388,14 @@ else:
             }
             .stChatMessage {
                 padding: 14px !important;
-                border-radius: 20px !important;
+                border-radius: 18px !important;
                 margin-bottom: 12px !important;
+            }
+            [data-testid="stChatInput"] {
+                bottom: 8px !important;
+                left: 6px !important;
+                right: 6px !important;
+                width: calc(100% - 12px) !important;
             }
         }
 
@@ -378,6 +443,7 @@ else:
             color: #f8fafc !important;
             font-size: 0.95rem !important;
             line-height: 1.6 !important;
+            word-break: break-word;
         }
 
         .stButton button {
@@ -400,7 +466,7 @@ else:
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 4px 4px 4px !important;
+            padding: 0 4px 8px 4px !important;
         }
 
         [data-testid="stChatInput"] textarea {
