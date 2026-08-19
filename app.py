@@ -4,13 +4,18 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration
+# 1. Page Configuration with Mobile Viewport Enforcements
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="auto"
 )
+
+# Inject precise mobile viewport meta tag to force correct responsive scaling and disable pinch-zoom clipping
+st.markdown("""
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+""", unsafe_allow_html=True)
 
 api_key = st.secrets.get("GEMINI_API_KEY")
 
@@ -46,7 +51,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Flawless responsive layout optimized for mobile phone screens with full viewport scaling and touch-friendly padding."
+        "Core Objective: Flawless responsive layout optimized for mobile phone screens with full viewport scaling, automatic text wrapping, and touch-friendly padding."
     ]
 
 if storage_key not in st.session_state:
@@ -74,13 +79,12 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. FULLY RESPONSIVE & MOBILE-OPTIMIZED COLORFUL STYLING
+# 3. ROBUST MOBILE-FIRST RESPONSIVE STYLING (Guarantees full visibility on phones)
 if current_theme == "Light":
     theme_css = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-        /* Force responsive box-sizing & mobile zoom prevention */
         html {
             box-sizing: border-box;
             -webkit-text-size-adjust: 100%;
@@ -95,8 +99,8 @@ if current_theme == "Light":
             color: #0f172a !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
-            width: 100vw;
-            max-width: 100%;
+            width: 100% !important;
+            max-width: 100vw !important;
             overflow-x: hidden !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -105,9 +109,9 @@ if current_theme == "Light":
         .block-container {
             max-width: 860px !important;
             width: 100% !important;
-            padding-left: 1.5rem !important;
-            padding-right: 1.5rem !important;
-            padding-top: 2rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1.5rem !important;
             padding-bottom: 7rem !important;
             margin: 0 auto !important;
         }
@@ -116,46 +120,50 @@ if current_theme == "Light":
             background-color: rgba(255, 255, 255, 0.9) !important;
             backdrop-filter: blur(12px) !important;
             border: 1px solid rgba(226, 232, 240, 0.8) !important;
-            border-radius: 36px !important;
-            padding: 32px !important;
-            margin: 10px auto !important;
+            border-radius: 28px !important;
+            padding: 24px !important;
+            margin: 8px auto !important;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05) !important;
             width: 100% !important;
+            max-width: 100% !important;
         }
 
-        /* Mobile Phone Optimization */
+        /* Mobile Screen Strict Overrides */
         @media (max-width: 768px) {
             .block-container {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-                padding-top: 0.5rem !important;
-                padding-bottom: 7rem !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                padding-top: 0.8rem !important;
+                padding-bottom: 7.5rem !important;
+                max-width: 100% !important;
             }
             [data-testid="stMain"] > div {
-                padding: 16px !important;
-                margin: 4px auto !important;
-                border-radius: 20px !important;
+                padding: 12px !important;
+                margin: 2px auto !important;
+                border-radius: 16px !important;
                 border: none !important;
                 box-shadow: none !important;
                 background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.6rem !important;
+                font-size: 1.45rem !important;
             }
             .gemini-subtitle {
-                font-size: 0.72rem !important;
-                margin-bottom: 12px !important;
+                font-size: 0.68rem !important;
+                margin-bottom: 10px !important;
             }
             .stChatMessage {
-                padding: 14px !important;
-                border-radius: 18px !important;
-                margin-bottom: 12px !important;
+                padding: 12px !important;
+                border-radius: 14px !important;
+                margin-bottom: 10px !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
             }
             [data-testid="stChatInput"] {
-                bottom: 8px !important;
-                left: 6px !important;
-                right: 6px !important;
-                width: calc(100% - 12px) !important;
+                bottom: 6px !important;
+                left: 4px !important;
+                right: 4px !important;
+                width: calc(100% - 8px) !important;
             }
         }
 
@@ -171,20 +179,20 @@ if current_theme == "Light":
 
         .gemini-title {
             font-family: 'Google Sans', sans-serif;
-            font-size: 2.3rem;
+            font-size: 2.1rem;
             font-weight: 700;
             background: linear-gradient(135deg, #0284c7, #c026d3, #16a34a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
-            padding-top: 4px;
+            padding-top: 2px;
             letter-spacing: -0.5px;
         }
         
         .gemini-subtitle {
             color: #64748b;
-            font-size: 0.8rem;
-            margin-bottom: 20px;
+            font-size: 0.78rem;
+            margin-bottom: 18px;
             font-weight: 500;
             letter-spacing: 0.3px;
         }
@@ -192,66 +200,64 @@ if current_theme == "Light":
         .stChatMessage {
             background-color: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 26px !important;
-            padding: 20px !important;
-            margin-bottom: 16px !important;
+            border-radius: 20px !important;
+            padding: 18px !important;
+            margin-bottom: 14px !important;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
             color: #0f172a !important;
-            font-size: 0.95rem !important;
-            line-height: 1.6 !important;
-            word-break: break-word;
+            font-size: 0.92rem !important;
+            line-height: 1.55 !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
         .stButton button {
-            border-radius: 18px !important;
+            border-radius: 14px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
-            font-size: 0.82rem !important;
+            font-size: 0.8rem !important;
             border: 1px solid #cbd5e1 !important;
             background-color: #ffffff !important;
             color: #0f172a !important;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
             transition: all 0.2s ease !important;
+            width: 100% !important;
         }
         
         .stButton button:hover {
             background-color: #f1f5f9 !important;
             border-color: #0284c7 !important;
-            transform: translateY(-1px);
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 4px 8px 4px !important;
+            padding: 0 2px 6px 2px !important;
         }
 
         [data-testid="stChatInput"] textarea {
             background-color: #ffffff !important;
             color: #0f172a !important;
             border: 1px solid #cbd5e1 !important;
-            border-radius: 30px !important;
+            border-radius: 24px !important;
             font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.95rem !important;
-            padding: 16px 22px !important;
+            font-size: 0.92rem !important;
+            padding: 14px 18px !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-        }
-
-        [data-testid="stChatInput"] textarea:focus {
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15) !important;
         }
 
         .sidebar-signature {
             text-align: center;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: #64748b;
-            letter-spacing: 1.2px;
-            padding: 14px 5px;
-            margin-top: 25px;
-            margin-bottom: 25px;
+            letter-spacing: 1px;
+            padding: 12px 4px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             border-top: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
             background-color: transparent;
@@ -261,24 +267,24 @@ if current_theme == "Light":
         .ai-thinking-box {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
+            gap: 10px;
+            padding: 12px 16px;
             background-color: #f1f5f9;
             border: 1px solid #e2e8f0;
-            border-radius: 22px;
+            border-radius: 18px;
             width: fit-content;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .ai-thinking-dots {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             align-items: center;
         }
 
         .ai-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background-color: #0284c7;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
@@ -295,7 +301,7 @@ if current_theme == "Light":
 
         .ai-thinking-text {
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 500;
             color: #0284c7;
         }
@@ -303,14 +309,14 @@ if current_theme == "Light":
         .ai-replying-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            margin-bottom: 12px;
+            gap: 6px;
+            padding: 5px 12px;
+            margin-bottom: 10px;
             background-color: #e0f2fe;
             border: 1px solid #bae6fd;
-            border-radius: 16px;
+            border-radius: 14px;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: #0369a1;
         }
     </style>
@@ -320,7 +326,6 @@ else:
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-        /* Force responsive box-sizing & mobile zoom prevention */
         html {
             box-sizing: border-box;
             -webkit-text-size-adjust: 100%;
@@ -335,8 +340,8 @@ else:
             color: #f8fafc !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
-            width: 100vw;
-            max-width: 100%;
+            width: 100% !important;
+            max-width: 100vw !important;
             overflow-x: hidden !important;
             margin: 0 !important;
             padding: 0 !important;
@@ -345,9 +350,9 @@ else:
         .block-container {
             max-width: 860px !important;
             width: 100% !important;
-            padding-left: 1.5rem !important;
-            padding-right: 1.5rem !important;
-            padding-top: 2rem !important;
+            padding-left: 1rem !important;
+            padding-right: 1rem !important;
+            padding-top: 1.5rem !important;
             padding-bottom: 7rem !important;
             margin: 0 auto !important;
         }
@@ -356,46 +361,50 @@ else:
             background-color: rgba(17, 24, 39, 0.85) !important;
             backdrop-filter: blur(16px) !important;
             border: 1px solid rgba(56, 189, 248, 0.25) !important;
-            border-radius: 36px !important;
-            padding: 32px !important;
-            margin: 10px auto !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(120, 50, 255, 0.1) !important;
+            border-radius: 28px !important;
+            padding: 24px !important;
+            margin: 8px auto !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
+            max-width: 100% !important;
         }
 
-        /* Mobile Phone Optimization */
+        /* Mobile Screen Strict Overrides */
         @media (max-width: 768px) {
             .block-container {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-                padding-top: 0.5rem !important;
-                padding-bottom: 7rem !important;
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                padding-top: 0.8rem !important;
+                padding-bottom: 7.5rem !important;
+                max-width: 100% !important;
             }
             [data-testid="stMain"] > div {
-                padding: 16px !important;
-                margin: 4px auto !important;
-                border-radius: 20px !important;
+                padding: 12px !important;
+                margin: 2px auto !important;
+                border-radius: 16px !important;
                 border: none !important;
                 box-shadow: none !important;
                 background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.6rem !important;
+                font-size: 1.45rem !important;
             }
             .gemini-subtitle {
-                font-size: 0.72rem !important;
-                margin-bottom: 12px !important;
+                font-size: 0.68rem !important;
+                margin-bottom: 10px !important;
             }
             .stChatMessage {
-                padding: 14px !important;
-                border-radius: 18px !important;
-                margin-bottom: 12px !important;
+                padding: 12px !important;
+                border-radius: 14px !important;
+                margin-bottom: 10px !important;
+                word-break: break-word !important;
+                overflow-wrap: break-word !important;
             }
             [data-testid="stChatInput"] {
-                bottom: 8px !important;
-                left: 6px !important;
-                right: 6px !important;
-                width: calc(100% - 12px) !important;
+                bottom: 6px !important;
+                left: 4px !important;
+                right: 4px !important;
+                width: calc(100% - 8px) !important;
             }
         }
 
@@ -411,20 +420,20 @@ else:
 
         .gemini-title {
             font-family: 'Google Sans', sans-serif;
-            font-size: 2.3rem;
+            font-size: 2.1rem;
             font-weight: 700;
             background: linear-gradient(135deg, #38bdf8, #e879f9, #34d399, #fb7185);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
-            padding-top: 4px;
+            padding-top: 2px;
             letter-spacing: -0.5px;
         }
         
         .gemini-subtitle {
             color: #94a3b8;
-            font-size: 0.8rem;
-            margin-bottom: 20px;
+            font-size: 0.78rem;
+            margin-bottom: 18px;
             font-weight: 500;
             letter-spacing: 0.3px;
         }
@@ -433,67 +442,64 @@ else:
             background-color: rgba(30, 41, 59, 0.8) !important;
             backdrop-filter: blur(8px) !important;
             border: 1px solid rgba(56, 189, 248, 0.2) !important;
-            border-radius: 26px !important;
-            padding: 20px !important;
-            margin-bottom: 16px !important;
+            border-radius: 20px !important;
+            padding: 18px !important;
+            margin-bottom: 14px !important;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
             color: #f8fafc !important;
-            font-size: 0.95rem !important;
-            line-height: 1.6 !important;
-            word-break: break-word;
+            font-size: 0.92rem !important;
+            line-height: 1.55 !important;
+            word-break: break-word !important;
+            overflow-wrap: break-word !important;
         }
 
         .stButton button {
-            border-radius: 18px !important;
+            border-radius: 14px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
-            font-size: 0.82rem !important;
+            font-size: 0.8rem !important;
             border: 1px solid rgba(56, 189, 248, 0.3) !important;
             background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
             transition: all 0.2s ease !important;
+            width: 100% !important;
         }
         
         .stButton button:hover {
             background-color: rgba(51, 65, 85, 1) !important;
             border-color: #38bdf8 !important;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 16px rgba(56, 189, 248, 0.25) !important;
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 4px 8px 4px !important;
+            padding: 0 2px 6px 2px !important;
         }
 
         [data-testid="stChatInput"] textarea {
             background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
             border: 1px solid rgba(56, 189, 248, 0.3) !important;
-            border-radius: 30px !important;
+            border-radius: 24px !important;
             font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.95rem !important;
-            padding: 16px 22px !important;
+            font-size: 0.92rem !important;
+            padding: 14px 18px !important;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-        }
-
-        [data-testid="stChatInput"] textarea:focus {
-            border-color: #38bdf8 !important;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3) !important;
         }
 
         .sidebar-signature {
             text-align: center;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             color: #94a3b8;
-            letter-spacing: 1.2px;
-            padding: 14px 5px;
-            margin-top: 25px;
-            margin-bottom: 25px;
+            letter-spacing: 1px;
+            padding: 12px 4px;
+            margin-top: 20px;
+            margin-bottom: 20px;
             border-top: 1px solid rgba(56, 189, 248, 0.15);
             border-bottom: 1px solid rgba(56, 189, 248, 0.15);
             background-color: transparent;
@@ -503,24 +509,24 @@ else:
         .ai-thinking-box {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 14px 20px;
+            gap: 10px;
+            padding: 12px 16px;
             background-color: rgba(30, 41, 59, 0.9);
             border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 22px;
+            border-radius: 18px;
             width: fit-content;
-            margin: 10px 0;
+            margin: 8px 0;
         }
 
         .ai-thinking-dots {
             display: flex;
-            gap: 6px;
+            gap: 5px;
             align-items: center;
         }
 
         .ai-dot {
-            width: 8px;
-            height: 8px;
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
             background-color: #38bdf8;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
@@ -537,7 +543,7 @@ else:
 
         .ai-thinking-text {
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 500;
             color: #38bdf8;
         }
@@ -545,14 +551,14 @@ else:
         .ai-replying-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 6px 14px;
-            margin-bottom: 12px;
+            gap: 6px;
+            padding: 5px 12px;
+            margin-bottom: 10px;
             background-color: rgba(56, 189, 248, 0.15);
             border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 16px;
+            border-radius: 14px;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.74rem;
+            font-size: 0.72rem;
             color: #38bdf8;
         }
     </style>
@@ -598,15 +604,15 @@ with st.sidebar:
         st.markdown("### 💬 Recent chats")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
-            col1, col2 = st.columns([0.78, 0.22])
+            col1, col2 = st.columns([0.76, 0.24])
             with col1:
                 btn_type = "primary" if sid == current_sid else "secondary"
-                display_title = sdata["title"][:16] + ("..." if len(sdata["title"]) > 16 else "")
+                display_title = sdata["title"][:14] + ("..." if len(sdata["title"]) > 14 else "")
                 if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
             with col2:
-                if st.button("🗑️", key=f"del_{sid}", help="Delete chat"):
+                if st.button("🗑️", key=f"del_{sid}", help="Delete chat", use_container_width=True):
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
@@ -630,12 +636,12 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel with Live Theme Switcher
+# 5. Settings Modal Panel
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
+            <div style="border-radius: 18px; padding: 18px; margin-bottom: 16px;">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -669,18 +675,18 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
+            <div style="border-radius: 18px; padding: 18px; margin-bottom: 16px;">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
         
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
-            col_m1, col_m2 = st.columns([0.85, 0.15])
+            col_m1, col_m2 = st.columns([0.82, 0.18])
             with col_m1:
                 st.code(mem, language="text")
             with col_m2:
-                if st.button("🗑️", key=f"del_mem_{idx}"):
+                if st.button("🗑️", key=f"del_mem_{idx}", use_container_width=True):
                     memory_list.pop(idx)
                     st.rerun()
 
@@ -700,9 +706,9 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Theme: {
 
 if not is_logged_in:
     st.markdown("""
-        <div style="border-radius: 28px; padding: 40px; text-align: center; margin-top: 40px;">
-            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.4rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
-            <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+        <div style="border-radius: 20px; padding: 24px; text-align: center; margin-top: 20px;">
+            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.25rem; margin-bottom: 12px;">Welcome to Metaverse_AI</h2>
+            <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
             </p>
         </div>
@@ -720,7 +726,7 @@ prompt = st.chat_input("Type your message here...")
 
 if prompt:
     if len(current_messages) == 0:
-        current_session_data["title"] = prompt[:22]
+        current_session_data["title"] = prompt[:18]
 
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
