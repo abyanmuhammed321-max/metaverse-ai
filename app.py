@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="👑",
+    page_icon="💎",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"imperial_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"imperial_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"imperial_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"diamond_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"diamond_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"diamond_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -39,8 +39,8 @@ if prefs_storage_key not in st.session_state:
 
 if memory_storage_key not in st.session_state:
     st.session_state[memory_storage_key] = [
-        "Creator and Elite Architect: Abyan Muhammed",
-        "Creator Directive: Only mention 'Made by Abyan Muhammed' when explicitly greeted ('hello', 'hi') or when asked about your developer.",
+        "Creator and Master Architect: Abyan Muhammed",
+        "Creator Directive: Only mention 'Made by Abyan Muhammed' when explicitly greeted ('hello', 'hi') or when asked about your creator.",
         "User Session Profile: " + user_display_name
     ]
 
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Imperial Stream",
+            "title": "Diamond Stream",
             "messages": []
         }
     }
@@ -69,14 +69,14 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. IMPERIAL LUXURY NEON STYLING
+# 2. DIAMOND CRYSTALLINE NEON STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: radial-gradient(circle at 50% 0%, #15130f 0%, #080706 60%, #030202 100%) !important;
-        color: #f3f4f6 !important;
+        background: radial-gradient(circle at 50% 0%, #0d121f 0%, #07090f 50%, #020305 100%) !important;
+        color: #f8fafc !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         width: 100% !important;
     }
@@ -91,139 +91,139 @@ theme_css = """
     }
 
     [data-testid="stSidebar"] {
-        background-color: #060505 !important;
-        border-right: 1px solid rgba(212, 175, 55, 0.15) !important;
+        background-color: #05070a !important;
+        border-right: 1px solid rgba(56, 189, 248, 0.2) !important;
     }
 
     [data-testid="stSidebar"] * {
-        color: #e5e7eb !important;
+        color: #f1f5f9 !important;
     }
 
-    /* Imperial Gold Typography & Headers */
-    .imperial-header {
+    /* Diamond Neon Typography & Headers */
+    .diamond-header {
         text-align: center;
         margin-bottom: 40px;
     }
 
-    .imperial-title {
-        font-family: 'Cinzel', serif;
-        font-size: 2.5rem;
+    .diamond-title {
+        font-family: 'Syncopate', sans-serif;
+        font-size: 2.3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #fff2b2 0%, #d4af37 50%, #aa771c 100%);
+        background: linear-gradient(135deg, #ffffff 20%, #38bdf8 60%, #818cf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 8px;
-        letter-spacing: 1px;
+        margin-bottom: 10px;
+        letter-spacing: 2px;
+        text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
     }
 
-    .imperial-subtitle {
-        font-family: 'Cinzel', serif;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: #d4af37;
-        letter-spacing: 3px;
+    .diamond-subtitle {
+        font-family: 'Syncopate', sans-serif;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: #38bdf8;
+        letter-spacing: 4px;
         text-transform: uppercase;
-        opacity: 0.85;
+        opacity: 0.9;
     }
 
-    /* Luxury Golden Neon Auth Card */
-    .imperial-auth-card {
-        background: rgba(20, 18, 14, 0.85);
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(212, 175, 55, 0.35);
+    /* Diamond Glassmorphic Auth Card */
+    .diamond-auth-card {
+        background: rgba(13, 19, 33, 0.85);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(56, 189, 248, 0.35);
         border-radius: 24px;
         padding: 48px 36px;
         text-align: center;
         max-width: 480px;
         margin: 40px auto;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(212, 175, 55, 0.12);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.15);
         position: relative;
         overflow: hidden;
     }
 
-    .imperial-auth-card::before {
+    .diamond-auth-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent, #d4af37, transparent);
+        background: linear-gradient(90deg, transparent, #38bdf8, transparent);
     }
 
-    .imperial-auth-icon {
+    .diamond-auth-icon {
         font-size: 2.2rem;
         margin-bottom: 18px;
         display: inline-block;
         padding: 16px;
-        background: rgba(212, 175, 55, 0.08);
+        background: rgba(56, 189, 248, 0.1);
         border-radius: 20px;
-        border: 1px solid rgba(212, 175, 55, 0.3);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
     }
 
-    .imperial-auth-heading {
-        font-family: 'Cinzel', serif;
-        font-size: 1.4rem;
+    .diamond-auth-heading {
+        font-family: 'Syncopate', sans-serif;
+        font-size: 1.2rem;
         font-weight: 700;
         color: #ffffff;
         margin-bottom: 10px;
-        letter-spacing: 0.5px;
+        letter-spacing: 1px;
     }
 
-    .imperial-auth-text {
+    .diamond-auth-text {
         font-size: 0.9rem;
-        color: #a1a1aa;
+        color: #94a3b8;
         line-height: 1.6;
         margin-bottom: 32px;
     }
 
-    /* Luxurious Chat Bubbles with Gold Border Glow */
+    /* Crystalline Neon Chat Bubbles */
     .stChatMessage {
-        background: rgba(18, 16, 13, 0.85) !important;
-        backdrop-filter: blur(15px) !important;
-        border: 1px solid rgba(212, 175, 55, 0.2) !important;
+        background: rgba(13, 19, 33, 0.8) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(56, 189, 248, 0.22) !important;
         border-radius: 18px !important;
         padding: 20px 22px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
-        color: #f3f4f6 !important;
+        color: #f1f5f9 !important;
         font-size: 0.96rem !important;
         line-height: 1.7 !important;
     }
 
-    /* Gold Neon Buttons */
+    /* Crystalline Neon Buttons */
     .stButton button {
         border-radius: 12px !important;
-        font-family: 'Cinzel', sans-serif !important;
+        font-family: 'Syncopate', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 0.82rem !important;
-        letter-spacing: 1px !important;
-        border: 1px solid rgba(212, 175, 55, 0.5) !important;
-        background: linear-gradient(135deg, #d4af37 0%, #996515 100%) !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 1.5px !important;
+        border: 1px solid rgba(56, 189, 248, 0.5) !important;
+        background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
         color: #ffffff !important;
         padding: 12px 24px !important;
         width: 100% !important;
-        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3) !important;
-        transition: all 0.3s ease !important;
+        box-shadow: 0 6px 25px rgba(56, 189, 248, 0.35) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .stButton button:hover {
-        background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%) !important;
-        color: #000000 !important;
-        border-color: #fff2b2 !important;
-        box-shadow: 0 10px 25px rgba(212, 175, 55, 0.5) !important;
+        background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%) !important;
+        border-color: #7dd3fc !important;
+        box-shadow: 0 10px 30px rgba(56, 189, 248, 0.6) !important;
         transform: translateY(-2px);
     }
 
     /* Fixed Chat Input */
     [data-testid="stChatInput"] textarea {
-        background: rgba(18, 16, 13, 0.95) !important;
+        background: rgba(13, 19, 33, 0.95) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(212, 175, 55, 0.35) !important;
+        border: 1px solid rgba(56, 189, 248, 0.35) !important;
         border-radius: 16px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.95rem !important;
@@ -233,32 +233,32 @@ theme_css = """
 
     .sidebar-signature {
         text-align: center;
-        font-family: 'Cinzel', serif;
-        font-size: 0.68rem;
-        color: #d4af37;
+        font-family: 'Syncopate', sans-serif;
+        font-size: 0.6rem;
+        color: #38bdf8;
         letter-spacing: 2px;
         padding: 18px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(212, 175, 55, 0.2);
-        border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        border-top: 1px solid rgba(56, 189, 248, 0.2);
+        border-bottom: 1px solid rgba(56, 189, 248, 0.2);
         text-transform: uppercase;
-        background: rgba(212, 175, 55, 0.04);
+        background: rgba(56, 189, 248, 0.04);
         font-weight: 700;
     }
 
-    .imperial-status-badge {
+    .diamond-status-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(212, 175, 55, 0.08);
-        border: 1px solid rgba(212, 175, 55, 0.3);
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.3);
         border-radius: 8px;
-        font-family: 'Cinzel', serif;
-        font-size: 0.7rem;
-        color: #d4af37;
+        font-family: 'Syncopate', sans-serif;
+        font-size: 0.62rem;
+        color: #38bdf8;
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -270,14 +270,14 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### 👑 Imperial Nexus")
+    st.markdown("### 💎 Diamond Nexus")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #a1a1aa;'>Authenticate to initialize your session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #94a3b8;'>Authenticate to initialize your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #d4af37;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #38bdf8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -294,10 +294,10 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Imperial Stream", use_container_width=True):
+        if st.button("➕ New Diamond Stream", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Imperial Stream",
+                "title": "Diamond Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -317,7 +317,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Imperial Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Diamond Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -340,7 +340,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 # 4. Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
-        st.markdown("#### Imperial Configuration")
+        st.markdown("#### Diamond Configuration")
         models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
@@ -364,7 +364,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
-        st.markdown("#### Imperial Memory Vault")
+        st.markdown("#### Diamond Memory Vault")
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
             col_m1, col_m2 = st.columns([0.82, 0.18])
@@ -385,19 +385,19 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Main Content Area
 st.markdown(f"""
-    <div class="imperial-header">
-        <div class="imperial-title">Metaverse AI</div>
-        <div class="imperial-subtitle">{selected_model} &bull; {lang_choice}</div>
+    <div class="diamond-header">
+        <div class="diamond-title">Metaverse AI</div>
+        <div class="diamond-subtitle">{selected_model} &bull; {lang_choice}</div>
     </div>
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div class="imperial-auth-card">
-            <div class="imperial-auth-icon">👑</div>
-            <div class="imperial-auth-heading">Enter the Imperial Gateway</div>
-            <div class="imperial-auth-text">
-                Authenticate with Google to unlock high-grade generative intelligence, persistent memory vaults, and luxury AI streams.
+        <div class="diamond-auth-card">
+            <div class="diamond-auth-icon">💎</div>
+            <div class="diamond-auth-heading">Enter the Diamond Gateway</div>
+            <div class="diamond-auth-text">
+                Authenticate with Google to unlock crystalline generative intelligence, persistent memory vaults, and luxury diamond streams.
             </div>
     """, unsafe_allow_html=True)
     
@@ -415,7 +415,7 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 6. Chat Execution Pipeline
-prompt = st.chat_input("Command the imperial intelligence...")
+prompt = st.chat_input("Command the diamond intelligence...")
 
 if prompt:
     if len(current_messages) == 0:
@@ -428,7 +428,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="imperial-status-badge">⚡ Generating Imperial Output...</div>
+            <div class="diamond-status-badge">💎 Synthesizing Diamond Output...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
