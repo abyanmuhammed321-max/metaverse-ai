@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a fluid glass aesthetic with dynamic Light/Dark theme switching across the interface."
+        "Core Objective: Deliver solid background themes for Light and Dark modes across the interface."
     ]
 
 if storage_key not in st.session_state:
@@ -74,19 +74,15 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. DYNAMIC THEMED LIQUID GLASS STYLING
+# 3. SOLID THEMED STYLING (Dark Mode = Solid Dark Background, Light Mode = Clean Light Background)
 if current_theme == "Light":
     theme_css = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-            background: transparent !important;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 55%) !important;
-            background-attachment: fixed !important;
+            background-color: #f8fafc !important;
+            background-image: none !important;
             color: #0f172a !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
@@ -94,16 +90,13 @@ if current_theme == "Light":
         }
 
         [data-testid="stMain"] > div {
-            background: rgba(255, 255, 255, 0.55) !important;
-            backdrop-filter: blur(45px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(45px) saturate(190%) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
             border-radius: 36px !important;
             padding: 32px !important;
             margin: 20px auto !important;
             max-width: 860px !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08), 
-                        inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
         }
 
         @media (max-width: 768px) {
@@ -134,12 +127,9 @@ if current_theme == "Light":
         }
 
         [data-testid="stSidebar"] {
-            background: rgba(241, 245, 249, 0.75) !important;
-            backdrop-filter: blur(40px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-            border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+            background-color: #f1f5f9 !important;
+            border-right: 1px solid #e2e8f0 !important;
             z-index: 1000;
-            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.05);
         }
         
         [data-testid="stSidebar"] * {
@@ -167,15 +157,12 @@ if current_theme == "Light":
         }
 
         .stChatMessage {
-            background: rgba(255, 255, 255, 0.65) !important;
-            backdrop-filter: blur(35px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
-            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            background-color: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
             border-radius: 26px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
-            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.05), 
-                        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
+            box-shadow: none !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
@@ -189,22 +176,17 @@ if current_theme == "Light":
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
             font-size: 0.82rem !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
-            background: rgba(255, 255, 255, 0.7) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border: 1px solid #cbd5e1 !important;
+            background-color: #ffffff !important;
             color: #0f172a !important;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease !important;
         }
         
         .stButton button:hover {
-            background: rgba(255, 255, 255, 0.95) !important;
-            border-color: rgba(2, 132, 199, 0.4) !important;
-            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15), 
-                        inset 0 1px 2px rgba(255, 255, 255, 1) !important;
-            transform: translateY(-1.5px);
+            background-color: #f1f5f9 !important;
+            border-color: #0284c7 !important;
+            transform: translateY(-1px);
         }
 
         [data-testid="stChatInput"] {
@@ -212,23 +194,19 @@ if current_theme == "Light":
         }
 
         [data-testid="stChatInput"] textarea {
-            background: rgba(255, 255, 255, 0.75) !important;
-            backdrop-filter: blur(40px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+            background-color: #ffffff !important;
             color: #0f172a !important;
-            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid #cbd5e1 !important;
             border-radius: 30px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-size: 0.95rem !important;
             padding: 16px 22px !important;
-            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.06), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
         }
 
         [data-testid="stChatInput"] textarea:focus {
-            border-color: rgba(2, 132, 199, 0.5) !important;
-            box-shadow: 0 0 25px rgba(2, 132, 199, 0.15), 
-                        inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15) !important;
         }
 
         .sidebar-signature {
@@ -240,10 +218,9 @@ if current_theme == "Light":
             padding: 14px 5px;
             margin-top: 25px;
             margin-bottom: 25px;
-            border-top: 1px solid rgba(0, 0, 0, 0.06);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-            background: rgba(0, 0, 0, 0.01);
-            backdrop-filter: blur(15px);
+            border-top: 1px solid #e2e8f0;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: transparent;
             text-transform: uppercase;
         }
 
@@ -252,14 +229,11 @@ if current_theme == "Light":
             align-items: center;
             gap: 12px;
             padding: 14px 20px;
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(35px) saturate(180%);
-            -webkit-backdrop-filter: blur(35px) saturate(180%);
-            border: 1px solid rgba(2, 132, 199, 0.25);
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
             border-radius: 22px;
             width: fit-content;
             margin: 10px 0;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9);
         }
 
         .ai-thinking-dots {
@@ -274,12 +248,11 @@ if current_theme == "Light":
             border-radius: 50%;
             background-color: #0284c7;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 0 10px rgba(2, 132, 199, 0.5);
         }
 
         .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c026d3; box-shadow: 0 0 10px rgba(192, 38, 211, 0.5); }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #e11d48; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
+        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c026d3; }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #e11d48; }
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
@@ -299,15 +272,12 @@ if current_theme == "Light":
             gap: 8px;
             padding: 6px 14px;
             margin-bottom: 12px;
-            background: rgba(2, 132, 199, 0.08);
-            border: 1px solid rgba(2, 132, 199, 0.25);
+            background-color: #e0f2fe;
+            border: 1px solid #bae6fd;
             border-radius: 16px;
             font-family: 'Google Sans', sans-serif;
             font-size: 0.74rem;
-            color: #0284c7;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            color: #0369a1;
         }
     </style>
     """
@@ -317,12 +287,8 @@ else:
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-            background: transparent !important;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 55%) !important;
-            background-attachment: fixed !important;
+            background-color: #0b0f19 !important;
+            background-image: none !important;
             color: #f8fafc !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
@@ -330,16 +296,13 @@ else:
         }
 
         [data-testid="stMain"] > div {
-            background: rgba(15, 23, 42, 0.15) !important;
-            backdrop-filter: blur(45px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(45px) saturate(190%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background-color: #111827 !important;
+            border: 1px solid #1f2937 !important;
             border-radius: 36px !important;
             padding: 32px !important;
             margin: 20px auto !important;
             max-width: 860px !important;
-            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 
-                        inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
         }
 
         @media (max-width: 768px) {
@@ -370,12 +333,9 @@ else:
         }
 
         [data-testid="stSidebar"] {
-            background: rgba(10, 15, 30, 0.25) !important;
-            backdrop-filter: blur(40px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+            background-color: #090d16 !important;
+            border-right: 1px solid #1f2937 !important;
             z-index: 1000;
-            box-shadow: 15px 0 50px rgba(0, 0, 0, 0.5);
         }
         
         [data-testid="stSidebar"] * {
@@ -392,7 +352,6 @@ else:
             margin-bottom: 0px;
             padding-top: 4px;
             letter-spacing: -0.5px;
-            filter: drop-shadow(0 2px 20px rgba(232, 121, 249, 0.45));
         }
         
         .gemini-subtitle {
@@ -404,15 +363,12 @@ else:
         }
 
         .stChatMessage {
-            background: rgba(30, 41, 59, 0.2) !important;
-            backdrop-filter: blur(35px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            background-color: #1e293b !important;
+            border: 1px solid #334155 !important;
             border-radius: 26px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
-            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4), 
-                        inset 0 1px 1px 0 rgba(255, 255, 255, 0.15) !important;
+            box-shadow: none !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
@@ -426,22 +382,17 @@ else:
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
             font-size: 0.82rem !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
-            background: rgba(51, 65, 85, 0.25) !important;
-            backdrop-filter: blur(30px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            border: 1px solid #334155 !important;
+            background-color: #1e293b !important;
             color: #f8fafc !important;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+            transition: all 0.2s ease !important;
         }
         
         .stButton button:hover {
-            background: rgba(71, 85, 105, 0.4) !important;
-            border-color: rgba(56, 189, 248, 0.5) !important;
-            box-shadow: 0 12px 35px rgba(56, 189, 248, 0.3), 
-                        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
-            transform: translateY(-1.5px);
+            background-color: #334155 !important;
+            border-color: #38bdf8 !important;
+            transform: translateY(-1px);
         }
 
         [data-testid="stChatInput"] {
@@ -449,23 +400,19 @@ else:
         }
 
         [data-testid="stChatInput"] textarea {
-            background: rgba(15, 23, 42, 0.3) !important;
-            backdrop-filter: blur(40px) saturate(190%) !important;
-            -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+            background-color: #1e293b !important;
             color: #f8fafc !important;
-            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border: 1px solid #334155 !important;
             border-radius: 30px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-size: 0.95rem !important;
             padding: 16px 22px !important;
-            box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.5), 
-                        inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
         }
 
         [data-testid="stChatInput"] textarea:focus {
-            border-color: rgba(56, 189, 248, 0.6) !important;
-            box-shadow: 0 0 30px rgba(56, 189, 248, 0.25), 
-                        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
         }
 
         .sidebar-signature {
@@ -477,10 +424,9 @@ else:
             padding: 14px 5px;
             margin-top: 25px;
             margin-bottom: 25px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(255, 255, 255, 0.01);
-            backdrop-filter: blur(15px);
+            border-top: 1px solid #1f2937;
+            border-bottom: 1px solid #1f2937;
+            background-color: transparent;
             text-transform: uppercase;
         }
 
@@ -489,14 +435,11 @@ else:
             align-items: center;
             gap: 12px;
             padding: 14px 20px;
-            background: rgba(30, 41, 59, 0.25);
-            backdrop-filter: blur(35px) saturate(180%);
-            -webkit-backdrop-filter: blur(35px) saturate(180%);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background-color: #1e293b;
+            border: 1px solid #334155;
             border-radius: 22px;
             width: fit-content;
             margin: 10px 0;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
 
         .ai-thinking-dots {
@@ -511,12 +454,11 @@ else:
             border-radius: 50%;
             background-color: #38bdf8;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
         }
 
         .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #e879f9; box-shadow: 0 0 12px rgba(232, 121, 249, 0.8); }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fb7185; box-shadow: 0 0 12px rgba(251, 113, 133, 0.8); }
+        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #e879f9; }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fb7185; }
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
@@ -536,15 +478,12 @@ else:
             gap: 8px;
             padding: 6px 14px;
             margin-bottom: 12px;
-            background: rgba(56, 189, 248, 0.1);
+            background-color: rgba(56, 189, 248, 0.1);
             border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 16px;
             font-family: 'Google Sans', sans-serif;
             font-size: 0.74rem;
             color: #38bdf8;
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
         }
     </style>
     """
@@ -625,7 +564,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);">
+            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px;">
                 <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -706,7 +645,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Message Handling & Glassy Animated AI Reply Engine
+# 8. Realtime Message Handling & Animated AI Reply Engine
 prompt = st.chat_input("Type your message here...")
 
 if prompt:
