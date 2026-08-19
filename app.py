@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Next-gen Neon Cyber-Luxe styling with optimized responsive mobile alignment."
+        "Core Objective: Next-gen Neon Cyber-Luxe styling with absolute mobile alignment."
     ]
 
 if storage_key not in st.session_state:
@@ -76,7 +76,7 @@ if "show_brain_modal" not in st.session_state:
 
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# Luxury Alignment Configurations (Desktop vs Mobile handling)
+# Luxury Alignment Configurations (Desktop CSS)
 if current_alignment == "Neon Obsidian Vault":
     desktop_container_css = """
         .block-container {
@@ -144,12 +144,12 @@ else:
         }
     """
 
-# 3. ULTIMATE RESPONSIVE & NEON CYBER-LUXE STYLING
+# 3. ULTIMATE RESPONSIVE STYLING & MOBILE ALIGNMENT
 theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    html, body, [data-testid="stAppViewContainer"] {{
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
         box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
@@ -178,57 +178,62 @@ theme_css = f"""
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
-            padding-left: 12px !important;
-            padding-right: 12px !important;
-            padding-top: 0.8rem !important;
-            padding-bottom: 7rem !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 0.5rem !important;
+            padding-bottom: 7.5rem !important;
             margin: 0 !important;
         }}
         [data-testid="stMain"] > div {{
-            background: rgba(12, 14, 20, 0.95) !important;
+            background: rgba(12, 14, 20, 0.98) !important;
             backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(0, 243, 255, 0.2) !important;
+            border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
-            border-radius: 16px !important;
-            padding: 14px !important;
-            margin: 4px auto !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+            border-radius: 14px !important;
+            padding: 10px !important;
+            margin: 2px auto !important;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         .gemini-title {{
-            font-size: 1.5rem !important;
-            letter-spacing: 1px !important;
+            font-size: 1.35rem !important;
+            letter-spacing: 0.5px !important;
+            text-align: center !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.68rem !important;
-            margin-bottom: 14px !important;
-            letter-spacing: 0.8px !important;
+            font-size: 0.62rem !important;
+            margin-bottom: 12px !important;
+            letter-spacing: 0.5px !important;
+            text-align: center !important;
         }}
         .stChatMessage {{
-            padding: 12px !important;
-            border-radius: 14px !important;
-            margin-bottom: 10px !important;
+            padding: 10px 12px !important;
+            border-radius: 12px !important;
+            margin-bottom: 8px !important;
+            width: 100% !important;
         }}
+        /* Fix chat input bar pinning perfectly to phone screen bottom */
         [data-testid="stChatInput"] {{
             position: fixed !important;
             bottom: 0px !important;
             left: 0px !important;
             right: 0px !important;
             width: 100% !important;
-            padding: 8px 10px 12px 10px !important;
-            background: rgba(6, 8, 14, 0.95) !important;
+            padding: 6px 8px 10px 8px !important;
+            background: rgba(6, 8, 14, 0.98) !important;
             backdrop-filter: blur(15px) !important;
             z-index: 99999 !important;
-            border-top: 1px solid rgba(0, 243, 255, 0.25) !important;
+            border-top: 1px solid rgba(0, 243, 255, 0.3) !important;
         }}
         [data-testid="stChatInput"] textarea {{
-            font-size: 16px !important; /* Prevents auto-zoom on mobile safari/chrome */
-            padding: 12px 16px !important;
-            border-radius: 14px !important;
+            font-size: 16px !important; /* Prevents auto-zoom on iOS/Android */
+            padding: 10px 14px !important;
+            border-radius: 12px !important;
         }}
         .mobile-signin-card {{
-            padding: 24px 16px !important;
-            margin-top: 15px !important;
+            padding: 20px 12px !important;
+            margin-top: 10px !important;
+            width: 100% !important;
         }}
     }}
 
@@ -339,11 +344,12 @@ theme_css = f"""
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 14px 20px;
+        padding: 12px 16px;
         background: rgba(0, 243, 255, 0.08);
         border: 1px solid rgba(0, 243, 255, 0.4);
-        border-radius: 16px;
+        border-radius: 14px;
         width: fit-content;
+        max-width: 100%;
         margin: 8px 0;
         box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
     }}
@@ -355,8 +361,8 @@ theme_css = f"""
     }}
 
     .ai-dot {{
-        width: 8px;
-        height: 8px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background-color: #00f3ff;
         box-shadow: 0 0 8px #00f3ff;
@@ -374,7 +380,7 @@ theme_css = f"""
 
     .ai-thinking-text {{
         font-family: 'Cinzel', serif;
-        font-size: 0.78rem;
+        font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.8px;
         color: #00f3ff;
@@ -385,13 +391,13 @@ theme_css = f"""
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 14px;
-        margin-bottom: 12px;
+        padding: 5px 12px;
+        margin-bottom: 10px;
         background: rgba(0, 243, 255, 0.12);
         border: 1px solid rgba(0, 243, 255, 0.35);
-        border-radius: 12px;
+        border-radius: 10px;
         font-family: 'Cinzel', serif;
-        font-size: 0.7rem;
+        font-size: 0.65rem;
         color: #00f3ff;
         font-weight: 700;
         letter-spacing: 0.8px;
@@ -477,8 +483,8 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1.05rem; color: #00f3ff;">⚙️ Cyber-Luxe Config & Layouts</h3>
+            <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">⚙️ Cyber-Luxe Config & Layouts</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -513,8 +519,8 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1.05rem; color: #00f3ff;">🧠 Neural Memory Vault</h3>
+            <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">🧠 Neural Memory Vault</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -545,26 +551,27 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {
 if not is_logged_in:
     st.markdown("""
         <div class="mobile-signin-card" style="
-            background: linear-gradient(135deg, rgba(16, 20, 32, 0.95) 0%, rgba(25, 15, 35, 0.95) 100%);
+            background: linear-gradient(135deg, rgba(16, 20, 32, 0.98) 0%, rgba(25, 15, 35, 0.98) 100%);
             border: 1px solid rgba(0, 243, 255, 0.35);
             border-top: 3px solid #00f3ff;
-            border-radius: 28px;
-            padding: 36px 20px;
+            border-radius: 20px;
+            padding: 28px 16px;
             text-align: center;
-            margin-top: 20px;
-            box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
+            margin: 10px auto;
+            max-width: 100%;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.15), 0 15px 40px rgba(0, 0, 0, 0.8);
         ">
-            <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
-            <h2 style="font-family: 'Cinzel', serif; font-size: 1.35rem; margin-bottom: 10px; color: #ffffff; letter-spacing: 0.8px;">
+            <div style="font-size: 2.2rem; margin-bottom: 10px;">⚡</div>
+            <h2 style="font-family: 'Cinzel', serif; font-size: 1.2rem; margin-bottom: 8px; color: #ffffff; letter-spacing: 0.5px;">
                 Welcome to Metaverse_AI Elite
             </h2>
-            <p style="font-size: 0.88rem; line-height: 1.5; margin-bottom: 24px; color: #94a3b8; max-width: 450px; margin-left: auto; margin-right: auto;">
+            <p style="font-size: 0.82rem; line-height: 1.5; margin-bottom: 20px; color: #94a3b8; max-width: 400px; margin-left: auto; margin-right: auto;">
                 Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.1 Flash Lite. Authenticate via Google to initialize your secure session.
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    col_empty1, col_btn, col_empty2 = st.columns([0.2, 2.6, 0.2])
+    col_empty1, col_btn, col_empty2 = st.columns([0.1, 2.8, 0.1])
     with col_btn:
         st.write("")
         st.button("🔑 Authenticate with Google", on_click=st.login, use_container_width=True, type="primary")
