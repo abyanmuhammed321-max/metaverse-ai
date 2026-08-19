@@ -40,7 +40,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a clean, professional dark mode experience with glassmorphism and perfect mobile responsiveness."
+        "Core Objective: Deliver a clean, professional dark mode experience with enhanced glassmorphism and perfect mobile responsiveness."
     ]
 
 # 2. Comprehensive Persistent Storage
@@ -70,40 +70,43 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. Clean Professional Dark Mode with Glass Touch & Mobile Responsive Layout
+# 3. Clean Professional Dark Mode with Advanced Glassmorphism & Mobile Responsive Alignment
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-    /* --- CLEAN STATIC DARK BASE (NO BACKGROUND ANIMATIONS) --- */
+    /* --- CLEAN STATIC DARK BASE --- */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-        background-color: #0b0f19 !important;
+        background-color: #080b12 !important;
         color: #e3e3e3 !important;
         font-family: 'Google Sans', 'Inter', sans-serif;
         min-height: 100vh;
         overflow-x: hidden;
     }
 
-    /* --- MOBILE RESPONSIVE FIXES --- */
+    /* --- MOBILE RESPONSIVE ALIGNMENT & PADDING --- */
     @media (max-width: 768px) {
         .block-container {
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1.5rem !important;
-            padding-bottom: 6rem !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 1rem !important;
+            padding-bottom: 7rem !important;
             max-width: 100% !important;
         }
         .gemini-title {
-            font-size: 1.5rem !important;
+            font-size: 1.4rem !important;
         }
         .gemini-subtitle {
-            font-size: 0.75rem !important;
-            margin-bottom: 15px !important;
+            font-size: 0.72rem !important;
+            margin-bottom: 12px !important;
         }
         .stChatMessage {
-            padding: 12px !important;
-            border-radius: 12px !important;
+            padding: 14px !important;
+            border-radius: 16px !important;
             margin-bottom: 12px !important;
+        }
+        [data-testid="stChatInput"] {
+            padding: 0 4px 4px 4px !important;
         }
         [data-testid="stChatInput"] textarea {
             font-size: 0.9rem !important;
@@ -113,10 +116,10 @@ st.markdown("""
 
     /* --- SIDEBAR GLASS TOUCH --- */
     [data-testid="stSidebar"] {
-        background-color: rgba(13, 17, 26, 0.85) !important;
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border-right: 1px solid rgba(255, 255, 255, 0.08);
+        background-color: rgba(11, 15, 25, 0.75) !important;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-right: 1px solid rgba(255, 255, 255, 0.06);
         z-index: 1000;
     }
     
@@ -127,38 +130,38 @@ st.markdown("""
     /* --- TYPOGRAPHY HEADER --- */
     .gemini-title {
         font-family: 'Google Sans', sans-serif;
-        font-size: 2.1rem;
+        font-size: 2rem;
         font-weight: 600;
         background: linear-gradient(90deg, #8ab4f8, #c58af9, #f28b82);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0px;
-        padding-top: 5px;
+        padding-top: 4px;
         letter-spacing: -0.5px;
     }
     
     .gemini-subtitle {
         color: #9aa0a6;
-        font-size: 0.82rem;
-        margin-bottom: 25px;
+        font-size: 0.8rem;
+        margin-bottom: 20px;
         font-weight: 500;
     }
 
     /* --- GLASSY TOUCH AI CHAT BUBBLES --- */
     .stChatMessage {
-        background-color: rgba(22, 27, 39, 0.7) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
+        background: rgba(22, 27, 42, 0.55) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
         border: 1px solid rgba(255, 255, 255, 0.08) !important;
-        border-radius: 16px !important;
-        padding: 16px !important;
+        border-radius: 20px !important;
+        padding: 18px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37) !important;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.45), inset 0 1px 0 0 rgba(255, 255, 255, 0.08) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
         color: #e3e3e3 !important;
-        font-size: 0.96rem !important;
+        font-size: 0.95rem !important;
         line-height: 1.6 !important;
     }
 
@@ -168,55 +171,56 @@ st.markdown("""
         font-family: 'Google Sans', sans-serif !important;
         font-weight: 500 !important;
         font-size: 0.82rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        background-color: rgba(26, 32, 47, 0.75) !important;
-        backdrop-filter: blur(12px) !important;
-        -webkit-backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        background: rgba(26, 33, 50, 0.6) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
         color: #e3e3e3 !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
         transition: all 0.2s ease !important;
     }
     
     .stButton button:hover {
-        background-color: rgba(40, 48, 68, 0.9) !important;
-        border-color: rgba(138, 180, 248, 0.4) !important;
-        box-shadow: 0 4px 20px rgba(138, 180, 248, 0.2);
+        background: rgba(40, 50, 75, 0.75) !important;
+        border-color: rgba(138, 180, 248, 0.35) !important;
+        box-shadow: 0 6px 25px rgba(138, 180, 248, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
     }
 
     /* --- GLASSY CHAT INPUT BOX --- */
     [data-testid="stChatInput"] {
-        padding: 0 5px 5px 5px !important;
+        padding: 0 4px 4px 4px !important;
     }
 
     [data-testid="stChatInput"] textarea {
-        background-color: rgba(16, 21, 33, 0.85) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
+        background: rgba(15, 20, 32, 0.75) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
         color: #e3e3e3 !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 20px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 24px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 12px 18px !important;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+        padding: 14px 20px !important;
+        box-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
     }
 
     [data-testid="stChatInput"] textarea:focus {
-        border-color: rgba(138, 180, 248, 0.5) !important;
-        box-shadow: 0 0 15px rgba(138, 180, 248, 0.2) !important;
+        border-color: rgba(138, 180, 248, 0.45) !important;
+        box-shadow: 0 0 20px rgba(138, 180, 248, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
     }
 
     /* --- CREATOR SIGNATURE --- */
     .sidebar-signature {
         text-align: center;
         font-family: 'Google Sans', sans-serif;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         color: #9aa0a6;
         letter-spacing: 0.5px;
         padding: 12px 5px;
-        margin-top: 30px;
-        margin-bottom: 30px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        margin-top: 25px;
+        margin-bottom: 25px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         text-transform: uppercase;
     }
 
@@ -226,14 +230,14 @@ st.markdown("""
         align-items: center;
         gap: 12px;
         padding: 12px 18px;
-        background: rgba(22, 27, 39, 0.8);
-        backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(138, 180, 248, 0.25);
-        border-radius: 16px;
+        background: rgba(22, 27, 42, 0.65);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(138, 180, 248, 0.2);
+        border-radius: 18px;
         width: fit-content;
         margin: 10px 0;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     .ai-thinking-dots {
@@ -261,7 +265,7 @@ st.markdown("""
 
     .ai-thinking-text {
         font-family: 'Google Sans', sans-serif;
-        font-size: 0.88rem;
+        font-size: 0.85rem;
         font-weight: 500;
         color: #8ab4f8;
     }
@@ -272,12 +276,14 @@ st.markdown("""
         gap: 8px;
         padding: 4px 12px;
         margin-bottom: 10px;
-        background: rgba(138, 180, 248, 0.12);
-        border: 1px solid rgba(138, 180, 248, 0.3);
+        background: rgba(138, 180, 248, 0.1);
+        border: 1px solid rgba(138, 180, 248, 0.25);
         border-radius: 12px;
         font-family: 'Google Sans', sans-serif;
-        font-size: 0.75rem;
+        font-size: 0.74rem;
         color: #8ab4f8;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -356,7 +362,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: rgba(22, 27, 39, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+            <div style="background: rgba(22, 27, 42, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -386,7 +392,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background-color: rgba(22, 27, 39, 0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+            <div style="background: rgba(22, 27, 42, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
                 <h3 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
@@ -416,7 +422,7 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language
 
 if not is_logged_in:
     st.markdown("""
-        <div style="background-color: rgba(22, 27, 39, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 35px; text-align: center; margin-top: 40px;">
+        <div style="background: rgba(22, 27, 42, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 20px; padding: 35px; text-align: center; margin-top: 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);">
             <h2 style="font-family: 'Google Sans', sans-serif; color: #e3e3e3; font-size: 1.3rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
             <p style="color: #9aa0a6; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
