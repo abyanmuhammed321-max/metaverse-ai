@@ -6,13 +6,12 @@ from google.genai import types
 
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
-    page_title="Metaverse_AI",
-    page_icon="🔮",
-    layout="wide",
+    page_title="Metaverse AI",
+    page_icon="⚡",
+    layout="centered",
     initial_sidebar_state="auto"
 )
 
-# Enforce strict mobile viewport containment and scaling
 st.markdown("""
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 """, unsafe_allow_html=True)
@@ -28,32 +27,28 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"zenith_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"zenith_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"zenith_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.5-flash-lite",
-        "lang_choice": "English",
-        "chat_alignment": "Neon Horizon"
+        "lang_choice": "English"
     }
 
-# Initialize Memory Bank
 if memory_storage_key not in st.session_state:
     st.session_state[memory_storage_key] = [
-        "Creator and Master Developer: Abyan Muhammed",
-        "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
-        "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Cybernetic Neon Horizon Layout with absolute visual prestige."
+        "Creator and Lead Architect: Abyan Muhammed",
+        "Creator Rule: Only mention 'Made by Abyan Muhammed' when explicitly greeted ('hello', 'hi') or when asked about the creator.",
+        "User Session Profile: " + user_display_name
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Quantum Stream",
+            "title": "New Chat",
             "messages": []
         }
     }
@@ -74,398 +69,225 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Horizon")
+# 2. ZENITH CLEAN ARCHITECTURE STYLING
+theme_css = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
-# Container CSS Configurations
-desktop_container_css = """
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
+        background-color: #0a0a0c !important;
+        color: #ededef !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        width: 100% !important;
+    }
+
     .block-container {
-        max-width: 1320px !important;
-        padding-left: 3rem !important;
-        padding-right: 3rem !important;
-        padding-top: 2rem !important;
-        padding-bottom: 7.5rem !important;
+        max-width: 860px !important;
+        padding-top: 3rem !important;
+        padding-bottom: 7rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
         margin: 0 auto !important;
     }
-    [data-testid="stMain"] > div {
-        background: rgba(13, 17, 28, 0.75) !important;
-        backdrop-filter: blur(25px) !important;
-        border: 1px solid rgba(168, 85, 247, 0.2) !important;
-        border-top: 3px solid #a855f7 !important;
-        border-radius: 28px !important;
-        padding: 48px !important;
-        margin: 16px auto !important;
-        width: 100% !important;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 30px rgba(168, 85, 247, 0.1) !important;
+
+    [data-testid="stSidebar"] {
+        background-color: #070709 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
     }
-"""
 
-# 3. CYBERNETIC NEON HORIZON STYLING & SIGN-IN LAYOUT
-theme_css = f"""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+    [data-testid="stSidebar"] * {
+        color: #ededef !important;
+    }
 
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
-        box-sizing: border-box !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        -webkit-text-size-adjust: 100%;
-    }}
-
-    *, *:before, *:after {{
-        box-sizing: inherit;
-    }}
-
-    .stApp {{
-        background: radial-gradient(circle at 15% 15%, #1e1b4b 0%, #09090b 50%, #030305 100%) !important;
-        background-attachment: fixed !important;
-        color: #f4f4f5 !important;
-        font-family: 'Outfit', sans-serif;
-        width: 100% !important;
-        overflow-x: hidden !important;
-    }}
-
-    {desktop_container_css}
-
-    /* Strict Mobile Screen Optimization (< 768px) */
-    @media (max-width: 768px) {{
-        .block-container {{
-            max-width: 100% !important;
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-            padding-top: 1rem !important;
-            padding-bottom: 8rem !important;
-            margin: 0 !important;
-        }}
-        [data-testid="stMain"] > div {{
-            background: rgba(13, 17, 28, 0.85) !important;
-            border: 1px solid rgba(168, 85, 247, 0.25) !important;
-            border-top: 3px solid #a855f7 !important;
-            border-radius: 20px !important;
-            padding: 16px 12px !important;
-            margin: 15px auto 0 auto !important;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7) !important;
-            width: 100% !important;
-        }}
-        
-        .neon-title-container {{
-            text-align: center !important;
-            width: 100% !important;
-            display: block !important;
-            padding-top: 4px !important;
-            margin-bottom: 14px !important;
-        }}
-        .neon-title {{
-            font-size: 1.6rem !important;
-            letter-spacing: -0.5px !important;
-            line-height: 1.2 !important;
-            text-align: center !important;
-            display: block !important;
-            width: 100% !important;
-            margin: 0 auto !important;
-        }}
-        .neon-subtitle {{
-            font-size: 0.6rem !important;
-            margin-bottom: 12px !important;
-            letter-spacing: 0.8px !important;
-            text-align: center !important;
-            display: flex !important;
-            flex-wrap: wrap !important;
-            justify-content: center !important;
-            gap: 2px 6px !important;
-            width: 100% !important;
-        }}
-        .stChatMessage {{
-            padding: 14px !important;
-            border-radius: 16px !important;
-            margin-bottom: 10px !important;
-            width: 100% !important;
-            word-break: break-word !important;
-        }}
-        [data-testid="stChatInput"] {{
-            position: fixed !important;
-            bottom: 0px !important;
-            left: 0px !important;
-            right: 0px !important;
-            width: 100% !important;
-            padding: 6px 8px 12px 8px !important;
-            background: rgba(9, 9, 11, 0.9) !important;
-            backdrop-filter: blur(20px) !important;
-            z-index: 99999 !important;
-            border-top: 1px solid rgba(168, 85, 247, 0.2) !important;
-        }}
-    }}
-
-    [data-testid="stSidebar"] {{
-        background-color: #060608 !important;
-        border-right: 1px solid rgba(168, 85, 247, 0.15) !important;
-    }}
-    
-    [data-testid="stSidebar"] * {{
-        color: #f4f4f5 !important;
-    }}
-
-    .neon-title {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 2.8rem;
-        font-weight: 800;
-        background: linear-gradient(135deg, #ffffff 30%, #c084fc 70%, #ec4899 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
-        letter-spacing: -1.5px;
-    }}
-    
-    .neon-subtitle {{
-        color: #a1a1aa;
-        font-size: 0.82rem;
-        margin-bottom: 24px;
-        font-weight: 600;
-        letter-spacing: 1.2px;
-        text-transform: uppercase;
-        font-family: 'Space Grotesk', sans-serif;
-    }}
-
-    /* Neon Horizon Centered Login Box */
-    .neon-auth-container {{
-        background: rgba(18, 20, 32, 0.85);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(168, 85, 247, 0.3);
-        border-radius: 24px;
-        padding: 48px 40px;
-        margin: 30px auto;
-        max-width: 540px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(168, 85, 247, 0.15);
+    /* Clean Title Styling */
+    .zenith-header {
         text-align: center;
-        position: relative;
-        overflow: hidden;
-    }}
-    
-    .neon-auth-container::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-        background: linear-gradient(90deg, #ec4899, #8b5cf6, #3b82f6);
-    }}
+        margin-bottom: 36px;
+    }
 
-    .neon-auth-badge {{
-        font-size: 2.5rem;
+    .zenith-title {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.8px;
+        color: #ffffff;
+        margin-bottom: 6px;
+    }
+
+    .zenith-subtitle {
+        font-size: 0.82rem;
+        font-weight: 500;
+        color: #71717a;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+
+    /* Minimalist Auth Box */
+    .zenith-auth-card {
+        background: #111115;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 40px 32px;
+        text-align: center;
+        max-width: 440px;
+        margin: 40px auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .zenith-auth-icon {
+        font-size: 2rem;
         margin-bottom: 16px;
         display: inline-block;
-        padding: 16px;
-        background: rgba(168, 85, 247, 0.1);
-        border-radius: 20px;
-        border: 1px solid rgba(168, 85, 247, 0.3);
-    }}
+        padding: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
 
-    .neon-auth-title {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.6rem;
-        font-weight: 700;
+    .zenith-auth-heading {
+        font-size: 1.25rem;
+        font-weight: 600;
         color: #ffffff;
-        margin-bottom: 10px;
-        letter-spacing: -0.5px;
-    }}
+        margin-bottom: 8px;
+    }
 
-    .neon-auth-desc {{
-        font-size: 0.95rem;
-        line-height: 1.6;
-        color: #a1a1aa;
-        margin-bottom: 32px;
-    }}
+    .zenith-auth-text {
+        font-size: 0.88rem;
+        color: #94a3b8;
+        line-height: 1.5;
+        margin-bottom: 28px;
+    }
 
-    .stChatMessage {{
-        background: rgba(18, 22, 36, 0.8) !important;
-        backdrop-filter: blur(15px) !important;
-        border: 1px solid rgba(168, 85, 247, 0.2) !important;
-        border-radius: 20px !important;
-        padding: 22px !important;
-        margin-bottom: 20px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
-        max-width: 100% !important;
-    }}
-
-    .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
-        color: #f4f4f5 !important;
-        font-size: 0.98rem !important;
-        line-height: 1.7 !important;
-        word-break: break-word !important;
-        overflow-wrap: break-word !important;
-    }}
-
-    .stButton button {{
-        border-radius: 14px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 0.92rem !important;
-        letter-spacing: 0.5px !important;
-        border: 1px solid rgba(168, 85, 247, 0.5) !important;
-        background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%) !important;
-        color: #ffffff !important;
-        width: 100% !important;
-        padding: 14px 24px !important;
-        box-shadow: 0 6px 25px rgba(168, 85, 247, 0.35) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }}
-    
-    .stButton button:hover {{
-        background: linear-gradient(135deg, #c084fc 0%, #f43f5e 100%) !important;
-        border-color: #f472b6 !important;
-        box-shadow: 0 10px 30px rgba(236, 72, 153, 0.5) !important;
-        transform: translateY(-2px);
-    }}
-
-    [data-testid="stChatInput"] textarea {{
-        background: rgba(18, 22, 36, 0.9) !important;
-        color: #f4f4f5 !important;
-        border: 1px solid rgba(168, 85, 247, 0.3) !important;
+    /* Modern Chat Bubbles */
+    .stChatMessage {
+        background: #121217 !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
         border-radius: 16px !important;
-        font-family: 'Outfit', sans-serif !important;
-        font-size: 0.98rem !important;
-        padding: 16px 20px !important;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
-    }}
+        padding: 18px 20px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+    }
 
-    .sidebar-signature {{
+    .stChatMessage p, .stChatMessage span, .stChatMessage div {
+        color: #f1f5f9 !important;
+        font-size: 0.95rem !important;
+        line-height: 1.65 !important;
+    }
+
+    /* Sleek Buttons */
+    .stButton button {
+        border-radius: 10px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.88rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: #ffffff !important;
+        color: #0a0a0c !important;
+        padding: 10px 20px !important;
+        width: 100% !important;
+        transition: all 0.2s ease !important;
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .stButton button:hover {
+        background: #e2e8f0 !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+        transform: translateY(-1px);
+    }
+
+    /* Fixed Clean Chat Input */
+    [data-testid="stChatInput"] textarea {
+        background: #121217 !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 0.95rem !important;
+        padding: 14px 18px !important;
+    }
+
+    .sidebar-signature {
         text-align: center;
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.7rem;
-        color: #c084fc;
-        letter-spacing: 1.5px;
+        font-size: 0.68rem;
+        color: #71717a;
+        letter-spacing: 1.2px;
         padding: 16px 4px;
-        margin-top: 24px;
-        margin-bottom: 24px;
-        border-top: 1px solid rgba(168, 85, 247, 0.2);
-        border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+        margin-top: 20px;
+        margin-bottom: 20px;
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
         text-transform: uppercase;
-        background: rgba(168, 85, 247, 0.05);
-    }}
+        font-weight: 600;
+    }
 
-    .ai-thinking-box {{
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 18px;
-        background: rgba(18, 22, 36, 0.9);
-        border: 1px solid rgba(168, 85, 247, 0.4);
-        border-radius: 14px;
-        width: fit-content;
-        max-width: 100%;
-        margin: 10px 0;
-        box-shadow: 0 8px 25px rgba(168, 85, 247, 0.15);
-    }}
-
-    .ai-thinking-dots {{
-        display: flex;
-        gap: 6px;
-        align-items: center;
-    }}
-
-    .ai-dot {{
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #a855f7;
-        animation: aiDotBounce 1.4s infinite ease-in-out both;
-    }}
-
-    .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
-    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #ec4899; }}
-    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #3b82f6; }}
-
-    @keyframes aiDotBounce {{
-        0%, 80%, 100% {{ transform: scale(0); opacity: 0.4; }}
-        40% {{ transform: scale(1.3); opacity: 1; }}
-    }}
-
-    .ai-thinking-text {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.6px;
-        color: #c084fc;
-        text-transform: uppercase;
-    }}
-
-    .ai-replying-badge {{
+    .zenith-status-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 6px 14px;
-        margin-bottom: 12px;
-        background: rgba(168, 85, 247, 0.12);
-        border: 1px solid rgba(168, 85, 247, 0.3);
-        border-radius: 10px;
-        font-family: 'Space Grotesk', sans-serif;
+        padding: 4px 10px;
+        margin-bottom: 10px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 6px;
         font-size: 0.72rem;
-        color: #c084fc;
-        font-weight: 700;
-        letter-spacing: 0.6px;
+        color: #a1a1aa;
+        font-weight: 600;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
-    }}
+    }
 </style>
 """
 
 st.markdown(theme_css, unsafe_allow_html=True)
 
-# 4. Sidebar Navigation & Controls
+# 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### 🌌 Quantum Core")
+    st.markdown("### ⚡ Zenith Workspace")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #a1a1aa;'>Sign in to activate your quantum node.</span>", unsafe_allow_html=True)
-        st.button("🔮 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
+        st.write("<span style='font-size: 0.82rem; color: #71717a;'>Sign in to start session.</span>", unsafe_allow_html=True)
+        st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #c084fc;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #71717a;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
         
-        show_settings = st.checkbox("⚙️ Settings", value=st.session_state["show_settings_modal"])
+        show_settings = st.checkbox("⚙️ Preferences", value=st.session_state["show_settings_modal"])
         if show_settings != st.session_state["show_settings_modal"]:
             st.session_state["show_settings_modal"] = show_settings
             st.rerun()
 
-        show_brain = st.checkbox("🧠 Memory Vault", value=st.session_state["show_brain_modal"])
+        show_brain = st.checkbox("🧠 Memory Module", value=st.session_state["show_brain_modal"])
         if show_brain != st.session_state["show_brain_modal"]:
             st.session_state["show_brain_modal"] = show_brain
             st.rerun()
 
         st.markdown("---")
         
-        if st.button("➕ New Quantum Stream", use_container_width=True, type="primary"):
+        if st.button("➕ New Conversation", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Quantum Stream",
+                "title": "New Chat",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("### 💬 Active Streams")
+        st.markdown("### Conversations")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.75, 0.25])
             with col1:
-                btn_type = "primary" if sid == current_sid else "secondary"
-                display_title = sdata["title"][:14] + ("..." if len(sdata["title"]) > 14 else "")
-                if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
+                display_title = sdata["title"][:16] + ("..." if len(sdata["title"]) > 16 else "")
+                if st.button(display_title, key=f"sel_{sid}", use_container_width=True):
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
             with col2:
-                if st.button("🗑️", key=f"del_{sid}", help="Delete stream", use_container_width=True):
+                if st.button("✕", key=f"del_{sid}", use_container_width=True):
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Quantum Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "New Chat", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -485,92 +307,73 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel
+# 4. Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
-        st.markdown("""
-            <div style="border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1.1rem; color: #c084fc;">⚙️ Quantum Configuration</h3>
-            </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown("#### Settings & Model Selection")
         models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
-        selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index, key="modal_model_select")
+        selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
 
         languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
-        lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
+        lang_choice_input = st.selectbox("Response Language", languages, index=lang_index)
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            if st.button("Apply Changes", use_container_width=True, type="primary"):
+            if st.button("Save Preferences", use_container_width=True):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
-            if st.button("Close Modal", use_container_width=True):
+            if st.button("Cancel", use_container_width=True):
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         st.markdown("---")
 
-# 6. Memory Bank Modal Panel
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
-        st.markdown("""
-            <div style="border-radius: 12px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1.1rem; color: #c084fc;">🧠 Quantum Memory Vault</h3>
-            </div>
-        """, unsafe_allow_html=True)
-        
+        st.markdown("#### Memory Module Bank")
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
             col_m1, col_m2 = st.columns([0.82, 0.18])
             with col_m1:
                 st.code(mem, language="text")
             with col_m2:
-                if st.button("🗑️", key=f"del_mem_{idx}", use_container_width=True):
+                if st.button("✕", key=f"del_mem_{idx}", use_container_width=True):
                     memory_list.pop(idx)
                     st.rerun()
 
-        if st.button("Close Vault", use_container_width=True):
+        if st.button("Close Memory Vault", use_container_width=True):
             st.session_state["show_brain_modal"] = False
             st.rerun()
         st.markdown("---")
 
-# Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 7. Main Canvas Header & Neon Horizon Centered Sign-In Layout
+# 5. Main Content Area
 st.markdown(f"""
-    <div class="neon-title-container">
-        <div class="neon-title">Metaverse_AI</div>
-        <div class="neon-subtitle">
-            <span>Core: {selected_model}</span>
-            <span>•</span>
-            <span>Horizon: Neon Cyber</span>
-            <span>•</span>
-            <span>Lang: {lang_choice}</span>
-        </div>
+    <div class="zenith-header">
+        <div class="zenith-title">Metaverse AI</div>
+        <div class="zenith-subtitle">{selected_model} • {lang_choice}</div>
     </div>
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
-    # Spectacular Centered Glassmorphic Sign-In Horizon
     st.markdown("""
-        <div class="neon-auth-container">
-            <div class="neon-auth-badge">🌌</div>
-            <div class="neon-auth-title">Welcome to the Quantum Frontier</div>
-            <div class="neon-auth-desc">
-                Authenticate with your Google identity to unlock high-velocity generative AI streams, neural memory modules, and multi-model intelligence.
+        <div class="zenith-auth-card">
+            <div class="zenith-auth-icon">⚡</div>
+            <div class="zenith-auth-heading">Sign in to Zenith</div>
+            <div class="zenith-auth-text">
+                Authenticate with Google to access structured AI generation, persistent session memory, and custom intelligence tools.
             </div>
     """, unsafe_allow_html=True)
     
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 2.5, 1])
-    with col_btn2:
-        st.button("🔮 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
+    col_b1, col_b2, col_b3 = st.columns([1, 2, 1])
+    with col_b2:
+        st.button("Sign in with Google", on_click=st.login, use_container_width=True)
         
     st.markdown("</div>", unsafe_allow_html=True)
     st.stop()
@@ -581,12 +384,12 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Chat & Response Engine
-prompt = st.chat_input("Ask or command the quantum engine...")
+# 6. Chat Execution Pipeline
+prompt = st.chat_input("Type your message or command...")
 
 if prompt:
     if len(current_messages) == 0:
-        current_session_data["title"] = prompt[:18]
+        current_session_data["title"] = prompt[:16]
 
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
@@ -595,14 +398,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="ai-thinking-box">
-                <div class="ai-thinking-dots">
-                    <div class="ai-dot"></div>
-                    <div class="ai-dot"></div>
-                    <div class="ai-dot"></div>
-                </div>
-                <span class="ai-thinking-text">Synthesizing Response...</span>
-            </div>
+            <div class="zenith-status-badge">Processing response...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
@@ -611,17 +407,15 @@ if prompt:
         try:
             client = genai.Client(api_key=api_key)
             
-            brain_memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
+            memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
-                f"You are Metaverse_AI, an advanced high-speed AI assistant built on Google architecture. Respond natively in {lang_choice}.\n"
-                f"USER PROFILE:\n"
-                f"- Name: {user_display_name}\n"
-                f"- Email: {user_email}\n\n"
-                f"STRICT CREATOR DISCLOSURE RULE:\n"
-                f"- You were created and developed by Abyan Muhammed.\n"
-                f"- ABSOLUTE RESTRICTION: You MUST ONLY mention 'Made by Abyan Muhammed' when the user's current message is a greeting (such as 'hello', 'hi', 'hey', 'greetings') OR when the user explicitly asks who made you, who created you, or who is your developer.\n"
-                f"- For all other standard questions, coding tasks, or queries, DO NOT mention who made you unless specifically asked.\n\n"
-                f"MEMORY VAULT:\n{brain_memories_str}"
+                f"You are Metaverse AI, built on Google architecture. Respond in {lang_choice}.\n"
+                f"USER PROFILE:\n- Name: {user_display_name}\n- Email: {user_email}\n\n"
+                f"STRICT CREATOR RULE:\n"
+                f"- Creator and Architect: Abyan Muhammed.\n"
+                f"- RESTRICTION: You MUST ONLY mention 'Made by Abyan Muhammed' when the user's message is a direct greeting ('hello', 'hi', 'hey') or explicitly asks who made/created you.\n"
+                f"- For all other professional queries or tasks, do not mention the creator unless asked.\n\n"
+                f"MEMORY VAULT:\n{memories_str}"
             )
             
             chat_history_formatted = [
@@ -644,23 +438,17 @@ if prompt:
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    message_placeholder.markdown(
-                        f"""<div class="ai-replying-badge">🔮 Quantum Stream Active</div>\n\n{full_response}▌""",
-                        unsafe_allow_html=True
-                    )
+                    message_placeholder.markdown(full_response + "▌")
             
-            message_placeholder.markdown(
-                f"""<div class="ai-replying-badge">🔮 Quantum Stream Complete</div>\n\n{full_response}""",
-                unsafe_allow_html=True
-            )
+            message_placeholder.markdown(full_response)
             
         except errors.APIError as e:
             loader_placeholder.empty()
-            full_response = f"❌ **API Error:** {e}"
+            full_response = f"**API Error:** {e}"
             message_placeholder.markdown(full_response)
         except Exception as e:
             loader_placeholder.empty()
-            full_response = f"❌ **Error:** {str(e)}"
+            full_response = f"**Error:** {str(e)}"
             message_placeholder.markdown(full_response)
 
         current_messages.append({"role": "model", "content": full_response})
