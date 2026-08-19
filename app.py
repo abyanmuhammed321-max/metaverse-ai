@@ -32,10 +32,10 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with Gemini 3.1 Flash Lite as default
+# Initialize preferences with Gemini 3.5 Flash Lite as default
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-3.1-flash-lite",
+        "selected_model": "gemini-3.5-flash-lite",
         "lang_choice": "English",
         "chat_alignment": "Neon Obsidian Vault"
     }
@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Next-gen Neon Cyber-Luxe styling with absolute mobile alignment."
+        "Core Objective: Next-gen Neon Cyber-Luxe styling with absolute mobile text clarity."
     ]
 
 if storage_key not in st.session_state:
@@ -144,7 +144,7 @@ else:
         }
     """
 
-# 3. ULTIMATE RESPONSIVE STYLING & MOBILE ALIGNMENT
+# 3. ULTIMATE RESPONSIVE STYLING & CLEAR TEXT ALIGNMENT
 theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -174,14 +174,14 @@ theme_css = f"""
 
     {desktop_container_css}
 
-    /* Strict Mobile Screen Optimization (< 768px) */
+    /* Strict Mobile Screen Optimization (< 768px) for Crystal Clear Text */
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
-            padding-left: 8px !important;
-            padding-right: 8px !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
             padding-top: 0.5rem !important;
-            padding-bottom: 7.5rem !important;
+            padding-bottom: 8rem !important;
             margin: 0 !important;
         }}
         [data-testid="stMain"] > div {{
@@ -190,48 +190,54 @@ theme_css = f"""
             border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
             border-radius: 14px !important;
-            padding: 10px !important;
+            padding: 12px 10px !important;
             margin: 2px auto !important;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         .gemini-title {{
-            font-size: 1.35rem !important;
+            font-size: 1.4rem !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.62rem !important;
-            margin-bottom: 12px !important;
+            font-size: 0.65rem !important;
+            margin-bottom: 14px !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
+            padding: 0 4px !important;
         }}
         .stChatMessage {{
-            padding: 10px 12px !important;
+            padding: 12px !important;
             border-radius: 12px !important;
-            margin-bottom: 8px !important;
+            margin-bottom: 10px !important;
             width: 100% !important;
+            word-break: break-word !important;
         }}
-        /* Fix chat input bar pinning perfectly to phone screen bottom */
+        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
+            font-size: 0.92rem !important;
+            line-height: 1.55 !important;
+        }}
+        /* Fixed Chat Input Bar for phones */
         [data-testid="stChatInput"] {{
             position: fixed !important;
             bottom: 0px !important;
             left: 0px !important;
             right: 0px !important;
             width: 100% !important;
-            padding: 6px 8px 10px 8px !important;
+            padding: 6px 8px 12px 8px !important;
             background: rgba(6, 8, 14, 0.98) !important;
             backdrop-filter: blur(15px) !important;
             z-index: 99999 !important;
             border-top: 1px solid rgba(0, 243, 255, 0.3) !important;
         }}
         [data-testid="stChatInput"] textarea {{
-            font-size: 16px !important; /* Prevents auto-zoom on iOS/Android */
+            font-size: 16px !important; /* Prevents auto-zoom on mobile safari/chrome */
             padding: 10px 14px !important;
             border-radius: 12px !important;
         }}
         .mobile-signin-card {{
-            padding: 20px 12px !important;
+            padding: 24px 14px !important;
             margin-top: 10px !important;
             width: 100% !important;
         }}
@@ -476,7 +482,7 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Settings Modal Panel
@@ -488,7 +494,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
             </div>
         """, unsafe_allow_html=True)
         
-        models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
+        models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("Model Engine", models_list, index=model_index, key="modal_model_select")
 
@@ -540,7 +546,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
         st.markdown("---")
 
 # Refresh preferences
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
@@ -555,18 +561,18 @@ if not is_logged_in:
             border: 1px solid rgba(0, 243, 255, 0.35);
             border-top: 3px solid #00f3ff;
             border-radius: 20px;
-            padding: 28px 16px;
+            padding: 24px 14px;
             text-align: center;
             margin: 10px auto;
             max-width: 100%;
             box-shadow: 0 0 40px rgba(0, 243, 255, 0.15), 0 15px 40px rgba(0, 0, 0, 0.8);
         ">
-            <div style="font-size: 2.2rem; margin-bottom: 10px;">⚡</div>
-            <h2 style="font-family: 'Cinzel', serif; font-size: 1.2rem; margin-bottom: 8px; color: #ffffff; letter-spacing: 0.5px;">
+            <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
+            <h2 style="font-family: 'Cinzel', serif; font-size: 1.15rem; margin-bottom: 6px; color: #ffffff; letter-spacing: 0.5px;">
                 Welcome to Metaverse_AI Elite
             </h2>
-            <p style="font-size: 0.82rem; line-height: 1.5; margin-bottom: 20px; color: #94a3b8; max-width: 400px; margin-left: auto; margin-right: auto;">
-                Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.1 Flash Lite. Authenticate via Google to initialize your secure session.
+            <p style="font-size: 0.8rem; line-height: 1.45; margin-bottom: 18px; color: #94a3b8; max-width: 380px; margin-left: auto; margin-right: auto;">
+                Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.5 Flash Lite. Authenticate via Google to initialize your secure session.
             </p>
         </div>
     """, unsafe_allow_html=True)
