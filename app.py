@@ -27,12 +27,18 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences
+# Initialize preferences with theme toggle support
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
-        "lang_choice": "English"
+        "lang_choice": "English",
+        "theme": "Dark"
     }
+
+if "theme" not in st.session_state[prefs_storage_key]:
+    st.session_state[prefs_storage_key]["theme"] = "Dark"
+
+current_theme = st.session_state[prefs_storage_key]["theme"]
 
 # Initialize Memory Bank
 if memory_storage_key not in st.session_state:
@@ -40,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver a pure liquid glass aesthetic with completely transparent background elements across the interface."
+        "Core Objective: Deliver a fluid glass aesthetic with dynamic Light/Dark theme switching across the interface."
     ]
 
 if storage_key not in st.session_state:
@@ -68,264 +74,493 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. PURE LIQUID GLASS TRANSPARENT BACKDROP ECOSYSTEM
-st.markdown("""
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+# 3. DYNAMIC THEMED LIQUID GLASS STYLING
+if current_theme == "Light":
+    theme_css = """
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-    /* --- FULLY TRANSPARENT BACKGROUND WITH FLUID GLOWS --- */
-    html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-        background: transparent !important;
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
-            radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 45%),
-            radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 55%) !important;
-        background-attachment: fixed !important;
-        color: #f8fafc !important;
-        font-family: 'Google Sans', 'Inter', sans-serif;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
+            background: transparent !important;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.05) 0%, transparent 55%) !important;
+            background-attachment: fixed !important;
+            color: #0f172a !important;
+            font-family: 'Google Sans', 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    /* --- TRANSPARENT LIQUID GLASS CONTAINER WRAPPER --- */
-    [data-testid="stMain"] > div {
-        background: rgba(15, 23, 42, 0.15) !important;
-        backdrop-filter: blur(45px) saturate(190%) !important;
-        -webkit-backdrop-filter: blur(45px) saturate(190%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 36px !important;
-        padding: 32px !important;
-        margin: 20px auto !important;
-        max-width: 860px !important;
-        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 
-                    inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
-    }
-
-    /* --- MOBILE RESPONSIVE ALIGNMENT & FLUID PADDING --- */
-    @media (max-width: 768px) {
         [data-testid="stMain"] > div {
-            padding: 14px !important;
-            margin: 6px !important;
-            border-radius: 22px !important;
+            background: rgba(255, 255, 255, 0.55) !important;
+            backdrop-filter: blur(45px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(45px) saturate(190%) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            border-radius: 36px !important;
+            padding: 32px !important;
+            margin: 20px auto !important;
+            max-width: 860px !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.08), 
+                        inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
         }
-        .block-container {
-            padding-left: 8px !important;
-            padding-right: 8px !important;
-            padding-top: 0.5rem !important;
-            padding-bottom: 7rem !important;
-            max-width: 100% !important;
+
+        @media (max-width: 768px) {
+            [data-testid="stMain"] > div {
+                padding: 14px !important;
+                margin: 6px !important;
+                border-radius: 22px !important;
+            }
+            .block-container {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 7rem !important;
+                max-width: 100% !important;
+            }
+            .gemini-title {
+                font-size: 1.5rem !important;
+            }
+            .gemini-subtitle {
+                font-size: 0.72rem !important;
+                margin-bottom: 12px !important;
+            }
+            .stChatMessage {
+                padding: 14px !important;
+                border-radius: 20px !important;
+                margin-bottom: 12px !important;
+            }
         }
+
+        [data-testid="stSidebar"] {
+            background: rgba(241, 245, 249, 0.75) !important;
+            backdrop-filter: blur(40px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+            border-right: 1px solid rgba(0, 0, 0, 0.06) !important;
+            z-index: 1000;
+            box-shadow: 15px 0 40px rgba(0, 0, 0, 0.05);
+        }
+        
+        [data-testid="stSidebar"] * {
+            color: #0f172a !important;
+        }
+
         .gemini-title {
-            font-size: 1.5rem !important;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0284c7, #c026d3, #e11d48);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0px;
+            padding-top: 4px;
+            letter-spacing: -0.5px;
         }
+        
         .gemini-subtitle {
-            font-size: 0.72rem !important;
-            margin-bottom: 12px !important;
+            color: #64748b;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
         }
+
         .stChatMessage {
-            padding: 14px !important;
-            border-radius: 20px !important;
-            margin-bottom: 12px !important;
+            background: rgba(255, 255, 255, 0.65) !important;
+            backdrop-filter: blur(35px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
+            border: 1px solid rgba(0, 0, 0, 0.08) !important;
+            border-radius: 26px !important;
+            padding: 20px !important;
+            margin-bottom: 16px !important;
+            box-shadow: 0 12px 35px 0 rgba(0, 0, 0, 0.05), 
+                        inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
         }
-    }
 
-    /* --- TRANSPARENT SIDEBAR --- */
-    [data-testid="stSidebar"] {
-        background: rgba(10, 15, 30, 0.25) !important;
-        backdrop-filter: blur(40px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-        z-index: 1000;
-        box-shadow: 15px 0 50px rgba(0, 0, 0, 0.5);
-    }
-    
-    [data-testid="stSidebar"] * {
-        color: #f8fafc !important;
-    }
+        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
+            color: #0f172a !important;
+            font-size: 0.95rem !important;
+            line-height: 1.6 !important;
+        }
 
-    /* --- TYPOGRAPHY HEADER --- */
-    .gemini-title {
-        font-family: 'Google Sans', sans-serif;
-        font-size: 2.3rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #38bdf8, #e879f9, #fb7185);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0px;
-        padding-top: 4px;
-        letter-spacing: -0.5px;
-        filter: drop-shadow(0 2px 20px rgba(232, 121, 249, 0.45));
-    }
-    
-    .gemini-subtitle {
-        color: #94a3b8;
-        font-size: 0.8rem;
-        margin-bottom: 20px;
-        font-weight: 500;
-        letter-spacing: 0.3px;
-    }
+        .stButton button {
+            border-radius: 18px !important;
+            font-family: 'Google Sans', sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 0.82rem !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            background: rgba(255, 255, 255, 0.7) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            color: #0f172a !important;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .stButton button:hover {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(2, 132, 199, 0.4) !important;
+            box-shadow: 0 10px 25px rgba(2, 132, 199, 0.15), 
+                        inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+            transform: translateY(-1.5px);
+        }
 
-    /* --- TRANSPARENT GLASS CHAT BUBBLES --- */
-    .stChatMessage {
-        background: rgba(30, 41, 59, 0.2) !important;
-        backdrop-filter: blur(35px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        border-radius: 26px !important;
-        padding: 20px !important;
-        margin-bottom: 16px !important;
-        box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4), 
-                    inset 0 1px 1px 0 rgba(255, 255, 255, 0.15) !important;
-    }
+        [data-testid="stChatInput"] {
+            padding: 0 4px 4px 4px !important;
+        }
 
-    .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
-        color: #f8fafc !important;
-        font-size: 0.95rem !important;
-        line-height: 1.6 !important;
-    }
+        [data-testid="stChatInput"] textarea {
+            background: rgba(255, 255, 255, 0.75) !important;
+            backdrop-filter: blur(40px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+            color: #0f172a !important;
+            border: 1px solid rgba(0, 0, 0, 0.1) !important;
+            border-radius: 30px !important;
+            font-family: 'Google Sans', sans-serif !important;
+            font-size: 0.95rem !important;
+            padding: 16px 22px !important;
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.06), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.9) !important;
+        }
 
-    /* --- TRANSPARENT LIQUID BUTTONS --- */
-    .stButton button {
-        border-radius: 18px !important;
-        font-family: 'Google Sans', sans-serif !important;
-        font-weight: 500 !important;
-        font-size: 0.82rem !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        background: rgba(51, 65, 85, 0.25) !important;
-        backdrop-filter: blur(30px) saturate(180%) !important;
-        -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
-        color: #f8fafc !important;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 
-                    inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
-    
-    .stButton button:hover {
-        background: rgba(71, 85, 105, 0.4) !important;
-        border-color: rgba(56, 189, 248, 0.5) !important;
-        box-shadow: 0 12px 35px rgba(56, 189, 248, 0.3), 
-                    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
-        transform: translateY(-1.5px);
-    }
+        [data-testid="stChatInput"] textarea:focus {
+            border-color: rgba(2, 132, 199, 0.5) !important;
+            box-shadow: 0 0 25px rgba(2, 132, 199, 0.15), 
+                        inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+        }
 
-    /* --- TRANSPARENT CHAT INPUT FIELD --- */
-    [data-testid="stChatInput"] {
-        padding: 0 4px 4px 4px !important;
-    }
+        .sidebar-signature {
+            text-align: center;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.7rem;
+            color: #64748b;
+            letter-spacing: 1.2px;
+            padding: 14px 5px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            background: rgba(0, 0, 0, 0.01);
+            backdrop-filter: blur(15px);
+            text-transform: uppercase;
+        }
 
-    [data-testid="stChatInput"] textarea {
-        background: rgba(15, 23, 42, 0.3) !important;
-        backdrop-filter: blur(40px) saturate(190%) !important;
-        -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
-        color: #f8fafc !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 30px !important;
-        font-family: 'Google Sans', sans-serif !important;
-        font-size: 0.95rem !important;
-        padding: 16px 22px !important;
-        box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.5), 
-                    inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
-    }
+        .ai-thinking-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(35px) saturate(180%);
+            -webkit-backdrop-filter: blur(35px) saturate(180%);
+            border: 1px solid rgba(2, 132, 199, 0.25);
+            border-radius: 22px;
+            width: fit-content;
+            margin: 10px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+        }
 
-    [data-testid="stChatInput"] textarea:focus {
-        border-color: rgba(56, 189, 248, 0.6) !important;
-        box-shadow: 0 0 30px rgba(56, 189, 248, 0.25), 
-                    inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
-    }
+        .ai-thinking-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
 
-    /* --- CREATOR SIGNATURE --- */
-    .sidebar-signature {
-        text-align: center;
-        font-family: 'Google Sans', sans-serif;
-        font-size: 0.7rem;
-        color: #94a3b8;
-        letter-spacing: 1.2px;
-        padding: 14px 5px;
-        margin-top: 25px;
-        margin-bottom: 25px;
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.01);
-        backdrop-filter: blur(15px);
-        text-transform: uppercase;
-    }
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #0284c7;
+            animation: aiDotBounce 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 10px rgba(2, 132, 199, 0.5);
+        }
 
-    /* --- TRANSPARENT THINKING & REPLY WIDGETS --- */
-    .ai-thinking-box {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        padding: 14px 20px;
-        background: rgba(30, 41, 59, 0.25);
-        backdrop-filter: blur(35px) saturate(180%);
-        -webkit-backdrop-filter: blur(35px) saturate(180%);
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        border-radius: 22px;
-        width: fit-content;
-        margin: 10px 0;
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
+        .ai-dot:nth-child(1) { animation-delay: -0.32s; }
+        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c026d3; box-shadow: 0 0 10px rgba(192, 38, 211, 0.5); }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #e11d48; box-shadow: 0 0 10px rgba(225, 29, 72, 0.5); }
 
-    .ai-thinking-dots {
-        display: flex;
-        gap: 6px;
-        align-items: center;
-    }
+        @keyframes aiDotBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+            40% { transform: scale(1.3); opacity: 1; }
+        }
 
-    .ai-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background-color: #38bdf8;
-        animation: aiDotBounce 1.4s infinite ease-in-out both;
-        box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
-    }
+        .ai-thinking-text {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #0284c7;
+        }
 
-    .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-    .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #e879f9; box-shadow: 0 0 12px rgba(232, 121, 249, 0.8); }
-    .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fb7185; box-shadow: 0 0 12px rgba(251, 113, 133, 0.8); }
+        .ai-replying-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            margin-bottom: 12px;
+            background: rgba(2, 132, 199, 0.08);
+            border: 1px solid rgba(2, 132, 199, 0.25);
+            border-radius: 16px;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.74rem;
+            color: #0284c7;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.9);
+        }
+    </style>
+    """
+else:
+    theme_css = """
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-    @keyframes aiDotBounce {
-        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-        40% { transform: scale(1.3); opacity: 1; }
-    }
+        html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
+            background: transparent !important;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(168, 85, 247, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 55%) !important;
+            background-attachment: fixed !important;
+            color: #f8fafc !important;
+            font-family: 'Google Sans', 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-    .ai-thinking-text {
-        font-family: 'Google Sans', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #38bdf8;
-    }
+        [data-testid="stMain"] > div {
+            background: rgba(15, 23, 42, 0.15) !important;
+            backdrop-filter: blur(45px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(45px) saturate(190%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 36px !important;
+            padding: 32px !important;
+            margin: 20px auto !important;
+            max-width: 860px !important;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 2px rgba(255, 255, 255, 0.15) !important;
+        }
 
-    .ai-replying-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 14px;
-        margin-bottom: 12px;
-        background: rgba(56, 189, 248, 0.1);
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        border-radius: 16px;
-        font-family: 'Google Sans', sans-serif;
-        font-size: 0.74rem;
-        color: #38bdf8;
-        backdrop-filter: blur(25px);
-        -webkit-backdrop-filter: blur(25px);
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
-    }
-</style>
-""", unsafe_allow_html=True)
+        @media (max-width: 768px) {
+            [data-testid="stMain"] > div {
+                padding: 14px !important;
+                margin: 6px !important;
+                border-radius: 22px !important;
+            }
+            .block-container {
+                padding-left: 8px !important;
+                padding-right: 8px !important;
+                padding-top: 0.5rem !important;
+                padding-bottom: 7rem !important;
+                max-width: 100% !important;
+            }
+            .gemini-title {
+                font-size: 1.5rem !important;
+            }
+            .gemini-subtitle {
+                font-size: 0.72rem !important;
+                margin-bottom: 12px !important;
+            }
+            .stChatMessage {
+                padding: 14px !important;
+                border-radius: 20px !important;
+                margin-bottom: 12px !important;
+            }
+        }
+
+        [data-testid="stSidebar"] {
+            background: rgba(10, 15, 30, 0.25) !important;
+            backdrop-filter: blur(40px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(180%) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+            z-index: 1000;
+            box-shadow: 15px 0 50px rgba(0, 0, 0, 0.5);
+        }
+        
+        [data-testid="stSidebar"] * {
+            color: #f8fafc !important;
+        }
+
+        .gemini-title {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 2.3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #38bdf8, #e879f9, #fb7185);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0px;
+            padding-top: 4px;
+            letter-spacing: -0.5px;
+            filter: drop-shadow(0 2px 20px rgba(232, 121, 249, 0.45));
+        }
+        
+        .gemini-subtitle {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            margin-bottom: 20px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .stChatMessage {
+            background: rgba(30, 41, 59, 0.2) !important;
+            backdrop-filter: blur(35px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(35px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 26px !important;
+            padding: 20px !important;
+            margin-bottom: 16px !important;
+            box-shadow: 0 15px 40px 0 rgba(0, 0, 0, 0.4), 
+                        inset 0 1px 1px 0 rgba(255, 255, 255, 0.15) !important;
+        }
+
+        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
+            color: #f8fafc !important;
+            font-size: 0.95rem !important;
+            line-height: 1.6 !important;
+        }
+
+        .stButton button {
+            border-radius: 18px !important;
+            font-family: 'Google Sans', sans-serif !important;
+            font-weight: 500 !important;
+            font-size: 0.82rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            background: rgba(51, 65, 85, 0.25) !important;
+            backdrop-filter: blur(30px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+            color: #f8fafc !important;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
+        
+        .stButton button:hover {
+            background: rgba(71, 85, 105, 0.4) !important;
+            border-color: rgba(56, 189, 248, 0.5) !important;
+            box-shadow: 0 12px 35px rgba(56, 189, 248, 0.3), 
+                        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+            transform: translateY(-1.5px);
+        }
+
+        [data-testid="stChatInput"] {
+            padding: 0 4px 4px 4px !important;
+        }
+
+        [data-testid="stChatInput"] textarea {
+            background: rgba(15, 23, 42, 0.3) !important;
+            backdrop-filter: blur(40px) saturate(190%) !important;
+            -webkit-backdrop-filter: blur(40px) saturate(190%) !important;
+            color: #f8fafc !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            border-radius: 30px !important;
+            font-family: 'Google Sans', sans-serif !important;
+            font-size: 0.95rem !important;
+            padding: 16px 22px !important;
+            box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.5), 
+                        inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+        }
+
+        [data-testid="stChatInput"] textarea:focus {
+            border-color: rgba(56, 189, 248, 0.6) !important;
+            box-shadow: 0 0 30px rgba(56, 189, 248, 0.25), 
+                        inset 0 1px 2px rgba(255, 255, 255, 0.3) !important;
+        }
+
+        .sidebar-signature {
+            text-align: center;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            letter-spacing: 1.2px;
+            padding: 14px 5px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(15px);
+            text-transform: uppercase;
+        }
+
+        .ai-thinking-box {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            background: rgba(30, 41, 59, 0.25);
+            backdrop-filter: blur(35px) saturate(180%);
+            -webkit-backdrop-filter: blur(35px) saturate(180%);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 22px;
+            width: fit-content;
+            margin: 10px 0;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-thinking-dots {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .ai-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #38bdf8;
+            animation: aiDotBounce 1.4s infinite ease-in-out both;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+        }
+
+        .ai-dot:nth-child(1) { animation-delay: -0.32s; }
+        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #e879f9; box-shadow: 0 0 12px rgba(232, 121, 249, 0.8); }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fb7185; box-shadow: 0 0 12px rgba(251, 113, 133, 0.8); }
+
+        @keyframes aiDotBounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+            40% { transform: scale(1.3); opacity: 1; }
+        }
+
+        .ai-thinking-text {
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #38bdf8;
+        }
+
+        .ai-replying-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            margin-bottom: 12px;
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 16px;
+            font-family: 'Google Sans', sans-serif;
+            font-size: 0.74rem;
+            color: #38bdf8;
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    """
+
+st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
 with st.sidebar:
     st.markdown("### ✨ Metaverse_AI Workspace")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Sign in with Google to unlock all features and chats.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to unlock all features and chats.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.75rem; color: #94a3b8;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.75rem;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -386,12 +621,12 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel
+# 5. Settings Modal Panel with Live Theme Switcher
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background: rgba(30, 41, 59, 0.25); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);">
-                <h3 style="font-family: 'Google Sans', sans-serif; color: #f8fafc; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
+            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.1);">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -402,12 +637,17 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
+
+        themes_list = ["Dark", "Light"]
+        theme_index = themes_list.index(current_theme) if current_theme in themes_list else 0
+        theme_choice_input = st.radio("Interface Theme Mode", themes_list, index=theme_index, horizontal=True, key="modal_theme_radio")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             if st.button("Save Changes", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
+                st.session_state[prefs_storage_key]["theme"] = theme_choice_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
@@ -420,8 +660,8 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="background: rgba(30, 41, 59, 0.25); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 22px; padding: 22px; margin-bottom: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);">
-                <h3 style="font-family: 'Google Sans', sans-serif; color: #f8fafc; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
+            <div style="border-radius: 22px; padding: 22px; margin-bottom: 20px;">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -443,16 +683,17 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+current_theme = st.session_state[prefs_storage_key].get("theme", "Dark")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Theme: {current_theme} Mode • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div style="background: rgba(30, 41, 59, 0.2); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 28px; padding: 40px; text-align: center; margin-top: 40px; box-shadow: 0 25px 55px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.2);">
-            <h2 style="font-family: 'Google Sans', sans-serif; color: #f8fafc; font-size: 1.4rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
-            <p style="color: #94a3b8; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
+        <div style="border-radius: 28px; padding: 40px; text-align: center; margin-top: 40px;">
+            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.4rem; margin-bottom: 15px;">Welcome to Metaverse_AI</h2>
+            <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
             </p>
         </div>
