@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration with Adaptive Layout
 st.set_page_config(
     page_title="Metaverse_AI",
-    page_icon="🌌",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -32,12 +32,12 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with a brand new ultra-sleek obsidian executive theme
+# Initialize preferences with the brand new Cyberpunk Neon Nebula theme
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English",
-        "chat_alignment": "Obsidian Executive Deck"
+        "chat_alignment": "Cyber Neon Grid"
     }
 
 # Initialize Memory Bank
@@ -46,14 +46,14 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Obsidian Executive Deck layout featuring refined golden accents, ultra-deep matte surfaces, and absolute prestige styling."
+        "Core Objective: Cyberpunk Neon Nebula styling with glowing cyan/magenta gradients, holographic panels, and futuristic alignment layouts."
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Executive stream",
+            "title": "Neural stream",
             "messages": []
         }
     }
@@ -75,32 +75,10 @@ if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
 # Retrieve current alignment preference
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Obsidian Executive Deck")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Cyber Neon Grid")
 
-# Brand New Executive & Futuristic Alignment Engine
-if current_alignment == "Obsidian Executive Deck":
-    desktop_container_css = """
-        .block-container {
-            max-width: 1300px !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stMain"] > div {
-            background: linear-gradient(145deg, rgba(13, 13, 15, 0.95) 0%, rgba(22, 22, 26, 0.95) 100%) !important;
-            backdrop-filter: blur(40px) !important;
-            border: 1px solid rgba(212, 175, 55, 0.25) !important;
-            border-top: 3px solid #d4af37 !important;
-            border-radius: 28px !important;
-            padding: 48px !important;
-            margin: 16px auto !important;
-            width: 100% !important;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
-        }
-    """
-elif current_alignment == "Stellar Glass Amphitheater":
+# Futuristic Alignment Engine Selection
+if current_alignment == "Cyber Neon Grid":
     desktop_container_css = """
         .block-container {
             max-width: 1350px !important;
@@ -111,43 +89,66 @@ elif current_alignment == "Stellar Glass Amphitheater":
             margin: 0 auto !important;
         }
         [data-testid="stMain"] > div {
-            background: radial-gradient(circle at 50% 0%, rgba(20, 15, 45, 0.9) 0%, rgba(7, 10, 25, 0.95) 100%) !important;
-            backdrop-filter: blur(35px) !important;
-            border: 1px solid rgba(129, 140, 248, 0.3) !important;
-            border-top: 3px solid #818cf8 !important;
-            border-radius: 32px !important;
-            padding: 48px !important;
+            background: linear-gradient(135deg, rgba(8, 12, 28, 0.9) 0%, rgba(20, 8, 32, 0.9) 100%) !important;
+            backdrop-filter: blur(40px) !important;
+            border: 1px solid rgba(0, 243, 255, 0.3) !important;
+            border-top: 3px solid #00f3ff !important;
+            border-radius: 24px !important;
+            padding: 44px !important;
             margin: 16px auto !important;
             width: 100% !important;
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.85) !important;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
         }
     """
-else: # Cyberpunk Neural Split
+elif current_alignment == "Holographic Matrix":
     desktop_container_css = """
         .block-container {
             max-width: 1400px !important;
-            padding-left: 2.5rem !important;
-            padding-right: 2.5rem !important;
-            padding-top: 1.5rem !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+            padding-top: 2rem !important;
             padding-bottom: 7.5rem !important;
             margin: 0 auto !important;
         }
         [data-testid="stMain"] > div {
-            background: linear-gradient(145deg, rgba(10, 15, 30, 0.92) 0%, rgba(20, 10, 35, 0.92) 100%) !important;
-            backdrop-filter: blur(28px) !important;
-            border: 1px solid rgba(236, 72, 153, 0.35) !important;
-            border-radius: 28px !important;
-            padding: 45px !important;
+            background: radial-gradient(circle at 50% 0%, rgba(5, 30, 25, 0.85) 0%, rgba(5, 10, 20, 0.95) 100%) !important;
+            backdrop-filter: blur(35px) !important;
+            border: 1px solid rgba(16, 185, 129, 0.35) !important;
+            border-top: 3px solid #10b981 !important;
+            border-radius: 24px !important;
+            padding: 44px !important;
             margin: 16px auto !important;
             width: 100% !important;
-            box-shadow: 0 0 50px rgba(236, 72, 153, 0.15), 0 25px 70px rgba(0, 0, 0, 0.8) !important;
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.15) !important;
+        }
+    """
+else: # Deep Space Nebula
+    desktop_container_css = """
+        .block-container {
+            max-width: 1300px !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7.5rem !important;
+            margin: 0 auto !important;
+        }
+        [data-testid="stMain"] > div {
+            background: linear-gradient(150deg, rgba(30, 10, 40, 0.9) 0%, rgba(10, 5, 20, 0.95) 100%) !important;
+            backdrop-filter: blur(30px) !important;
+            border: 1px solid rgba(236, 72, 153, 0.35) !important;
+            border-top: 3px solid #ec4899 !important;
+            border-radius: 28px !important;
+            padding: 44px !important;
+            margin: 16px auto !important;
+            width: 100% !important;
+            box-shadow: 0 0 60px rgba(236, 72, 153, 0.15) !important;
         }
     """
 
-# 3. EXECUTIVE OBSIDIAN & GOLD STYLING ENGINE
+# 3. CYBERPUNK NEON NEBULA STYLING ENGINE
 theme_css = f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@300;400;500;600&display=swap');
 
     html, body {{
         box-sizing: border-box;
@@ -163,10 +164,10 @@ theme_css = f"""
     }}
 
     .stApp {{
-        background: radial-gradient(circle at 50% 0%, #18181c 0%, #0a0a0c 60%, #030304 100%) !important;
+        background: radial-gradient(circle at 50% 0%, #0c102b 0%, #050714 60%, #010208 100%) !important;
         background-attachment: fixed !important;
-        color: #f3f4f6 !important;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #e2e8f0 !important;
+        font-family: 'Inter', sans-serif;
         width: 100% !important;
     }}
 
@@ -192,15 +193,15 @@ theme_css = f"""
             width: 100% !important;
         }}
         .gemini-title {{
-            font-size: 1.6rem !important;
+            font-size: 1.5rem !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.72rem !important;
+            font-size: 0.7rem !important;
             margin-bottom: 16px !important;
         }}
         .stChatMessage {{
             padding: 14px !important;
-            border-radius: 16px !important;
+            border-radius: 14px !important;
             margin-bottom: 12px !important;
         }}
         [data-testid="stChatInput"] {{
@@ -212,51 +213,52 @@ theme_css = f"""
     }}
 
     [data-testid="stSidebar"] {{
-        background-color: #070709 !important;
-        border-right: 1px solid rgba(212, 175, 55, 0.2) !important;
+        background-color: #03050c !important;
+        border-right: 1px solid rgba(0, 243, 255, 0.15) !important;
     }}
     
     [data-testid="stSidebar"] * {{
-        color: #f3f4f6 !important;
+        color: #e2e8f0 !important;
     }}
 
     .gemini-title {{
-        font-family: 'Cinzel', serif;
-        font-size: 2.6rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ffffff 0%, #d4af37 60%, #aa7c11 100%);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.4rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #ffffff 0%, #00f3ff 50%, #ec4899 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
-        letter-spacing: 1px;
+        letter-spacing: 1.5px;
+        text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
     }}
     
     .gemini-subtitle {{
-        color: #9ca3af;
-        font-size: 0.82rem;
+        color: #94a3b8;
+        font-size: 0.78rem;
         margin-bottom: 28px;
         font-weight: 600;
-        letter-spacing: 1.2px;
+        letter-spacing: 1.5px;
         text-transform: uppercase;
-        font-family: 'Cinzel', serif;
+        font-family: 'Orbitron', sans-serif;
     }}
 
     .stChatMessage {{
-        background: rgba(24, 24, 28, 0.85) !important;
+        background: rgba(13, 18, 38, 0.85) !important;
         backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(212, 175, 55, 0.2) !important;
-        border-radius: 20px !important;
-        padding: 22px !important;
-        margin-bottom: 18px !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+        border: 1px solid rgba(0, 243, 255, 0.2) !important;
+        border-radius: 18px !important;
+        padding: 20px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
         max-width: 100% !important;
     }}
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
-        color: #f3f4f6 !important;
-        font-size: 0.96rem !important;
+        color: #e2e8f0 !important;
+        font-size: 0.95rem !important;
         line-height: 1.65 !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
@@ -264,13 +266,13 @@ theme_css = f"""
 
     .stButton button {{
         border-radius: 12px !important;
-        font-family: 'Cinzel', serif !important;
+        font-family: 'Orbitron', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 0.78rem !important;
-        letter-spacing: 0.8px !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        background: linear-gradient(135deg, rgba(30, 30, 35, 0.9), rgba(50, 45, 20, 0.9)) !important;
-        color: #f3f4f6 !important;
+        font-size: 0.75rem !important;
+        letter-spacing: 1px !important;
+        border: 1px solid rgba(0, 243, 255, 0.4) !important;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(0, 50, 80, 0.8)) !important;
+        color: #00f3ff !important;
         width: 100% !important;
         padding: 10px 16px !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
@@ -279,9 +281,10 @@ theme_css = f"""
     }}
     
     .stButton button:hover {{
-        background: linear-gradient(135deg, rgba(50, 45, 20, 1), rgba(80, 70, 30, 1)) !important;
-        border-color: #d4af37 !important;
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.4) !important;
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(236, 72, 153, 0.2)) !important;
+        border-color: #00f3ff !important;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.5) !important;
+        color: #ffffff !important;
         transform: translateY(-1px);
     }}
 
@@ -290,29 +293,30 @@ theme_css = f"""
     }}
 
     [data-testid="stChatInput"] textarea {{
-        background: rgba(12, 12, 15, 0.95) !important;
-        color: #f3f4f6 !important;
-        border: 1px solid rgba(212, 175, 55, 0.4) !important;
-        border-radius: 20px !important;
-        font-family: 'Plus Jakarta Sans', sans-serif !important;
-        font-size: 0.96rem !important;
-        padding: 16px 22px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+        background: rgba(6, 9, 20, 0.95) !important;
+        color: #e2e8f0 !important;
+        border: 1px solid rgba(0, 243, 255, 0.4) !important;
+        border-radius: 18px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-size: 0.95rem !important;
+        padding: 16px 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(0, 243, 255, 0.05) !important;
     }}
 
     .sidebar-signature {{
         text-align: center;
-        font-family: 'Cinzel', serif;
-        font-size: 0.68rem;
-        color: #d4af37;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.65rem;
+        color: #00f3ff;
         letter-spacing: 2px;
         padding: 14px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(212, 175, 55, 0.25);
-        border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+        border-top: 1px solid rgba(0, 243, 255, 0.25);
+        border-bottom: 1px solid rgba(0, 243, 255, 0.25);
         text-transform: uppercase;
-        background: rgba(212, 175, 55, 0.05);
+        background: rgba(0, 243, 255, 0.04);
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
     }}
 
     .ai-thinking-box {{
@@ -320,11 +324,12 @@ theme_css = f"""
         align-items: center;
         gap: 10px;
         padding: 14px 20px;
-        background: rgba(40, 35, 15, 0.6);
-        border: 1px solid rgba(212, 175, 55, 0.35);
-        border-radius: 16px;
+        background: rgba(0, 243, 255, 0.08);
+        border: 1px solid rgba(0, 243, 255, 0.4);
+        border-radius: 14px;
         width: fit-content;
         margin: 8px 0;
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
     }}
 
     .ai-thinking-dots {{
@@ -337,13 +342,14 @@ theme_css = f"""
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #d4af37;
+        background-color: #00f3ff;
+        box-shadow: 0 0 8px #00f3ff;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
     }}
 
     .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
-    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #f3f4f6; }}
-    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #aa7c11; }}
+    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #ec4899; box-shadow: 0 0 8px #ec4899; }}
+    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #10b981; box-shadow: 0 0 8px #10b981; }}
 
     @keyframes aiDotBounce {{
         0%, 80%, 100% {{ transform: scale(0); opacity: 0.4; }}
@@ -351,11 +357,11 @@ theme_css = f"""
     }}
 
     .ai-thinking-text {{
-        font-family: 'Cinzel', serif;
-        font-size: 0.78rem;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.75rem;
         font-weight: 700;
-        letter-spacing: 0.8px;
-        color: #d4af37;
+        letter-spacing: 1px;
+        color: #00f3ff;
         text-transform: uppercase;
     }}
 
@@ -365,15 +371,16 @@ theme_css = f"""
         gap: 6px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(212, 175, 55, 0.12);
-        border: 1px solid rgba(212, 175, 55, 0.35);
-        border-radius: 12px;
-        font-family: 'Cinzel', serif;
-        font-size: 0.7rem;
-        color: #d4af37;
+        background: rgba(0, 243, 255, 0.1);
+        border: 1px solid rgba(0, 243, 255, 0.35);
+        border-radius: 10px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.68rem;
+        color: #00f3ff;
         font-weight: 700;
-        letter-spacing: 0.8px;
+        letter-spacing: 1px;
         text-transform: uppercase;
+        box-shadow: 0 0 15px rgba(0, 243, 255, 0.15);
     }}
 </style>
 """
@@ -382,34 +389,34 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
 with st.sidebar:
-    st.markdown("### 🏛️ Metaverse_AI Executive")
+    st.markdown("### ⚡ Cyber Neural Core")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to activate workspace sync.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to synchronize neural sync.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.74rem; color: #d4af37;'>{user_email}</span>", unsafe_allow_html=True)
-        st.button("Disconnect Stream", on_click=st.logout, use_container_width=True)
+        st.write(f"<span style='font-size: 0.72rem; color: #00f3ff;'>{user_email}</span>", unsafe_allow_html=True)
+        st.button("Disconnect Link", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
         
-        show_settings = st.checkbox("⚙️ Executive Settings", value=st.session_state["show_settings_modal"])
+        show_settings = st.checkbox("⚙️ Cyber Config", value=st.session_state["show_settings_modal"])
         if show_settings != st.session_state["show_settings_modal"]:
             st.session_state["show_settings_modal"] = show_settings
             st.rerun()
 
-        show_brain = st.checkbox("🧠 Memory Bank", value=st.session_state["show_brain_modal"])
+        show_brain = st.checkbox("🧠 Neural Bank", value=st.session_state["show_brain_modal"])
         if show_brain != st.session_state["show_brain_modal"]:
             st.session_state["show_brain_modal"] = show_brain
             st.rerun()
 
         st.markdown("---")
         
-        if st.button("➕ New Executive Stream", use_container_width=True, type="primary"):
+        if st.button("➕ New Neural Stream", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Executive stream",
+                "title": "Neural stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -430,7 +437,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Executive stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Neural stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -450,12 +457,12 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel (Featuring the brand new Obsidian Executive Deck alignment)
+# 5. Settings Modal Panel
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1.05rem; color: #d4af37;">⚙️ Executive Settings & Layouts</h3>
+                <h3 style="font-family: 'Orbitron', sans-serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">⚙️ Cyber Config & Layout Grids</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -467,10 +474,10 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
 
-        alignments = ["Obsidian Executive Deck", "Stellar Glass Amphitheater", "Cyberpunk Neural Split"]
-        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Obsidian Executive Deck")
+        alignments = ["Cyber Neon Grid", "Holographic Matrix", "Deep Space Nebula"]
+        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Cyber Neon Grid")
         align_index = alignments.index(current_align_pref) if current_align_pref in alignments else 0
-        alignment_choice_input = st.selectbox("Executive Layout Alignment", alignments, index=align_index, key="modal_align_select")
+        alignment_choice_input = st.selectbox("Holographic Layout Alignment", alignments, index=align_index, key="modal_align_select")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -491,7 +498,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1.05rem; color: #d4af37;">🧠 Executive Memory Bank</h3>
+                <h3 style="font-family: 'Orbitron', sans-serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">🧠 Neural Memory Bank</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -505,7 +512,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
                     memory_list.pop(idx)
                     st.rerun()
 
-        if st.button("Close Memory Bank", use_container_width=True):
+        if st.button("Close Neural Bank", use_container_width=True):
             st.session_state["show_brain_modal"] = False
             st.rerun()
         st.markdown("---")
@@ -513,7 +520,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Obsidian Executive Deck")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Cyber Neon Grid")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
@@ -521,10 +528,10 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {
 
 if not is_logged_in:
     st.markdown("""
-        <div style="border-radius: 24px; padding: 32px; text-align: center; margin-top: 20px; background: rgba(24, 24, 28, 0.5); border: 1px solid rgba(212, 175, 55, 0.3);">
-            <h2 style="font-family: 'Cinzel', serif; font-size: 1.25rem; margin-bottom: 12px; color: #d4af37;">Executive Access Required</h2>
-            <p style="font-size: 0.92rem; line-height: 1.6; margin-bottom: 24px; color: #9ca3af;">
-                Please sign in from the sidebar to initialize your secure executive stream.
+        <div style="border-radius: 20px; padding: 32px; text-align: center; margin-top: 20px; background: rgba(13, 18, 38, 0.5); border: 1px solid rgba(0, 243, 255, 0.3);">
+            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.2rem; margin-bottom: 12px; color: #00f3ff;">Neural Link Required</h2>
+            <p style="font-size: 0.9rem; line-height: 1.6; margin-bottom: 24px; color: #94a3b8;">
+                Please authenticate using Google credentials from the sidebar to initialize your workspace connection.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -537,7 +544,7 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 8. Realtime Message Handling & Animated Reply Engine
-prompt = st.chat_input("Enter command or query...")
+prompt = st.chat_input("Enter command or prompt...")
 
 if prompt:
     if len(current_messages) == 0:
@@ -556,7 +563,7 @@ if prompt:
                     <div class="ai-dot"></div>
                     <div class="ai-dot"></div>
                 </div>
-                <span class="ai-thinking-text">Processing Executive Stream...</span>
+                <span class="ai-thinking-text">Processing Neural Stream...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -600,12 +607,12 @@ if prompt:
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-replying-badge">🏛️ Executive Transmission Active</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-replying-badge">⚡ Neural Transmission Active</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
             message_placeholder.markdown(
-                f"""<div class="ai-replying-badge">🏛️ Executive Transmission Complete</div>\n\n{full_response}""",
+                f"""<div class="ai-replying-badge">⚡ Neural Transmission Complete</div>\n\n{full_response}""",
                 unsafe_allow_html=True
             )
             
