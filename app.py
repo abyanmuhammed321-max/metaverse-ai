@@ -144,7 +144,7 @@ else:
         }
     """
 
-# 3. ULTIMATE RESPONSIVE STYLING & MOBILE ALIGNMENT FIXES
+# 3. ULTIMATE RESPONSIVE STYLING & SIGN-IN LAYOUT
 theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -180,7 +180,7 @@ theme_css = f"""
             max-width: 100% !important;
             padding-left: 8px !important;
             padding-right: 8px !important;
-            padding-top: 1.5rem !important; /* Pushes container down from top toolbar */
+            padding-top: 1rem !important;
             padding-bottom: 8rem !important;
             margin: 0 !important;
         }}
@@ -189,23 +189,22 @@ theme_css = f"""
             backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
-            border-radius: 12px !important;
-            padding: 12px 6px !important;
-            margin: 15px auto 0 auto !important; /* Added downward spacing */
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
+            border-radius: 16px !important;
+            padding: 16px 8px !important;
+            margin: 15px auto 0 auto !important;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         
-        /* Fully centered and pushed down title spacing on mobile */
         .gemini-title-container {{
             text-align: center !important;
             width: 100% !important;
             display: block !important;
-            padding-top: 12px !important; /* Pulls title down cleanly */
+            padding-top: 8px !important;
             margin-bottom: 12px !important;
         }}
         .gemini-title {{
-            font-size: 1.5rem !important;
+            font-size: 1.6rem !important;
             letter-spacing: 0.5px !important;
             line-height: 1.2 !important;
             text-align: center !important;
@@ -249,11 +248,6 @@ theme_css = f"""
             padding: 10px 14px !important;
             border-radius: 12px !important;
         }}
-        .mobile-signin-card {{
-            padding: 24px 14px !important;
-            margin-top: 10px !important;
-            width: 100% !important;
-        }}
     }}
 
     [data-testid="stSidebar"] {{
@@ -280,11 +274,46 @@ theme_css = f"""
     .gemini-subtitle {{
         color: #94a3b8;
         font-size: 0.82rem;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
         font-weight: 600;
         letter-spacing: 1.5px;
         text-transform: uppercase;
         font-family: 'Cinzel', serif;
+    }}
+
+    /* Gorgeous Redesigned Cyber Sign-In Box */
+    .cyber-auth-container {{
+        background: linear-gradient(135deg, rgba(14, 18, 30, 0.95) 0%, rgba(26, 16, 38, 0.95) 100%);
+        border: 1px solid rgba(0, 243, 255, 0.4);
+        border-top: 4px solid #00f3ff;
+        border-radius: 24px;
+        padding: 36px 28px;
+        text-align: center;
+        margin: 15px auto 25px auto;
+        max-width: 520px;
+        box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
+    }}
+
+    .cyber-auth-icon {{
+        font-size: 2.8rem;
+        margin-bottom: 12px;
+        filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.6));
+    }}
+
+    .cyber-auth-title {{
+        font-family: 'Cinzel', serif;
+        font-size: 1.35rem;
+        font-weight: 800;
+        color: #ffffff;
+        margin-bottom: 10px;
+        letter-spacing: 0.8px;
+    }}
+
+    .cyber-auth-desc {{
+        font-size: 0.88rem;
+        line-height: 1.6;
+        color: #94a3b8;
+        margin-bottom: 24px;
     }}
 
     .stChatMessage {{
@@ -309,27 +338,27 @@ theme_css = f"""
     }}
 
     .stButton button {{
-        border-radius: 12px !important;
+        border-radius: 14px !important;
         font-family: 'Cinzel', serif !important;
         font-weight: 700 !important;
-        font-size: 0.78rem !important;
-        letter-spacing: 1px !important;
-        border: 1px solid rgba(0, 243, 255, 0.4) !important;
-        background: linear-gradient(135deg, rgba(20, 25, 40, 0.95), rgba(10, 40, 50, 0.9)) !important;
+        font-size: 0.82rem !important;
+        letter-spacing: 1.2px !important;
+        border: 1px solid rgba(0, 243, 255, 0.5) !important;
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(212, 175, 55, 0.15)) !important;
         color: #00f3ff !important;
         width: 100% !important;
-        padding: 10px 16px !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+        padding: 12px 20px !important;
+        box-shadow: 0 5px 25px rgba(0, 243, 255, 0.2) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
         text-transform: uppercase !important;
     }}
     
     .stButton button:hover {{
-        background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(212, 175, 55, 0.2)) !important;
+        background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(212, 175, 55, 0.3)) !important;
         border-color: #00f3ff !important;
-        box-shadow: 0 0 25px rgba(0, 243, 255, 0.5) !important;
+        box-shadow: 0 0 30px rgba(0, 243, 255, 0.6) !important;
         color: #ffffff !important;
-        transform: translateY(-1px);
+        transform: translateY(-2px);
     }}
 
     [data-testid="stChatInput"] textarea {{
@@ -563,7 +592,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# 7. Main Canvas Header & Responsive Sign-In Gateway
+# 7. Main Canvas Header & Redesigned Sign-In Layout
 st.markdown(f"""
     <div class="gemini-title-container">
         <div class="gemini-title">Metaverse_AI</div>
@@ -579,30 +608,17 @@ st.markdown(f"""
 
 if not is_logged_in:
     st.markdown("""
-        <div class="mobile-signin-card" style="
-            background: linear-gradient(135deg, rgba(16, 20, 32, 0.98) 0%, rgba(25, 15, 35, 0.98) 100%);
-            border: 1px solid rgba(0, 243, 255, 0.35);
-            border-top: 3px solid #00f3ff;
-            border-radius: 20px;
-            padding: 24px 14px;
-            text-align: center;
-            margin: 10px auto;
-            max-width: 100%;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.15), 0 15px 40px rgba(0, 0, 0, 0.8);
-        ">
-            <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
-            <h2 style="font-family: 'Cinzel', serif; font-size: 1.15rem; margin-bottom: 6px; color: #ffffff; letter-spacing: 0.5px;">
-                Welcome to Metaverse_AI Elite
-            </h2>
-            <p style="font-size: 0.8rem; line-height: 1.45; margin-bottom: 18px; color: #94a3b8; max-width: 380px; margin-left: auto; margin-right: auto;">
-                Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.5 Flash Lite. Authenticate via Google to initialize your secure session.
-            </p>
+        <div class="cyber-auth-container">
+            <div class="cyber-auth-icon">👑</div>
+            <div class="cyber-auth-title">METAVERSE_AI ELITE VAULT</div>
+            <div class="cyber-auth-desc">
+                Welcome to your next-gen cyber intelligence nexus. Authenticate securely via Google to initialize your personal workspace and unlock absolute power.
+            </div>
         </div>
     """, unsafe_allow_html=True)
     
-    col_empty1, col_btn, col_empty2 = st.columns([0.1, 2.8, 0.1])
+    col_empty1, col_btn, col_empty2 = st.columns([0.2, 2.6, 0.2])
     with col_btn:
-        st.write("")
         st.button("🔑 Authenticate with Google", on_click=st.login, use_container_width=True, type="primary")
     st.stop()
 
