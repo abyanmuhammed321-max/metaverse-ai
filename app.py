@@ -178,9 +178,9 @@ theme_css = f"""
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
-            padding-left: 8px !important;
-            padding-right: 8px !important;
-            padding-top: 0.5rem !important;
+            padding-left: 6px !important;
+            padding-right: 6px !important;
+            padding-top: 0.2rem !important;
             padding-bottom: 8rem !important;
             margin: 0 !important;
         }}
@@ -189,43 +189,40 @@ theme_css = f"""
             backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
-            border-radius: 14px !important;
-            padding: 12px 6px !important;
-            margin: 2px auto !important;
+            border-radius: 12px !important;
+            padding: 8px 4px !important;
+            margin: 0 auto !important;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         
-        /* Fully centered and responsive mobile header alignment */
+        /* Fully centered and fixed mobile title sizing */
         .gemini-title-container {{
             text-align: center !important;
             width: 100% !important;
-            display: flex !important;
-            flex-direction: column !important;
-            align-items: center !important;
-            justify-content: center !important;
+            display: block !important;
             padding: 0 !important;
-            margin-bottom: 10px !important;
+            margin-bottom: 8px !important;
         }}
         .gemini-title {{
-            font-size: clamp(1.6rem, 7vw, 2.2rem) !important;
-            letter-spacing: 1px !important;
+            font-size: 1.5rem !important;
+            letter-spacing: 0.5px !important;
             line-height: 1.2 !important;
             text-align: center !important;
-            width: 100% !important;
+            white-space: nowrap !important;
             display: block !important;
+            width: 100% !important;
             margin: 0 auto !important;
         }}
         .gemini-subtitle {{
-            font-size: clamp(0.6rem, 2.8vw, 0.75rem) !important;
+            font-size: 0.58rem !important;
             margin-bottom: 12px !important;
-            letter-spacing: 0.5px !important;
+            letter-spacing: 0.3px !important;
             text-align: center !important;
             display: flex !important;
             flex-wrap: wrap !important;
             justify-content: center !important;
-            align-items: center !important;
-            gap: 4px 6px !important;
+            gap: 2px 4px !important;
             width: 100% !important;
         }}
         .stChatMessage {{
