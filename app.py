@@ -32,12 +32,12 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with Gemini 3.5 Flash Lite as default
+# Initialize preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.5-flash-lite",
         "lang_choice": "English",
-        "chat_alignment": "Glassmorphic Neon Portal"
+        "chat_alignment": "Executive Split View"
     }
 
 # Initialize Memory Bank
@@ -46,14 +46,14 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Futuristic Glassmorphic Neon Portal styling with absolute mobile clarity."
+        "Core Objective: Modern Executive Split-Screen Login Layout with absolute mobile clarity."
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Portal Stream",
+            "title": "Executive Stream",
             "messages": []
         }
     }
@@ -74,7 +74,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Glassmorphic Neon Portal")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Executive Split View")
 
 # Container CSS Configurations
 desktop_container_css = """
@@ -87,22 +87,21 @@ desktop_container_css = """
         margin: 0 auto !important;
     }
     [data-testid="stMain"] > div {
-        background: rgba(15, 23, 42, 0.75) !important;
-        backdrop-filter: blur(30px) !important;
-        border: 1px solid rgba(139, 92, 246, 0.25) !important;
-        border-top: 3px solid #8b5cf6 !important;
-        border-radius: 28px !important;
+        background: #0f172a !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-top: 3px solid #38bdf8 !important;
+        border-radius: 24px !important;
         padding: 48px !important;
         margin: 16px auto !important;
         width: 100% !important;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.1) !important;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
     }
 """
 
-# 3. FUTURISTIC GLASSMORPHIC STYLING & SIGN-IN LAYOUT
+# 3. EXECUTIVE SPLIT STYLING & SIGN-IN LAYOUT
 theme_css = f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
         box-sizing: border-box !important;
@@ -119,7 +118,7 @@ theme_css = f"""
     }}
 
     .stApp {{
-        background: radial-gradient(circle at 50% -20%, #2e1065 0%, #090d16 50%, #030712 100%) !important;
+        background: #090d16 !important;
         background-attachment: fixed !important;
         color: #f8fafc !important;
         font-family: 'Plus Jakarta Sans', sans-serif;
@@ -140,27 +139,26 @@ theme_css = f"""
             margin: 0 !important;
         }}
         [data-testid="stMain"] > div {{
-            background: rgba(15, 23, 42, 0.9) !important;
-            backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(139, 92, 246, 0.3) !important;
-            border-top: 3px solid #8b5cf6 !important;
-            border-radius: 20px !important;
+            background: #0f172a !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-top: 3px solid #38bdf8 !important;
+            border-radius: 16px !important;
             padding: 16px 12px !important;
             margin: 15px auto 0 auto !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
             width: 100% !important;
         }}
         
-        .portal-title-container {{
+        .exec-title-container {{
             text-align: center !important;
             width: 100% !important;
             display: block !important;
             padding-top: 4px !important;
             margin-bottom: 12px !important;
         }}
-        .portal-title {{
-            font-size: 1.6rem !important;
-            letter-spacing: -0.5px !important;
+        .exec-title {{
+            font-size: 1.5rem !important;
+            letter-spacing: -0.3px !important;
             line-height: 1.2 !important;
             text-align: center !important;
             white-space: nowrap !important;
@@ -168,8 +166,8 @@ theme_css = f"""
             width: 100% !important;
             margin: 0 auto !important;
         }}
-        .portal-subtitle {{
-            font-size: 0.6rem !important;
+        .exec-subtitle {{
+            font-size: 0.58rem !important;
             margin-bottom: 12px !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
@@ -193,95 +191,81 @@ theme_css = f"""
             right: 0px !important;
             width: 100% !important;
             padding: 6px 8px 12px 8px !important;
-            background: rgba(3, 7, 18, 0.95) !important;
+            background: #090d16 !important;
             backdrop-filter: blur(15px) !important;
             z-index: 99999 !important;
-            border-top: 1px solid rgba(139, 92, 246, 0.3) !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
         }}
     }}
 
     [data-testid="stSidebar"] {{
-        background-color: #030712 !important;
-        border-right: 1px solid rgba(139, 92, 246, 0.2) !important;
+        background-color: #05080f !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
     }}
     
     [data-testid="stSidebar"] * {{
         color: #f8fafc !important;
     }}
 
-    .portal-title {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 2.5rem;
+    .exec-title {{
+        font-family: 'Inter', sans-serif;
+        font-size: 2.4rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #38bdf8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #ffffff;
         margin-bottom: 4px;
         letter-spacing: -1px;
     }}
     
-    .portal-subtitle {{
-        color: #94a3b8;
+    .exec-subtitle {{
+        color: #64748b;
         font-size: 0.8rem;
         margin-bottom: 24px;
         font-weight: 600;
-        letter-spacing: 1px;
+        letter-spacing: 0.8px;
         text-transform: uppercase;
-        font-family: 'Space Grotesk', sans-serif;
+        font-family: 'Inter', sans-serif;
     }}
 
-    /* Futuristic Glassmorphic Sign-In Card */
-    .glass-auth-card {{
-        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
-        backdrop-filter: blur(25px);
-        border: 1px solid rgba(139, 92, 246, 0.35);
-        border-top: 4px solid #a855f7;
-        border-radius: 28px;
-        padding: 40px 32px;
-        text-align: center;
-        margin: 20px auto 30px auto;
-        max-width: 480px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(168, 85, 247, 0.15);
-    }}
-
-    .glass-auth-badge {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 64px;
-        height: 64px;
+    /* Executive Split Login Box */
+    .exec-auth-container {{
+        background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-left: 4px solid #38bdf8;
         border-radius: 20px;
-        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(56, 189, 248, 0.2));
-        border: 1px solid rgba(168, 85, 247, 0.4);
-        font-size: 1.8rem;
-        margin-bottom: 20px;
-        box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
+        padding: 40px 36px;
+        margin: 20px auto 30px auto;
+        max-width: 600px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
     }}
 
-    .glass-auth-title {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 1.4rem;
+    .exec-auth-badge {{
+        font-size: 2rem;
+        margin-bottom: 14px;
+    }}
+
+    .exec-auth-title {{
+        font-family: 'Inter', sans-serif;
+        font-size: 1.3rem;
         font-weight: 700;
         color: #ffffff;
-        margin-bottom: 12px;
-        letter-spacing: -0.5px;
+        margin-bottom: 8px;
+        letter-spacing: -0.3px;
     }}
 
-    .glass-auth-desc {{
+    .exec-auth-desc {{
         font-size: 0.9rem;
         line-height: 1.6;
         color: #94a3b8;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
     }}
 
     .stChatMessage {{
-        background: rgba(30, 41, 59, 0.6) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(139, 92, 246, 0.25) !important;
-        border-radius: 20px !important;
+        background: #1e293b !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        border-radius: 16px !important;
         padding: 20px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
         max-width: 100% !important;
@@ -296,51 +280,51 @@ theme_css = f"""
     }}
 
     .stButton button {{
-        border-radius: 14px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 700 !important;
+        border-radius: 12px !important;
+        font-family: 'Inter', sans-serif !important;
+        font-weight: 600 !important;
         font-size: 0.88rem !important;
-        letter-spacing: 0.5px !important;
-        border: 1px solid rgba(168, 85, 247, 0.4) !important;
-        background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%) !important;
-        color: #ffffff !important;
+        letter-spacing: 0.3px !important;
+        border: 1px solid rgba(56, 189, 248, 0.4) !important;
+        background: #38bdf8 !important;
+        color: #0f172a !important;
         width: 100% !important;
-        padding: 14px 24px !important;
-        box-shadow: 0 10px 25px rgba(147, 51, 234, 0.35) !important;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        padding: 12px 20px !important;
+        box-shadow: 0 4px 15px rgba(56, 189, 248, 0.25) !important;
+        transition: all 0.2s ease-in-out !important;
     }}
     
     .stButton button:hover {{
-        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
-        border-color: #c084fc !important;
-        box-shadow: 0 0 35px rgba(168, 85, 247, 0.6) !important;
-        transform: translateY(-2px);
+        background: #7dd3fc !important;
+        border-color: #38bdf8 !important;
+        box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4) !important;
+        transform: translateY(-1px);
     }}
 
     [data-testid="stChatInput"] textarea {{
-        background: rgba(15, 23, 42, 0.9) !important;
+        background: #1e293b !important;
         color: #f8fafc !important;
-        border: 1px solid rgba(139, 92, 246, 0.35) !important;
-        border-radius: 18px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 14px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.96rem !important;
         padding: 16px 20px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
     }}
 
     .sidebar-signature {{
         text-align: center;
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.7rem;
-        color: #c084fc;
-        letter-spacing: 1.5px;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.68rem;
+        color: #38bdf8;
+        letter-spacing: 1.2px;
         padding: 14px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(139, 92, 246, 0.2);
-        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         text-transform: uppercase;
-        background: rgba(139, 92, 246, 0.05);
+        background: rgba(56, 189, 248, 0.04);
     }}
 
     .ai-thinking-box {{
@@ -348,9 +332,9 @@ theme_css = f"""
         align-items: center;
         gap: 10px;
         padding: 12px 16px;
-        background: rgba(139, 92, 246, 0.1);
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        border-radius: 14px;
+        background: #1e293b;
+        border: 1px solid rgba(56, 189, 248, 0.3);
+        border-radius: 12px;
         width: fit-content;
         max-width: 100%;
         margin: 8px 0;
@@ -366,14 +350,13 @@ theme_css = f"""
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background-color: #c084fc;
-        box-shadow: 0 0 8px #c084fc;
+        background-color: #38bdf8;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
     }}
 
     .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
-    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #38bdf8; box-shadow: 0 0 8px #38bdf8; }}
-    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #f43f5e; box-shadow: 0 0 8px #f43f5e; }}
+    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #818cf8; }}
+    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #34d399; }}
 
     @keyframes aiDotBounce {{
         0%, 80%, 100% {{ transform: scale(0); opacity: 0.4; }}
@@ -381,11 +364,11 @@ theme_css = f"""
     }}
 
     .ai-thinking-text {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-        color: #c084fc;
+        font-family: 'Inter', sans-serif;
+        font-size: 0.74rem;
+        font-weight: 600;
+        letter-spacing: 0.4px;
+        color: #38bdf8;
         text-transform: uppercase;
     }}
 
@@ -395,14 +378,14 @@ theme_css = f"""
         gap: 6px;
         padding: 5px 12px;
         margin-bottom: 10px;
-        background: rgba(139, 92, 246, 0.15);
-        border: 1px solid rgba(139, 92, 246, 0.35);
-        border-radius: 10px;
-        font-family: 'Space Grotesk', sans-serif;
+        background: rgba(56, 189, 248, 0.1);
+        border: 1px solid rgba(56, 189, 248, 0.25);
+        border-radius: 8px;
+        font-family: 'Inter', sans-serif;
         font-size: 0.68rem;
-        color: #c084fc;
-        font-weight: 700;
-        letter-spacing: 0.5px;
+        color: #38bdf8;
+        font-weight: 600;
+        letter-spacing: 0.4px;
         text-transform: uppercase;
     }}
 </style>
@@ -412,19 +395,19 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Controls
 with st.sidebar:
-    st.markdown("### 🌌 Portal Control")
+    st.markdown("### ⚡ Executive Core")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem;'>Authenticate to access the neural network.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem; color: #94a3b8;'>Sign in to access workspace.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.74rem; color: #c084fc;'>{user_email}</span>", unsafe_allow_html=True)
-        st.button("Disconnect Portal", on_click=st.logout, use_container_width=True)
+        st.write(f"<span style='font-size: 0.74rem; color: #38bdf8;'>{user_email}</span>", unsafe_allow_html=True)
+        st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
         
-        show_settings = st.checkbox("⚙️ Portal Config", value=st.session_state["show_settings_modal"])
+        show_settings = st.checkbox("⚙️ Preferences", value=st.session_state["show_settings_modal"])
         if show_settings != st.session_state["show_settings_modal"]:
             st.session_state["show_settings_modal"] = show_settings
             st.rerun()
@@ -436,10 +419,10 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Portal Stream", use_container_width=True, type="primary"):
+        if st.button("➕ New Stream", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Portal Stream",
+                "title": "Executive Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -456,11 +439,11 @@ with st.sidebar:
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
             with col2:
-                if st.button("🗑️", key=f"del_{sid}", help="Terminate stream", use_container_width=True):
+                if st.button("🗑️", key=f"del_{sid}", help="Delete stream", use_container_width=True):
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Portal Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Executive Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -484,8 +467,8 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1rem; color: #c084fc;">⚙️ Portal Engine Settings</h3>
+            <div style="border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Inter', sans-serif; margin-top: 0; font-size: 1rem; color: #38bdf8;">⚙️ Configuration</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -499,7 +482,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            if st.button("Apply Config", use_container_width=True, type="primary"):
+            if st.button("Apply", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
                 st.session_state["show_settings_modal"] = False
@@ -514,8 +497,8 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1rem; color: #c084fc;">🧠 Neural Memory Bank</h3>
+            <div style="border-radius: 12px; padding: 12px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Inter', sans-serif; margin-top: 0; font-size: 1rem; color: #38bdf8;">🧠 Memory Bank</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -529,7 +512,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
                     memory_list.pop(idx)
                     st.rerun()
 
-        if st.button("Close Vault", use_container_width=True):
+        if st.button("Close", use_container_width=True):
             st.session_state["show_brain_modal"] = False
             st.rerun()
         st.markdown("---")
@@ -538,14 +521,14 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 7. Main Canvas Header & Glassmorphic Sign-In Layout
+# 7. Main Canvas Header & Executive Sign-In Layout
 st.markdown(f"""
-    <div class="portal-title-container">
-        <div class="portal-title">Metaverse_AI</div>
-        <div class="portal-subtitle">
+    <div class="exec-title-container">
+        <div class="exec-title">Metaverse_AI</div>
+        <div class="exec-subtitle">
             <span>Engine: {selected_model}</span>
             <span>•</span>
-            <span>Style: Glassmorphic Portal</span>
+            <span>Layout: Executive Split</span>
             <span>•</span>
             <span>Lang: {lang_choice}</span>
         </div>
@@ -553,19 +536,41 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
-    st.markdown("""
-        <div class="glass-auth-card">
-            <div class="glass-auth-badge">🌌</div>
-            <div class="glass-auth-title">ENTER THE NEURAL NEXUS</div>
-            <div class="glass-auth-desc">
-                Welcome to Metaverse_AI. Authenticate securely with your Google account to connect to the decentralized intelligence stream.
-            </div>
-        </div>
-    """, unsafe_allow_html=True)
+    # Exclusive Split Layout for Sign In Page
+    col_left, col_right = st.columns([1.1, 1.1], gap="large")
     
-    col_empty1, col_btn, col_empty2 = st.columns([0.2, 2.6, 0.2])
-    with col_btn:
-        st.button("🔑 Authenticate with Google", on_click=st.login, use_container_width=True, type="primary")
+    with col_left:
+        st.markdown("""
+            <div style="padding-top: 20px;">
+                <h1 style="font-family: 'Inter', sans-serif; font-size: 2.2rem; font-weight: 800; color: #ffffff; line-height: 1.2; margin-bottom: 16px;">
+                    Intelligence, <br><span style="color: #38bdf8;">Redefined.</span>
+                </h1>
+                <p style="color: #94a3b8; font-size: 1rem; line-height: 1.6; margin-bottom: 24px;">
+                    Access high-speed generative AI streams, dynamic model switching, and localized memory tools built inside an elite professional workspace.
+                </p>
+                <div style="display: flex; gap: 12px; align-items: center; color: #64748b; font-size: 0.85rem; font-weight: 600;">
+                    <span>✓ Secure Authentication</span>
+                    <span>•</span>
+                    <span>✓ Multi-Engine Access</span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+    with col_right:
+        st.markdown("""
+            <div class="exec-auth-container">
+                <div class="exec-auth-badge">🔒</div>
+                <div class="exec-auth-title">Welcome Back</div>
+                <div class="exec-auth-desc">
+                    Sign in with your Google corporate or personal account to enter your secure session dashboard.
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
+        
+        col_btn1, col_btn2, col_btn3 = st.columns([0.1, 2.8, 0.1])
+        with col_btn2:
+            st.button("🔑 Continue with Google", on_click=st.login, use_container_width=True, type="primary")
+            
     st.stop()
 
 current_messages = current_session_data["messages"]
@@ -594,7 +599,7 @@ if prompt:
                     <div class="ai-dot"></div>
                     <div class="ai-dot"></div>
                 </div>
-                <span class="ai-thinking-text">Processing Stream...</span>
+                <span class="ai-thinking-text">Processing Request...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -638,12 +643,12 @@ if prompt:
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-replying-badge">🌌 Portal Active</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-replying-badge">⚡ Executive Stream Active</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
             message_placeholder.markdown(
-                f"""<div class="ai-replying-badge">🌌 Portal Transmission Complete</div>\n\n{full_response}""",
+                f"""<div class="ai-replying-badge">⚡ Executive Stream Complete</div>\n\n{full_response}""",
                 unsafe_allow_html=True
             )
             
