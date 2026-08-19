@@ -144,7 +144,7 @@ else:
         }
     """
 
-# 3. ULTIMATE RESPONSIVE STYLING & CLEAR TEXT ALIGNMENT
+# 3. ULTIMATE RESPONSIVE STYLING & MOBILE ALIGNMENT FIXES
 theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
@@ -174,7 +174,7 @@ theme_css = f"""
 
     {desktop_container_css}
 
-    /* Strict Mobile Screen Optimization (< 768px) for Crystal Clear Text */
+    /* Strict Mobile Screen Optimization (< 768px) */
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
@@ -195,17 +195,33 @@ theme_css = f"""
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
-        .gemini-title {{
-            font-size: 1.4rem !important;
-            letter-spacing: 0.5px !important;
+        
+        /* Perfectly aligned & fluid scaling for mobile headers */
+        .gemini-title-container {{
             text-align: center !important;
+            width: 100% !important;
+            padding: 0 4px !important;
+            margin-bottom: 6px !important;
+        }}
+        .gemini-title {{
+            font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
+            letter-spacing: 0.8px !important;
+            line-height: 1.2 !important;
+            text-align: center !important;
+            display: inline-block !important;
+            width: 100% !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.65rem !important;
-            margin-bottom: 14px !important;
+            font-size: clamp(0.58rem, 2.5vw, 0.72rem) !important;
+            margin-bottom: 16px !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
             padding: 0 4px !important;
+            display: flex !important;
+            flex-wrap: wrap !important;
+            justify-content: center !important;
+            gap: 4px 8px !important;
+            width: 100% !important;
         }}
         .stChatMessage {{
             padding: 12px !important;
@@ -218,7 +234,6 @@ theme_css = f"""
             font-size: 0.92rem !important;
             line-height: 1.55 !important;
         }}
-        /* Fixed Chat Input Bar for phones */
         [data-testid="stChatInput"] {{
             position: fixed !important;
             bottom: 0px !important;
@@ -232,7 +247,7 @@ theme_css = f"""
             border-top: 1px solid rgba(0, 243, 255, 0.3) !important;
         }}
         [data-testid="stChatInput"] textarea {{
-            font-size: 16px !important; /* Prevents auto-zoom on mobile safari/chrome */
+            font-size: 16px !important;
             padding: 10px 14px !important;
             border-radius: 12px !important;
         }}
@@ -551,8 +566,18 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
 # 7. Main Canvas Header & Responsive Sign-In Gateway
-st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f"""
+    <div class="gemini-title-container">
+        <div class="gemini-title">Metaverse_AI</div>
+        <div class="gemini-subtitle">
+            <span>Engine: {selected_model}</span>
+            <span>•</span>
+            <span>Style: {current_alignment}</span>
+            <span>•</span>
+            <span>Lang: {lang_choice}</span>
+        </div>
+    </div>
+""", unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
