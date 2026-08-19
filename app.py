@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="⚡",
+    page_icon="https://cdn-icons-png.flaticon.com/512/8266/8266933.png",
     layout="centered",
     initial_sidebar_state="auto"
 )
