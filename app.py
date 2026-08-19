@@ -32,10 +32,10 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with the Neon Cyber-Luxe theme
+# Initialize preferences with Gemini 3.1 Flash Lite as the default engine
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-2.5-flash",
+        "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English",
         "chat_alignment": "Neon Obsidian Vault"
     }
@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: High-performance Neon Cyber-Luxe styling blending elite luxury gold/neon cyan glows with futuristic cards."
+        "Core Objective: Next-gen Neon Cyber-Luxe styling powered by Gemini 3.1 Flash Lite and higher models."
     ]
 
 if storage_key not in st.session_state:
@@ -452,7 +452,7 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Settings Modal Panel
@@ -464,7 +464,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
             </div>
         """, unsafe_allow_html=True)
         
-        models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
+        models_list = ["gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("Model Engine", models_list, index=model_index, key="modal_model_select")
 
@@ -516,16 +516,16 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
         st.markdown("---")
 
 # Refresh preferences
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# 7. Main Canvas Header & New Powerful Sign-In Page UI
+# 7. Main Canvas Header & Neon Sign-In Gateway Page
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
-    # Futuristic, high-end neon luxury sign-in gateway
+    # Luxury neon-glow authentication card
     st.markdown("""
         <div style="
             background: linear-gradient(135deg, rgba(16, 20, 32, 0.95) 0%, rgba(25, 15, 35, 0.95) 100%);
@@ -537,12 +537,12 @@ if not is_logged_in:
             margin-top: 30px;
             box-shadow: 0 0 60px rgba(0, 243, 255, 0.15), 0 25px 60px rgba(0, 0, 0, 0.8);
         ">
-            <div style="font-size: 3rem; margin-bottom: 16px;">👑</div>
+            <div style="font-size: 3rem; margin-bottom: 16px;">⚡</div>
             <h2 style="font-family: 'Cinzel', serif; font-size: 1.6rem; margin-bottom: 12px; color: #ffffff; letter-spacing: 1px;">
                 Welcome to Metaverse_AI Elite
             </h2>
             <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px; color: #94a3b8; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Step into an ultra-luxurious cyber intelligence nexus. Authenticate securely via Google to initialize your personal encrypted stream.
+                Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.1 Flash Lite. Authenticate via Google to initialize your secure session.
             </p>
         </div>
     """, unsafe_allow_html=True)
