@@ -178,9 +178,9 @@ theme_css = f"""
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
-            padding-left: 6px !important;
-            padding-right: 6px !important;
-            padding-top: 0.2rem !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+            padding-top: 1.5rem !important; /* Pushes container down from top toolbar */
             padding-bottom: 8rem !important;
             margin: 0 !important;
         }}
@@ -190,19 +190,19 @@ theme_css = f"""
             border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
             border-radius: 12px !important;
-            padding: 8px 4px !important;
-            margin: 0 auto !important;
+            padding: 12px 6px !important;
+            margin: 15px auto 0 auto !important; /* Added downward spacing */
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         
-        /* Fully centered and fixed mobile title sizing */
+        /* Fully centered and pushed down title spacing on mobile */
         .gemini-title-container {{
             text-align: center !important;
             width: 100% !important;
             display: block !important;
-            padding: 0 !important;
-            margin-bottom: 8px !important;
+            padding-top: 12px !important; /* Pulls title down cleanly */
+            margin-bottom: 12px !important;
         }}
         .gemini-title {{
             font-size: 1.5rem !important;
