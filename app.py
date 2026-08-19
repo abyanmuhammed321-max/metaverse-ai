@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="💎",
+    page_icon="⚡",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"diamond_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"diamond_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"diamond_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"animated_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"animated_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"animated_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Diamond Stream",
+            "title": "Prism Stream",
             "messages": []
         }
     }
@@ -69,13 +69,13 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. DIAMOND CRYSTALLINE NEON STYLING
+# 2. CYBER-NEON ANIMATED STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: radial-gradient(circle at 50% 0%, #0d121f 0%, #07090f 50%, #020305 100%) !important;
+        background: radial-gradient(circle at 50% 0%, #0a0b10 0%, #030406 60%, #010203 100%) !important;
         color: #f8fafc !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         width: 100% !important;
@@ -91,80 +91,95 @@ theme_css = """
     }
 
     [data-testid="stSidebar"] {
-        background-color: #05070a !important;
-        border-right: 1px solid rgba(56, 189, 248, 0.2) !important;
+        background-color: #030406 !important;
+        border-right: 1px solid rgba(0, 243, 255, 0.2) !important;
     }
 
     [data-testid="stSidebar"] * {
         color: #f1f5f9 !important;
     }
 
-    /* Diamond Neon Typography & Headers */
-    .diamond-header {
+    /* Animated Neon Gradient Keyframes */
+    @keyframes neonGlowShift {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+    .cyber-header {
         text-align: center;
         margin-bottom: 40px;
     }
 
-    .diamond-title {
-        font-family: 'Syncopate', sans-serif;
-        font-size: 2.3rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #ffffff 20%, #38bdf8 60%, #818cf8 100%);
+    .cyber-animated-title {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.6rem;
+        font-weight: 900;
+        background: linear-gradient(270deg, #00f3ff, #b026ff, #00ff66, #00f3ff);
+        background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 10px;
+        animation: neonGlowShift 6s ease infinite;
+        margin-bottom: 8px;
         letter-spacing: 2px;
-        text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.4));
     }
 
-    .diamond-subtitle {
-        font-family: 'Syncopate', sans-serif;
-        font-size: 0.7rem;
+    .cyber-subtitle {
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.72rem;
         font-weight: 700;
-        color: #38bdf8;
+        color: #00f3ff;
         letter-spacing: 4px;
         text-transform: uppercase;
         opacity: 0.9;
+        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
     }
 
-    /* Diamond Glassmorphic Auth Card */
-    .diamond-auth-card {
-        background: rgba(13, 19, 33, 0.85);
+    /* Holographic Glass Auth Card */
+    .cyber-auth-card {
+        background: rgba(8, 11, 18, 0.85);
         backdrop-filter: blur(30px);
-        border: 1px solid rgba(56, 189, 248, 0.35);
+        border: 1px solid rgba(0, 243, 255, 0.35);
         border-radius: 24px;
         padding: 48px 36px;
         text-align: center;
         max-width: 480px;
         margin: 40px auto;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(56, 189, 248, 0.15);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 243, 255, 0.15);
         position: relative;
         overflow: hidden;
     }
 
-    .diamond-auth-card::before {
+    .cyber-auth-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, transparent, #38bdf8, transparent);
+        background: linear-gradient(90deg, transparent, #00f3ff, transparent);
     }
 
-    .diamond-auth-icon {
+    .cyber-auth-icon {
         font-size: 2.2rem;
         margin-bottom: 18px;
         display: inline-block;
         padding: 16px;
-        background: rgba(56, 189, 248, 0.1);
+        background: rgba(0, 243, 255, 0.08);
         border-radius: 20px;
-        border: 1px solid rgba(56, 189, 248, 0.3);
-        box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+        border: 1px solid rgba(0, 243, 255, 0.3);
+        box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
     }
 
-    .diamond-auth-heading {
-        font-family: 'Syncopate', sans-serif;
+    .cyber-auth-heading {
+        font-family: 'Orbitron', sans-serif;
         font-size: 1.2rem;
         font-weight: 700;
         color: #ffffff;
@@ -172,22 +187,22 @@ theme_css = """
         letter-spacing: 1px;
     }
 
-    .diamond-auth-text {
+    .cyber-auth-text {
         font-size: 0.9rem;
         color: #94a3b8;
         line-height: 1.6;
         margin-bottom: 32px;
     }
 
-    /* Crystalline Neon Chat Bubbles */
+    /* Cyber-Neon Chat Bubbles */
     .stChatMessage {
-        background: rgba(13, 19, 33, 0.8) !important;
+        background: rgba(8, 11, 18, 0.82) !important;
         backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(56, 189, 248, 0.22) !important;
+        border: 1px solid rgba(0, 243, 255, 0.25) !important;
         border-radius: 18px !important;
         padding: 20px 22px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
@@ -196,34 +211,34 @@ theme_css = """
         line-height: 1.7 !important;
     }
 
-    /* Crystalline Neon Buttons */
+    /* Animated Gradient Buttons */
     .stButton button {
         border-radius: 12px !important;
-        font-family: 'Syncopate', sans-serif !important;
+        font-family: 'Orbitron', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 0.75rem !important;
+        font-size: 0.72rem !important;
         letter-spacing: 1.5px !important;
-        border: 1px solid rgba(56, 189, 248, 0.5) !important;
-        background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
-        color: #ffffff !important;
+        border: 1px solid rgba(0, 243, 255, 0.5) !important;
+        background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%) !important;
+        color: #030406 !important;
         padding: 12px 24px !important;
         width: 100% !important;
-        box-shadow: 0 6px 25px rgba(56, 189, 248, 0.35) !important;
+        box-shadow: 0 6px 25px rgba(0, 243, 255, 0.35) !important;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .stButton button:hover {
-        background: linear-gradient(135deg, #38bdf8 0%, #1d4ed8 100%) !important;
-        border-color: #7dd3fc !important;
-        box-shadow: 0 10px 30px rgba(56, 189, 248, 0.6) !important;
+        background: linear-gradient(135deg, #ffffff 0%, #00f3ff 100%) !important;
+        border-color: #ffffff !important;
+        box-shadow: 0 10px 30px rgba(0, 243, 255, 0.6) !important;
         transform: translateY(-2px);
     }
 
     /* Fixed Chat Input */
     [data-testid="stChatInput"] textarea {
-        background: rgba(13, 19, 33, 0.95) !important;
+        background: rgba(8, 11, 18, 0.95) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(56, 189, 248, 0.35) !important;
+        border: 1px solid rgba(0, 243, 255, 0.35) !important;
         border-radius: 16px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.95rem !important;
@@ -233,35 +248,37 @@ theme_css = """
 
     .sidebar-signature {
         text-align: center;
-        font-family: 'Syncopate', sans-serif;
-        font-size: 0.6rem;
-        color: #38bdf8;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.58rem;
+        color: #00f3ff;
         letter-spacing: 2px;
         padding: 18px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(56, 189, 248, 0.2);
-        border-bottom: 1px solid rgba(56, 189, 248, 0.2);
+        border-top: 1px solid rgba(0, 243, 255, 0.2);
+        border-bottom: 1px solid rgba(0, 243, 255, 0.2);
         text-transform: uppercase;
-        background: rgba(56, 189, 248, 0.04);
+        background: rgba(0, 243, 255, 0.04);
         font-weight: 700;
+        text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
     }
 
-    .diamond-status-badge {
+    .cyber-status-badge {
         display: inline-flex;
         align-items: center;
         gap: 6px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(56, 189, 248, 0.1);
-        border: 1px solid rgba(56, 189, 248, 0.3);
+        background: rgba(0, 243, 255, 0.1);
+        border: 1px solid rgba(0, 243, 255, 0.3);
         border-radius: 8px;
-        font-family: 'Syncopate', sans-serif;
-        font-size: 0.62rem;
-        color: #38bdf8;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.6rem;
+        color: #00f3ff;
         font-weight: 700;
         letter-spacing: 1px;
         text-transform: uppercase;
+        text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
     }
 </style>
 """
@@ -270,14 +287,14 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### 💎 Diamond Nexus")
+    st.markdown("### ⚡ Cyber Nexus")
     
     if not is_logged_in:
         st.write("<span style='font-size: 0.82rem; color: #94a3b8;'>Authenticate to initialize your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #38bdf8;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #00f3ff;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -294,10 +311,10 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Diamond Stream", use_container_width=True):
+        if st.button("➕ New Cyber Stream", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Diamond Stream",
+                "title": "Prism Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -317,7 +334,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Diamond Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Prism Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -340,7 +357,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 # 4. Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
-        st.markdown("#### Diamond Configuration")
+        st.markdown("#### Cyber Configuration")
         models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
@@ -364,7 +381,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
-        st.markdown("#### Diamond Memory Vault")
+        st.markdown("#### Cyber Memory Vault")
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
             col_m1, col_m2 = st.columns([0.82, 0.18])
@@ -385,19 +402,19 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Main Content Area
 st.markdown(f"""
-    <div class="diamond-header">
-        <div class="diamond-title">Metaverse AI</div>
-        <div class="diamond-subtitle">{selected_model} &bull; {lang_choice}</div>
+    <div class="cyber-header">
+        <div class="cyber-animated-title">Metaverse AI</div>
+        <div class="cyber-subtitle">{selected_model} &bull; {lang_choice}</div>
     </div>
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div class="diamond-auth-card">
-            <div class="diamond-auth-icon">💎</div>
-            <div class="diamond-auth-heading">Enter the Diamond Gateway</div>
-            <div class="diamond-auth-text">
-                Authenticate with Google to unlock crystalline generative intelligence, persistent memory vaults, and luxury diamond streams.
+        <div class="cyber-auth-card">
+            <div class="cyber-auth-icon">⚡</div>
+            <div class="cyber-auth-heading">Enter the Cyber Gateway</div>
+            <div class="cyber-auth-text">
+                Authenticate with Google to unlock animated neon intelligence, persistent memory vaults, and luxury cyber streams.
             </div>
     """, unsafe_allow_html=True)
     
@@ -415,7 +432,7 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 6. Chat Execution Pipeline
-prompt = st.chat_input("Command the diamond intelligence...")
+prompt = st.chat_input("Command the cyber intelligence...")
 
 if prompt:
     if len(current_messages) == 0:
@@ -428,7 +445,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="diamond-status-badge">💎 Synthesizing Diamond Output...</div>
+            <div class="cyber-status-badge">⚡ Synthesizing Cyber Output...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
