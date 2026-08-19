@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration with Mobile Viewport Enforcements
+# 1. Page Configuration & Mobile Viewport Meta Enforcement
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="✨",
@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# Inject precise mobile viewport meta tag to force correct responsive scaling and disable pinch-zoom clipping
+# Inject strict mobile viewport metadata to prevent horizontal scrolling and text clipping on mobile screens
 st.markdown("""
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 """, unsafe_allow_html=True)
@@ -32,7 +32,7 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with theme toggle support
+# Initialize preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
@@ -51,7 +51,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Flawless responsive layout optimized for mobile phone screens with full viewport scaling, automatic text wrapping, and touch-friendly padding."
+        "Core Objective: Perfect mobile phone responsiveness with absolute 100% viewport width containment and word wrapping."
     ]
 
 if storage_key not in st.session_state:
@@ -79,98 +79,97 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. ROBUST MOBILE-FIRST RESPONSIVE STYLING (Guarantees full visibility on phones)
+# 3. ABSOLUTE MOBILE-RELIABLE RESPONSIVE STYLING
 if current_theme == "Light":
     theme_css = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-        html {
+        /* Strict box-sizing & overflow prevention */
+        html, body {
             box-sizing: border-box;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
             -webkit-text-size-adjust: 100%;
         }
         *, *:before, *:after {
             box-sizing: inherit;
         }
 
-        html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
+        .stApp {
             background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf4ff 100%) !important;
             background-attachment: fixed !important;
             color: #0f172a !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
-            min-height: 100vh;
             width: 100% !important;
-            max-width: 100vw !important;
+            max-width: 100% !important;
             overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
         }
 
+        /* Container safety */
         .block-container {
-            max-width: 860px !important;
+            max-width: 800px !important;
             width: 100% !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1.5rem !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 1rem !important;
             padding-bottom: 7rem !important;
             margin: 0 auto !important;
         }
 
         [data-testid="stMain"] > div {
-            background-color: rgba(255, 255, 255, 0.9) !important;
-            backdrop-filter: blur(12px) !important;
-            border: 1px solid rgba(226, 232, 240, 0.8) !important;
-            border-radius: 28px !important;
-            padding: 24px !important;
-            margin: 8px auto !important;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05) !important;
+            background-color: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+            border: 1px solid rgba(226, 232, 240, 0.9) !important;
+            border-radius: 20px !important;
+            padding: 16px !important;
+            margin: 4px auto !important;
             width: 100% !important;
             max-width: 100% !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03) !important;
         }
 
-        /* Mobile Screen Strict Overrides */
+        /* Mobile Phone Layout Strict Overrides */
         @media (max-width: 768px) {
             .block-container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
-                padding-top: 0.8rem !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+                padding-top: 0.5rem !important;
                 padding-bottom: 7.5rem !important;
-                max-width: 100% !important;
             }
             [data-testid="stMain"] > div {
-                padding: 12px !important;
-                margin: 2px auto !important;
-                border-radius: 16px !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
                 border: none !important;
                 box-shadow: none !important;
                 background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.45rem !important;
+                font-size: 1.35rem !important;
             }
             .gemini-subtitle {
-                font-size: 0.68rem !important;
-                margin-bottom: 10px !important;
+                font-size: 0.65rem !important;
+                margin-bottom: 8px !important;
             }
             .stChatMessage {
-                padding: 12px !important;
-                border-radius: 14px !important;
-                margin-bottom: 10px !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
+                margin-bottom: 8px !important;
             }
             [data-testid="stChatInput"] {
-                bottom: 6px !important;
-                left: 4px !important;
-                right: 4px !important;
-                width: calc(100% - 8px) !important;
+                bottom: 4px !important;
+                left: 2px !important;
+                right: 2px !important;
+                width: calc(100% - 4px) !important;
             }
         }
 
         [data-testid="stSidebar"] {
             background-color: #f8fafc !important;
             border-right: 1px solid #e2e8f0 !important;
-            z-index: 1000;
         }
         
         [data-testid="stSidebar"] * {
@@ -179,54 +178,51 @@ if current_theme == "Light":
 
         .gemini-title {
             font-family: 'Google Sans', sans-serif;
-            font-size: 2.1rem;
+            font-size: 1.9rem;
             font-weight: 700;
             background: linear-gradient(135deg, #0284c7, #c026d3, #16a34a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
-            padding-top: 2px;
             letter-spacing: -0.5px;
         }
         
         .gemini-subtitle {
             color: #64748b;
-            font-size: 0.78rem;
-            margin-bottom: 18px;
+            font-size: 0.75rem;
+            margin-bottom: 14px;
             font-weight: 500;
-            letter-spacing: 0.3px;
         }
 
         .stChatMessage {
             background-color: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
-            border-radius: 20px !important;
-            padding: 18px !important;
-            margin-bottom: 14px !important;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
+            border-radius: 16px !important;
+            padding: 14px !important;
+            margin-bottom: 10px !important;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
+            max-width: 100% !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
             color: #0f172a !important;
-            font-size: 0.92rem !important;
-            line-height: 1.55 !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
         }
 
         .stButton button {
-            border-radius: 14px !important;
+            border-radius: 12px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
-            font-size: 0.8rem !important;
+            font-size: 0.78rem !important;
             border: 1px solid #cbd5e1 !important;
             background-color: #ffffff !important;
             color: #0f172a !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
-            transition: all 0.2s ease !important;
             width: 100% !important;
+            padding: 6px 10px !important;
         }
         
         .stButton button:hover {
@@ -235,56 +231,54 @@ if current_theme == "Light":
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 2px 6px 2px !important;
+            padding: 0 2px 4px 2px !important;
         }
 
         [data-testid="stChatInput"] textarea {
             background-color: #ffffff !important;
             color: #0f172a !important;
             border: 1px solid #cbd5e1 !important;
-            border-radius: 24px !important;
+            border-radius: 20px !important;
             font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.92rem !important;
-            padding: 14px 18px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+            font-size: 0.9rem !important;
+            padding: 12px 16px !important;
         }
 
         .sidebar-signature {
             text-align: center;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #64748b;
             letter-spacing: 1px;
-            padding: 12px 4px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            padding: 10px 4px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             border-top: 1px solid #e2e8f0;
             border-bottom: 1px solid #e2e8f0;
-            background-color: transparent;
             text-transform: uppercase;
         }
 
         .ai-thinking-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
+            gap: 8px;
+            padding: 10px 14px;
             background-color: #f1f5f9;
             border: 1px solid #e2e8f0;
-            border-radius: 18px;
+            border-radius: 14px;
             width: fit-content;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .ai-thinking-dots {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
         }
 
         .ai-dot {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background-color: #0284c7;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
@@ -296,12 +290,12 @@ if current_theme == "Light":
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-            40% { transform: scale(1.3); opacity: 1; }
+            40% { transform: scale(1.2); opacity: 1; }
         }
 
         .ai-thinking-text {
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #0284c7;
         }
@@ -309,14 +303,14 @@ if current_theme == "Light":
         .ai-replying-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            margin-bottom: 10px;
+            gap: 5px;
+            padding: 4px 10px;
+            margin-bottom: 8px;
             background-color: #e0f2fe;
             border: 1px solid #bae6fd;
-            border-radius: 14px;
+            border-radius: 12px;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: #0369a1;
         }
     </style>
@@ -326,92 +320,91 @@ else:
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
-        html {
+        /* Strict box-sizing & overflow prevention */
+        html, body {
             box-sizing: border-box;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
             -webkit-text-size-adjust: 100%;
         }
         *, *:before, *:after {
             box-sizing: inherit;
         }
 
-        html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
+        .stApp {
             background: linear-gradient(135deg, #090d16 0%, #111e2e 35%, #1a102f 70%, #0f172a 100%) !important;
             background-attachment: fixed !important;
             color: #f8fafc !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
-            min-height: 100vh;
             width: 100% !important;
-            max-width: 100vw !important;
+            max-width: 100% !important;
             overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
         }
 
+        /* Container safety */
         .block-container {
-            max-width: 860px !important;
+            max-width: 800px !important;
             width: 100% !important;
-            padding-left: 1rem !important;
-            padding-right: 1rem !important;
-            padding-top: 1.5rem !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 1rem !important;
             padding-bottom: 7rem !important;
             margin: 0 auto !important;
         }
 
         [data-testid="stMain"] > div {
-            background-color: rgba(17, 24, 39, 0.85) !important;
-            backdrop-filter: blur(16px) !important;
-            border: 1px solid rgba(56, 189, 248, 0.25) !important;
-            border-radius: 28px !important;
-            padding: 24px !important;
-            margin: 8px auto !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7) !important;
+            background-color: rgba(17, 24, 39, 0.9) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(56, 189, 248, 0.2) !important;
+            border-radius: 20px !important;
+            padding: 16px !important;
+            margin: 4px auto !important;
             width: 100% !important;
             max-width: 100% !important;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5) !important;
         }
 
-        /* Mobile Screen Strict Overrides */
+        /* Mobile Phone Layout Strict Overrides */
         @media (max-width: 768px) {
             .block-container {
-                padding-left: 8px !important;
-                padding-right: 8px !important;
-                padding-top: 0.8rem !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+                padding-top: 0.5rem !important;
                 padding-bottom: 7.5rem !important;
-                max-width: 100% !important;
             }
             [data-testid="stMain"] > div {
-                padding: 12px !important;
-                margin: 2px auto !important;
-                border-radius: 16px !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
                 border: none !important;
                 box-shadow: none !important;
                 background-color: transparent !important;
             }
             .gemini-title {
-                font-size: 1.45rem !important;
+                font-size: 1.35rem !important;
             }
             .gemini-subtitle {
-                font-size: 0.68rem !important;
-                margin-bottom: 10px !important;
+                font-size: 0.65rem !important;
+                margin-bottom: 8px !important;
             }
             .stChatMessage {
-                padding: 12px !important;
-                border-radius: 14px !important;
-                margin-bottom: 10px !important;
-                word-break: break-word !important;
-                overflow-wrap: break-word !important;
+                padding: 10px !important;
+                border-radius: 12px !important;
+                margin-bottom: 8px !important;
             }
             [data-testid="stChatInput"] {
-                bottom: 6px !important;
-                left: 4px !important;
-                right: 4px !important;
-                width: calc(100% - 8px) !important;
+                bottom: 4px !important;
+                left: 2px !important;
+                right: 2px !important;
+                width: calc(100% - 4px) !important;
             }
         }
 
         [data-testid="stSidebar"] {
             background-color: #060913 !important;
             border-right: 1px solid rgba(56, 189, 248, 0.15) !important;
-            z-index: 1000;
         }
         
         [data-testid="stSidebar"] * {
@@ -420,55 +413,52 @@ else:
 
         .gemini-title {
             font-family: 'Google Sans', sans-serif;
-            font-size: 2.1rem;
+            font-size: 1.9rem;
             font-weight: 700;
             background: linear-gradient(135deg, #38bdf8, #e879f9, #34d399, #fb7185);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
-            padding-top: 2px;
             letter-spacing: -0.5px;
         }
         
         .gemini-subtitle {
             color: #94a3b8;
-            font-size: 0.78rem;
-            margin-bottom: 18px;
+            font-size: 0.75rem;
+            margin-bottom: 14px;
             font-weight: 500;
-            letter-spacing: 0.3px;
         }
 
         .stChatMessage {
-            background-color: rgba(30, 41, 59, 0.8) !important;
+            background-color: rgba(30, 41, 59, 0.85) !important;
             backdrop-filter: blur(8px) !important;
             border: 1px solid rgba(56, 189, 248, 0.2) !important;
-            border-radius: 20px !important;
-            padding: 18px !important;
-            margin-bottom: 14px !important;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 16px !important;
+            padding: 14px !important;
+            margin-bottom: 10px !important;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
+            max-width: 100% !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
             color: #f8fafc !important;
-            font-size: 0.92rem !important;
-            line-height: 1.55 !important;
+            font-size: 0.9rem !important;
+            line-height: 1.5 !important;
             word-break: break-word !important;
             overflow-wrap: break-word !important;
         }
 
         .stButton button {
-            border-radius: 14px !important;
+            border-radius: 12px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
-            font-size: 0.8rem !important;
+            font-size: 0.78rem !important;
             border: 1px solid rgba(56, 189, 248, 0.3) !important;
             background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            transition: all 0.2s ease !important;
             width: 100% !important;
+            padding: 6px 10px !important;
         }
         
         .stButton button:hover {
@@ -477,56 +467,54 @@ else:
         }
 
         [data-testid="stChatInput"] {
-            padding: 0 2px 6px 2px !important;
+            padding: 0 2px 4px 2px !important;
         }
 
         [data-testid="stChatInput"] textarea {
             background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
             border: 1px solid rgba(56, 189, 248, 0.3) !important;
-            border-radius: 24px !important;
+            border-radius: 20px !important;
             font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.92rem !important;
-            padding: 14px 18px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
+            font-size: 0.9rem !important;
+            padding: 12px 16px !important;
         }
 
         .sidebar-signature {
             text-align: center;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.68rem;
+            font-size: 0.65rem;
             color: #94a3b8;
             letter-spacing: 1px;
-            padding: 12px 4px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            padding: 10px 4px;
+            margin-top: 15px;
+            margin-bottom: 15px;
             border-top: 1px solid rgba(56, 189, 248, 0.15);
             border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-            background-color: transparent;
             text-transform: uppercase;
         }
 
         .ai-thinking-box {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 12px 16px;
+            gap: 8px;
+            padding: 10px 14px;
             background-color: rgba(30, 41, 59, 0.9);
             border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 18px;
+            border-radius: 14px;
             width: fit-content;
-            margin: 8px 0;
+            margin: 6px 0;
         }
 
         .ai-thinking-dots {
             display: flex;
-            gap: 5px;
+            gap: 4px;
             align-items: center;
         }
 
         .ai-dot {
-            width: 7px;
-            height: 7px;
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
             background-color: #38bdf8;
             animation: aiDotBounce 1.4s infinite ease-in-out both;
@@ -538,12 +526,12 @@ else:
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-            40% { transform: scale(1.3); opacity: 1; }
+            40% { transform: scale(1.2); opacity: 1; }
         }
 
         .ai-thinking-text {
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: #38bdf8;
         }
@@ -551,14 +539,14 @@ else:
         .ai-replying-badge {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            padding: 5px 12px;
-            margin-bottom: 10px;
+            gap: 5px;
+            padding: 4px 10px;
+            margin-bottom: 8px;
             background-color: rgba(56, 189, 248, 0.15);
             border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 14px;
+            border-radius: 12px;
             font-family: 'Google Sans', sans-serif;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             color: #38bdf8;
         }
     </style>
@@ -571,11 +559,11 @@ with st.sidebar:
     st.markdown("### ✨ Metaverse_AI Workspace")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to unlock all features and chats.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.78rem;'>Sign in with Google to unlock features and chats.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.75rem;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.72rem;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -604,10 +592,10 @@ with st.sidebar:
         st.markdown("### 💬 Recent chats")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
-            col1, col2 = st.columns([0.76, 0.24])
+            col1, col2 = st.columns([0.72, 0.28])
             with col1:
                 btn_type = "primary" if sid == current_sid else "secondary"
-                display_title = sdata["title"][:14] + ("..." if len(sdata["title"]) > 14 else "")
+                display_title = sdata["title"][:12] + ("..." if len(sdata["title"]) > 12 else "")
                 if st.button(display_title, key=f"sel_{sid}", use_container_width=True, type=btn_type):
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
@@ -640,8 +628,8 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 18px; padding: 18px; margin-bottom: 16px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">⚙️ Settings & Preferences</h3>
+            <div style="border-radius: 14px; padding: 14px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -659,7 +647,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            if st.button("Save Changes", use_container_width=True, type="primary"):
+            if st.button("Save", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
                 st.session_state[prefs_storage_key]["theme"] = theme_choice_input
@@ -675,14 +663,14 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
-            <div style="border-radius: 18px; padding: 18px; margin-bottom: 16px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">🧠 Memory & Context</h3>
+            <div style="border-radius: 14px; padding: 14px; margin-bottom: 12px;">
+                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
         
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
-            col_m1, col_m2 = st.columns([0.82, 0.18])
+            col_m1, col_m2 = st.columns([0.8, 0.2])
             with col_m1:
                 st.code(mem, language="text")
             with col_m2:
@@ -706,9 +694,9 @@ st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Theme: {
 
 if not is_logged_in:
     st.markdown("""
-        <div style="border-radius: 20px; padding: 24px; text-align: center; margin-top: 20px;">
-            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.25rem; margin-bottom: 12px;">Welcome to Metaverse_AI</h2>
-            <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
+        <div style="border-radius: 16px; padding: 18px; text-align: center; margin-top: 15px;">
+            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.15rem; margin-bottom: 10px;">Welcome to Metaverse_AI</h2>
+            <p style="font-size: 0.85rem; line-height: 1.45; margin-bottom: 15px;">
                 Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
             </p>
         </div>
@@ -726,7 +714,7 @@ prompt = st.chat_input("Type your message here...")
 
 if prompt:
     if len(current_messages) == 0:
-        current_session_data["title"] = prompt[:18]
+        current_session_data["title"] = prompt[:16]
 
     current_messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
