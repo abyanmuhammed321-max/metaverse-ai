@@ -30,13 +30,14 @@ except Exception:
 
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_' )}"
 
-# Initialize preferences (Dark/Light mode toggles removed entirely)
+# Initialize preferences
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
-        "lang_choice": "English"
+        "lang_choice": "English",
+        "chat_alignment": "Centered Hologram Card"
     }
 
 # Initialize Memory Bank
@@ -45,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Sleek, uniform futuristic immersive design with robust desktop container views and seamless full-width mobile phone sizing."
+        "Core Objective: Futuristic immersive UI with customizable multi-style chat alignments (Centered Hologram Card, Full-Width Cyber Stream, Split Workspace Grid)."
     ]
 
 if storage_key not in st.session_state:
@@ -73,12 +74,80 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. ADVANCED FUTURISTIC UNIFIED STYLING (New Way & New Style - Light/Dark modes removed)
-theme_css = """
+# Retrieve current alignment setting
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
+
+# Dynamic layout structure injection based on alignment preference
+if current_alignment == "Full-Width Cyber Stream":
+    desktop_container_css = """
+        .block-container {
+            max-width: 100% !important;
+            padding-left: 3rem !important;
+            padding-right: 3rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7.5rem !important;
+            margin: 0 !important;
+        }
+        [data-testid="stMain"] > div {
+            background: rgba(13, 19, 38, 0.6) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(56, 189, 248, 0.2) !important;
+            border-radius: 24px !important;
+            padding: 32px !important;
+            margin: 12px 0 !important;
+            width: 100% !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+    """
+elif current_alignment == "Split Workspace Grid":
+    desktop_container_css = """
+        .block-container {
+            max-width: 1280px !important;
+            padding-left: 2.5rem !important;
+            padding-right: 2.5rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7.5rem !important;
+            margin: 0 auto !important;
+        }
+        [data-testid="stMain"] > div {
+            background: linear-gradient(135deg, rgba(13, 19, 38, 0.85) 0%, rgba(30, 27, 75, 0.85) 100%) !important;
+            backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(192, 132, 252, 0.3) !important;
+            border-radius: 36px !important;
+            padding: 42px !important;
+            margin: 16px auto !important;
+            width: 100% !important;
+            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        }
+    """
+else: # Centered Hologram Card (Default)
+    desktop_container_css = """
+        .block-container {
+            max-width: 980px !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7.5rem !important;
+            margin: 0 auto !important;
+        }
+        [data-testid="stMain"] > div {
+            background: rgba(13, 19, 38, 0.75) !important;
+            backdrop-filter: blur(24px) !important;
+            border: 1px solid rgba(99, 102, 241, 0.2) !important;
+            border-radius: 32px !important;
+            padding: 40px !important;
+            margin: 16px auto !important;
+            width: 100% !important;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        }
+    """
+
+# 3. ADVANCED FUTURISTIC UNIFIED STYLING
+theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    html, body {
+    html, body {{
         box-sizing: border-box;
         width: 100% !important;
         max-width: 100% !important;
@@ -86,51 +155,31 @@ theme_css = """
         margin: 0 !important;
         padding: 0 !important;
         -webkit-text-size-adjust: 100%;
-    }
-    *, *:before, *:after {
+    }}
+    *, *:before, *:after {{
         box-sizing: inherit;
-    }
+    }}
 
-    .stApp {
+    .stApp {{
         background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 60%, #020617 100%) !important;
         background-attachment: fixed !important;
         color: #f8fafc !important;
         font-family: 'Plus Jakarta Sans', sans-serif;
         width: 100% !important;
-    }
+    }}
 
-    /* Desktop View Layout Structure: Centered Glass Card */
-    .block-container {
-        max-width: 980px !important;
-        width: 100% !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
-        padding-top: 2rem !important;
-        padding-bottom: 7.5rem !important;
-        margin: 0 auto !important;
-    }
-
-    [data-testid="stMain"] > div {
-        background: rgba(13, 19, 38, 0.75) !important;
-        backdrop-filter: blur(24px) !important;
-        -webkit-backdrop-filter: blur(24px) !important;
-        border: 1px solid rgba(99, 102, 241, 0.2) !important;
-        border-radius: 32px !important;
-        padding: 40px !important;
-        margin: 16px auto !important;
-        width: 100% !important;
-        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-    }
+    {desktop_container_css}
 
     /* Mobile View Strict Responsive Adjustments */
-    @media (max-width: 768px) {
-        .block-container {
+    @media (max-width: 768px) {{
+        .block-container {{
             padding-left: 10px !important;
             padding-right: 10px !important;
             padding-top: 1rem !important;
             padding-bottom: 8rem !important;
-        }
-        [data-testid="stMain"] > div {
+            margin: 0 !important;
+        }}
+        [data-testid="stMain"] > div {{
             background: transparent !important;
             backdrop-filter: none !important;
             border: none !important;
@@ -138,37 +187,38 @@ theme_css = """
             padding: 10px !important;
             margin: 0 !important;
             box-shadow: none !important;
-        }
-        .gemini-title {
+            width: 100% !important;
+        }}
+        .gemini-title {{
             font-size: 1.6rem !important;
-        }
-        .gemini-subtitle {
+        }}
+        .gemini-subtitle {{
             font-size: 0.75rem !important;
             margin-bottom: 16px !important;
-        }
-        .stChatMessage {
+        }}
+        .stChatMessage {{
             padding: 14px !important;
             border-radius: 16px !important;
             margin-bottom: 12px !important;
-        }
-        [data-testid="stChatInput"] {
+        }}
+        [data-testid="stChatInput"] {{
             bottom: 6px !important;
             left: 4px !important;
             right: 4px !important;
             width: calc(100% - 8px) !important;
-        }
-    }
+        }}
+    }}
 
-    [data-testid="stSidebar"] {
+    [data-testid="stSidebar"] {{
         background-color: #030712 !important;
         border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
-    }
+    }}
     
-    [data-testid="stSidebar"] * {
+    [data-testid="stSidebar"] * {{
         color: #f8fafc !important;
-    }
+    }}
 
-    .gemini-title {
+    .gemini-title {{
         font-family: 'Outfit', sans-serif;
         font-size: 2.5rem;
         font-weight: 700;
@@ -177,17 +227,17 @@ theme_css = """
         -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
         letter-spacing: -0.8px;
-    }
+    }}
     
-    .gemini-subtitle {
+    .gemini-subtitle {{
         color: #94a3b8;
         font-size: 0.85rem;
         margin-bottom: 28px;
         font-weight: 500;
         letter-spacing: 0.3px;
-    }
+    }}
 
-    .stChatMessage {
+    .stChatMessage {{
         background: rgba(23, 32, 59, 0.7) !important;
         backdrop-filter: blur(12px) !important;
         border: 1px solid rgba(99, 102, 241, 0.2) !important;
@@ -198,17 +248,17 @@ theme_css = """
         word-break: break-word !important;
         overflow-wrap: break-word !important;
         max-width: 100% !important;
-    }
+    }}
 
-    .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
+    .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
         color: #f8fafc !important;
         font-size: 0.96rem !important;
         line-height: 1.65 !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
-    }
+    }}
 
-    .stButton button {
+    .stButton button {{
         border-radius: 14px !important;
         font-family: 'Outfit', sans-serif !important;
         font-weight: 600 !important;
@@ -220,19 +270,19 @@ theme_css = """
         padding: 10px 16px !important;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    }
+    }}
     
-    .stButton button:hover {
+    .stButton button:hover {{
         background: linear-gradient(135deg, rgba(49, 46, 129, 1), rgba(67, 56, 202, 1)) !important;
         border-color: #818cf8 !important;
         box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
-    }
+    }}
 
-    [data-testid="stChatInput"] {
+    [data-testid="stChatInput"] {{
         padding: 0 4px 10px 4px !important;
-    }
+    }}
 
-    [data-testid="stChatInput"] textarea {
+    [data-testid="stChatInput"] textarea {{
         background: rgba(15, 23, 42, 0.9) !important;
         color: #f8fafc !important;
         border: 1px solid rgba(99, 102, 241, 0.35) !important;
@@ -241,9 +291,9 @@ theme_css = """
         font-size: 0.96rem !important;
         padding: 16px 22px !important;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
-    }
+    }}
 
-    .sidebar-signature {
+    .sidebar-signature {{
         text-align: center;
         font-family: 'Outfit', sans-serif;
         font-size: 0.7rem;
@@ -256,9 +306,9 @@ theme_css = """
         border-bottom: 1px solid rgba(99, 102, 241, 0.2);
         text-transform: uppercase;
         background: rgba(99, 102, 241, 0.05);
-    }
+    }}
 
-    .ai-thinking-box {
+    .ai-thinking-box {{
         display: flex;
         align-items: center;
         gap: 10px;
@@ -268,39 +318,39 @@ theme_css = """
         border-radius: 18px;
         width: fit-content;
         margin: 8px 0;
-    }
+    }}
 
-    .ai-thinking-dots {
+    .ai-thinking-dots {{
         display: flex;
         gap: 6px;
         align-items: center;
-    }
+    }}
 
-    .ai-dot {
+    .ai-dot {{
         width: 8px;
         height: 8px;
         border-radius: 50%;
         background-color: #818cf8;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
-    }
+    }}
 
-    .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-    .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c084fc; }
-    .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #38bdf8; }
+    .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
+    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #c084fc; }}
+    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #38bdf8; }}
 
-    @keyframes aiDotBounce {
-        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-        40% { transform: scale(1.3); opacity: 1; }
-    }
+    @keyframes aiDotBounce {{
+        0%, 80%, 100% {{ transform: scale(0); opacity: 0.4; }}
+        40% {{ transform: scale(1.3); opacity: 1; }}
+    }}
 
-    .ai-thinking-text {
+    .ai-thinking-text {{
         font-family: 'Outfit', sans-serif;
         font-size: 0.88rem;
         font-weight: 600;
         color: #818cf8;
-    }
+    }}
 
-    .ai-replying-badge {
+    .ai-replying-badge {{
         display: inline-flex;
         align-items: center;
         gap: 6px;
@@ -313,7 +363,7 @@ theme_css = """
         font-size: 0.76rem;
         color: #818cf8;
         font-weight: 600;
-    }
+    }}
 </style>
 """
 
@@ -389,7 +439,7 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel (Light/Dark mode toggles removed completely)
+# 5. Settings Modal Panel (Including new alignment feature selector)
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
@@ -405,12 +455,18 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
+
+        alignments = ["Centered Hologram Card", "Full-Width Cyber Stream", "Split Workspace Grid"]
+        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
+        align_index = alignments.index(current_align_pref) if current_align_pref in alignments else 0
+        alignment_choice_input = st.selectbox("Chat Container Alignment", alignments, index=align_index, key="modal_align_select")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             if st.button("Save Changes", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
+                st.session_state[prefs_storage_key]["chat_alignment"] = alignment_choice_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
@@ -446,10 +502,11 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Mode: Futuristic Immersive • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Layout: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
