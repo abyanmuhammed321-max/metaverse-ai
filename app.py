@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Deliver solid background themes for Light and Dark modes across the interface."
+        "Core Objective: Colorful vibrant dark background gradient for Dark theme, and clean pristine opposite light background for Light theme."
     ]
 
 if storage_key not in st.session_state:
@@ -74,15 +74,15 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. SOLID THEMED STYLING (Dark Mode = Solid Dark Background, Light Mode = Clean Light Background)
+# 3. COLORFUL DYNAMIC STYLING (Dark Theme = Dark Colorful Gradient Background, Light Theme = Pure Clean White/Light)
 if current_theme == "Light":
     theme_css = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-            background-color: #f8fafc !important;
-            background-image: none !important;
+            background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 50%, #fdf4ff 100%) !important;
+            background-attachment: fixed !important;
             color: #0f172a !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
@@ -90,13 +90,14 @@ if current_theme == "Light":
         }
 
         [data-testid="stMain"] > div {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
+            background-color: rgba(255, 255, 255, 0.9) !important;
+            backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(226, 232, 240, 0.8) !important;
             border-radius: 36px !important;
             padding: 32px !important;
             margin: 20px auto !important;
             max-width: 860px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05) !important;
         }
 
         @media (max-width: 768px) {
@@ -127,7 +128,7 @@ if current_theme == "Light":
         }
 
         [data-testid="stSidebar"] {
-            background-color: #f1f5f9 !important;
+            background-color: #f8fafc !important;
             border-right: 1px solid #e2e8f0 !important;
             z-index: 1000;
         }
@@ -140,7 +141,7 @@ if current_theme == "Light":
             font-family: 'Google Sans', sans-serif;
             font-size: 2.3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #0284c7, #c026d3, #e11d48);
+            background: linear-gradient(135deg, #0284c7, #c026d3, #16a34a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
@@ -157,12 +158,12 @@ if current_theme == "Light":
         }
 
         .stChatMessage {
-            background-color: #f8fafc !important;
+            background-color: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
             border-radius: 26px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
-            box-shadow: none !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02) !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
@@ -201,7 +202,7 @@ if current_theme == "Light":
             font-family: 'Google Sans', sans-serif !important;
             font-size: 0.95rem !important;
             padding: 16px 22px !important;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
         }
 
         [data-testid="stChatInput"] textarea:focus {
@@ -252,7 +253,7 @@ if current_theme == "Light":
 
         .ai-dot:nth-child(1) { animation-delay: -0.32s; }
         .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c026d3; }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #e11d48; }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #16a34a; }
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
@@ -287,8 +288,8 @@ else:
         @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
 
         html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"], .stApp {
-            background-color: #0b0f19 !important;
-            background-image: none !important;
+            background: linear-gradient(135deg, #090d16 0%, #111e2e 35%, #1a102f 70%, #0f172a 100%) !important;
+            background-attachment: fixed !important;
             color: #f8fafc !important;
             font-family: 'Google Sans', 'Inter', sans-serif;
             min-height: 100vh;
@@ -296,13 +297,14 @@ else:
         }
 
         [data-testid="stMain"] > div {
-            background-color: #111827 !important;
-            border: 1px solid #1f2937 !important;
+            background-color: rgba(17, 24, 39, 0.85) !important;
+            backdrop-filter: blur(16px) !important;
+            border: 1px solid rgba(56, 189, 248, 0.25) !important;
             border-radius: 36px !important;
             padding: 32px !important;
             margin: 20px auto !important;
             max-width: 860px !important;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6) !important;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(120, 50, 255, 0.1) !important;
         }
 
         @media (max-width: 768px) {
@@ -333,8 +335,8 @@ else:
         }
 
         [data-testid="stSidebar"] {
-            background-color: #090d16 !important;
-            border-right: 1px solid #1f2937 !important;
+            background-color: #060913 !important;
+            border-right: 1px solid rgba(56, 189, 248, 0.15) !important;
             z-index: 1000;
         }
         
@@ -346,7 +348,7 @@ else:
             font-family: 'Google Sans', sans-serif;
             font-size: 2.3rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #e879f9, #fb7185);
+            background: linear-gradient(135deg, #38bdf8, #e879f9, #34d399, #fb7185);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 0px;
@@ -363,12 +365,13 @@ else:
         }
 
         .stChatMessage {
-            background-color: #1e293b !important;
-            border: 1px solid #334155 !important;
+            background-color: rgba(30, 41, 59, 0.8) !important;
+            backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(56, 189, 248, 0.2) !important;
             border-radius: 26px !important;
             padding: 20px !important;
             margin-bottom: 16px !important;
-            box-shadow: none !important;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
         }
 
         .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
@@ -382,17 +385,18 @@ else:
             font-family: 'Google Sans', sans-serif !important;
             font-weight: 500 !important;
             font-size: 0.82rem !important;
-            border: 1px solid #334155 !important;
-            background-color: #1e293b !important;
+            border: 1px solid rgba(56, 189, 248, 0.3) !important;
+            background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
             transition: all 0.2s ease !important;
         }
         
         .stButton button:hover {
-            background-color: #334155 !important;
+            background-color: rgba(51, 65, 85, 1) !important;
             border-color: #38bdf8 !important;
             transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(56, 189, 248, 0.25) !important;
         }
 
         [data-testid="stChatInput"] {
@@ -400,19 +404,19 @@ else:
         }
 
         [data-testid="stChatInput"] textarea {
-            background-color: #1e293b !important;
+            background-color: rgba(30, 41, 59, 0.9) !important;
             color: #f8fafc !important;
-            border: 1px solid #334155 !important;
+            border: 1px solid rgba(56, 189, 248, 0.3) !important;
             border-radius: 30px !important;
             font-family: 'Google Sans', sans-serif !important;
             font-size: 0.95rem !important;
             padding: 16px 22px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
         }
 
         [data-testid="stChatInput"] textarea:focus {
             border-color: #38bdf8 !important;
-            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.25) !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.3) !important;
         }
 
         .sidebar-signature {
@@ -424,8 +428,8 @@ else:
             padding: 14px 5px;
             margin-top: 25px;
             margin-bottom: 25px;
-            border-top: 1px solid #1f2937;
-            border-bottom: 1px solid #1f2937;
+            border-top: 1px solid rgba(56, 189, 248, 0.15);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
             background-color: transparent;
             text-transform: uppercase;
         }
@@ -435,8 +439,8 @@ else:
             align-items: center;
             gap: 12px;
             padding: 14px 20px;
-            background-color: #1e293b;
-            border: 1px solid #334155;
+            background-color: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 22px;
             width: fit-content;
             margin: 10px 0;
@@ -458,7 +462,7 @@ else:
 
         .ai-dot:nth-child(1) { animation-delay: -0.32s; }
         .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #e879f9; }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #fb7185; }
+        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #34d399; }
 
         @keyframes aiDotBounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
@@ -478,8 +482,8 @@ else:
             gap: 8px;
             padding: 6px 14px;
             margin-bottom: 12px;
-            background-color: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+            background-color: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.35);
             border-radius: 16px;
             font-family: 'Google Sans', sans-serif;
             font-size: 0.74rem;
