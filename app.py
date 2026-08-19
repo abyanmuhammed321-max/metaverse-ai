@@ -37,7 +37,7 @@ if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.5-flash-lite",
         "lang_choice": "English",
-        "chat_alignment": "Neon Obsidian Vault"
+        "chat_alignment": "Glassmorphic Neon Portal"
     }
 
 # Initialize Memory Bank
@@ -46,14 +46,14 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Next-gen Neon Cyber-Luxe styling with absolute mobile text clarity."
+        "Core Objective: Futuristic Glassmorphic Neon Portal styling with absolute mobile clarity."
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Luxe Stream",
+            "title": "Portal Stream",
             "messages": []
         }
     }
@@ -74,80 +74,35 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Glassmorphic Neon Portal")
 
-# Luxury Alignment Configurations (Desktop CSS)
-if current_alignment == "Neon Obsidian Vault":
-    desktop_container_css = """
-        .block-container {
-            max-width: 1320px !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stMain"] > div {
-            background: linear-gradient(145deg, rgba(12, 14, 20, 0.95) 0%, rgba(22, 18, 30, 0.95) 100%) !important;
-            backdrop-filter: blur(45px) !important;
-            border: 1px solid rgba(212, 175, 55, 0.3) !important;
-            border-top: 3px solid #00f3ff !important;
-            border-radius: 30px !important;
-            padding: 48px !important;
-            margin: 16px auto !important;
-            width: 100% !important;
-            box-shadow: 0 0 70px rgba(0, 243, 255, 0.1), 0 30px 90px rgba(0, 0, 0, 0.9) !important;
-        }
-    """
-elif current_alignment == "Cyber Imperial Suite":
-    desktop_container_css = """
-        .block-container {
-            max-width: 1360px !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stMain"] > div {
-            background: radial-gradient(circle at 50% 0%, rgba(25, 12, 35, 0.92) 0%, rgba(8, 10, 22, 0.96) 100%) !important;
-            backdrop-filter: blur(40px) !important;
-            border: 1px solid rgba(236, 72, 153, 0.35) !important;
-            border-top: 3px solid #d4af37 !important;
-            border-radius: 30px !important;
-            padding: 48px !important;
-            margin: 16px auto !important;
-            width: 100% !important;
-            box-shadow: 0 0 70px rgba(236, 72, 153, 0.15) !important;
-        }
-    """
-else:
-    desktop_container_css = """
-        .block-container {
-            max-width: 1300px !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
-        }
-        [data-testid="stMain"] > div {
-            background: linear-gradient(135deg, rgba(8, 20, 18, 0.95) 0%, rgba(10, 12, 22, 0.95) 100%) !important;
-            backdrop-filter: blur(40px) !important;
-            border: 1px solid rgba(16, 185, 129, 0.35) !important;
-            border-top: 3px solid #10b981 !important;
-            border-radius: 30px !important;
-            padding: 48px !important;
-            margin: 16px auto !important;
-            width: 100% !important;
-            box-shadow: 0 0 70px rgba(16, 185, 129, 0.12) !important;
-        }
-    """
+# Container CSS Configurations
+desktop_container_css = """
+    .block-container {
+        max-width: 1320px !important;
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 7.5rem !important;
+        margin: 0 auto !important;
+    }
+    [data-testid="stMain"] > div {
+        background: rgba(15, 23, 42, 0.75) !important;
+        backdrop-filter: blur(30px) !important;
+        border: 1px solid rgba(139, 92, 246, 0.25) !important;
+        border-top: 3px solid #8b5cf6 !important;
+        border-radius: 28px !important;
+        padding: 48px !important;
+        margin: 16px auto !important;
+        width: 100% !important;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(139, 92, 246, 0.1) !important;
+    }
+"""
 
-# 3. ULTIMATE RESPONSIVE STYLING & SIGN-IN LAYOUT
+# 3. FUTURISTIC GLASSMORPHIC STYLING & SIGN-IN LAYOUT
 theme_css = f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {{
         box-sizing: border-box !important;
@@ -164,9 +119,9 @@ theme_css = f"""
     }}
 
     .stApp {{
-        background: radial-gradient(circle at 50% 0%, #12141c 0%, #06080e 60%, #020306 100%) !important;
+        background: radial-gradient(circle at 50% -20%, #2e1065 0%, #090d16 50%, #030712 100%) !important;
         background-attachment: fixed !important;
-        color: #f1f5f9 !important;
+        color: #f8fafc !important;
         font-family: 'Plus Jakarta Sans', sans-serif;
         width: 100% !important;
         overflow-x: hidden !important;
@@ -185,27 +140,27 @@ theme_css = f"""
             margin: 0 !important;
         }}
         [data-testid="stMain"] > div {{
-            background: rgba(12, 14, 20, 0.98) !important;
+            background: rgba(15, 23, 42, 0.9) !important;
             backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(0, 243, 255, 0.25) !important;
-            border-top: 3px solid #00f3ff !important;
-            border-radius: 16px !important;
-            padding: 16px 8px !important;
+            border: 1px solid rgba(139, 92, 246, 0.3) !important;
+            border-top: 3px solid #8b5cf6 !important;
+            border-radius: 20px !important;
+            padding: 16px 12px !important;
             margin: 15px auto 0 auto !important;
-            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.7) !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         
-        .gemini-title-container {{
+        .portal-title-container {{
             text-align: center !important;
             width: 100% !important;
             display: block !important;
-            padding-top: 8px !important;
+            padding-top: 4px !important;
             margin-bottom: 12px !important;
         }}
-        .gemini-title {{
+        .portal-title {{
             font-size: 1.6rem !important;
-            letter-spacing: 0.5px !important;
+            letter-spacing: -0.5px !important;
             line-height: 1.2 !important;
             text-align: center !important;
             white-space: nowrap !important;
@@ -213,20 +168,20 @@ theme_css = f"""
             width: 100% !important;
             margin: 0 auto !important;
         }}
-        .gemini-subtitle {{
-            font-size: 0.58rem !important;
+        .portal-subtitle {{
+            font-size: 0.6rem !important;
             margin-bottom: 12px !important;
-            letter-spacing: 0.3px !important;
+            letter-spacing: 0.5px !important;
             text-align: center !important;
             display: flex !important;
             flex-wrap: wrap !important;
             justify-content: center !important;
-            gap: 2px 4px !important;
+            gap: 2px 6px !important;
             width: 100% !important;
         }}
         .stChatMessage {{
             padding: 12px !important;
-            border-radius: 12px !important;
+            border-radius: 14px !important;
             margin-bottom: 10px !important;
             width: 100% !important;
             word-break: break-word !important;
@@ -238,99 +193,102 @@ theme_css = f"""
             right: 0px !important;
             width: 100% !important;
             padding: 6px 8px 12px 8px !important;
-            background: rgba(6, 8, 14, 0.98) !important;
+            background: rgba(3, 7, 18, 0.95) !important;
             backdrop-filter: blur(15px) !important;
             z-index: 99999 !important;
-            border-top: 1px solid rgba(0, 243, 255, 0.3) !important;
-        }}
-        [data-testid="stChatInput"] textarea {{
-            font-size: 16px !important;
-            padding: 10px 14px !important;
-            border-radius: 12px !important;
+            border-top: 1px solid rgba(139, 92, 246, 0.3) !important;
         }}
     }}
 
     [data-testid="stSidebar"] {{
-        background-color: #040508 !important;
-        border-right: 1px solid rgba(212, 175, 55, 0.2) !important;
+        background-color: #030712 !important;
+        border-right: 1px solid rgba(139, 92, 246, 0.2) !important;
     }}
     
     [data-testid="stSidebar"] * {{
-        color: #f1f5f9 !important;
+        color: #f8fafc !important;
     }}
 
-    .gemini-title {{
-        font-family: 'Cinzel', serif;
-        font-size: 2.6rem;
-        font-weight: 900;
-        background: linear-gradient(135deg, #ffffff 0%, #00f3ff 45%, #d4af37 100%);
+    .portal-title {{
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, #ffffff 0%, #c084fc 50%, #38bdf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
-        letter-spacing: 1.5px;
-        filter: drop-shadow(0 0 25px rgba(0, 243, 255, 0.25));
+        letter-spacing: -1px;
     }}
     
-    .gemini-subtitle {{
+    .portal-subtitle {{
         color: #94a3b8;
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         margin-bottom: 24px;
         font-weight: 600;
-        letter-spacing: 1.5px;
+        letter-spacing: 1px;
         text-transform: uppercase;
-        font-family: 'Cinzel', serif;
+        font-family: 'Space Grotesk', sans-serif;
     }}
 
-    /* Gorgeous Redesigned Cyber Sign-In Box */
-    .cyber-auth-container {{
-        background: linear-gradient(135deg, rgba(14, 18, 30, 0.95) 0%, rgba(26, 16, 38, 0.95) 100%);
-        border: 1px solid rgba(0, 243, 255, 0.4);
-        border-top: 4px solid #00f3ff;
-        border-radius: 24px;
-        padding: 36px 28px;
+    /* Futuristic Glassmorphic Sign-In Card */
+    .glass-auth-card {{
+        background: linear-gradient(145deg, rgba(30, 41, 59, 0.7) 0%, rgba(15, 23, 42, 0.8) 100%);
+        backdrop-filter: blur(25px);
+        border: 1px solid rgba(139, 92, 246, 0.35);
+        border-top: 4px solid #a855f7;
+        border-radius: 28px;
+        padding: 40px 32px;
         text-align: center;
-        margin: 15px auto 25px auto;
-        max-width: 520px;
-        box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
+        margin: 20px auto 30px auto;
+        max-width: 480px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 40px rgba(168, 85, 247, 0.15);
     }}
 
-    .cyber-auth-icon {{
-        font-size: 2.8rem;
-        margin-bottom: 12px;
-        filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.6));
+    .glass-auth-badge {{
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 64px;
+        height: 64px;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(56, 189, 248, 0.2));
+        border: 1px solid rgba(168, 85, 247, 0.4);
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.3);
     }}
 
-    .cyber-auth-title {{
-        font-family: 'Cinzel', serif;
-        font-size: 1.35rem;
-        font-weight: 800;
+    .glass-auth-title {{
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
         color: #ffffff;
-        margin-bottom: 10px;
-        letter-spacing: 0.8px;
+        margin-bottom: 12px;
+        letter-spacing: -0.5px;
     }}
 
-    .cyber-auth-desc {{
-        font-size: 0.88rem;
+    .glass-auth-desc {{
+        font-size: 0.9rem;
         line-height: 1.6;
         color: #94a3b8;
-        margin-bottom: 24px;
+        margin-bottom: 28px;
     }}
 
     .stChatMessage {{
-        background: rgba(18, 20, 28, 0.9) !important;
-        backdrop-filter: blur(18px) !important;
-        border: 1px solid rgba(0, 243, 255, 0.25) !important;
+        background: rgba(30, 41, 59, 0.6) !important;
+        backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(139, 92, 246, 0.25) !important;
         border-radius: 20px !important;
-        padding: 22px !important;
+        padding: 20px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
         max-width: 100% !important;
     }}
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
-        color: #f1f5f9 !important;
+        color: #f8fafc !important;
         font-size: 0.96rem !important;
         line-height: 1.65 !important;
         word-break: break-word !important;
@@ -339,53 +297,50 @@ theme_css = f"""
 
     .stButton button {{
         border-radius: 14px !important;
-        font-family: 'Cinzel', serif !important;
+        font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 700 !important;
-        font-size: 0.82rem !important;
-        letter-spacing: 1.2px !important;
-        border: 1px solid rgba(0, 243, 255, 0.5) !important;
-        background: linear-gradient(135deg, rgba(0, 243, 255, 0.15), rgba(212, 175, 55, 0.15)) !important;
-        color: #00f3ff !important;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.5px !important;
+        border: 1px solid rgba(168, 85, 247, 0.4) !important;
+        background: linear-gradient(135deg, #9333ea 0%, #4f46e5 100%) !important;
+        color: #ffffff !important;
         width: 100% !important;
-        padding: 12px 20px !important;
-        box-shadow: 0 5px 25px rgba(0, 243, 255, 0.2) !important;
+        padding: 14px 24px !important;
+        box-shadow: 0 10px 25px rgba(147, 51, 234, 0.35) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        text-transform: uppercase !important;
     }}
     
     .stButton button:hover {{
-        background: linear-gradient(135deg, rgba(0, 243, 255, 0.3), rgba(212, 175, 55, 0.3)) !important;
-        border-color: #00f3ff !important;
-        box-shadow: 0 0 30px rgba(0, 243, 255, 0.6) !important;
-        color: #ffffff !important;
+        background: linear-gradient(135deg, #a855f7 0%, #6366f1 100%) !important;
+        border-color: #c084fc !important;
+        box-shadow: 0 0 35px rgba(168, 85, 247, 0.6) !important;
         transform: translateY(-2px);
     }}
 
     [data-testid="stChatInput"] textarea {{
-        background: rgba(8, 10, 16, 0.95) !important;
-        color: #f1f5f9 !important;
-        border: 1px solid rgba(0, 243, 255, 0.4) !important;
-        border-radius: 20px !important;
+        background: rgba(15, 23, 42, 0.9) !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(139, 92, 246, 0.35) !important;
+        border-radius: 18px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.96rem !important;
-        padding: 16px 22px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(0, 243, 255, 0.05) !important;
+        padding: 16px 20px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
     }}
 
     .sidebar-signature {{
         text-align: center;
-        font-family: 'Cinzel', serif;
-        font-size: 0.68rem;
-        color: #00f3ff;
-        letter-spacing: 2px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.7rem;
+        color: #c084fc;
+        letter-spacing: 1.5px;
         padding: 14px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(0, 243, 255, 0.25);
-        border-bottom: 1px solid rgba(0, 243, 255, 0.25);
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
         text-transform: uppercase;
-        background: rgba(0, 243, 255, 0.04);
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.4);
+        background: rgba(139, 92, 246, 0.05);
     }}
 
     .ai-thinking-box {{
@@ -393,13 +348,12 @@ theme_css = f"""
         align-items: center;
         gap: 10px;
         padding: 12px 16px;
-        background: rgba(0, 243, 255, 0.08);
-        border: 1px solid rgba(0, 243, 255, 0.4);
+        background: rgba(139, 92, 246, 0.1);
+        border: 1px solid rgba(139, 92, 246, 0.3);
         border-radius: 14px;
         width: fit-content;
         max-width: 100%;
         margin: 8px 0;
-        box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
     }}
 
     .ai-thinking-dots {{
@@ -412,14 +366,14 @@ theme_css = f"""
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background-color: #00f3ff;
-        box-shadow: 0 0 8px #00f3ff;
+        background-color: #c084fc;
+        box-shadow: 0 0 8px #c084fc;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
     }}
 
     .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
-    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #d4af37; box-shadow: 0 0 8px #d4af37; }}
-    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #ec4899; box-shadow: 0 0 8px #ec4899; }}
+    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #38bdf8; box-shadow: 0 0 8px #38bdf8; }}
+    .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #f43f5e; box-shadow: 0 0 8px #f43f5e; }}
 
     @keyframes aiDotBounce {{
         0%, 80%, 100% {{ transform: scale(0); opacity: 0.4; }}
@@ -427,11 +381,11 @@ theme_css = f"""
     }}
 
     .ai-thinking-text {{
-        font-family: 'Cinzel', serif;
-        font-size: 0.72rem;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.75rem;
         font-weight: 700;
-        letter-spacing: 0.8px;
-        color: #00f3ff;
+        letter-spacing: 0.5px;
+        color: #c084fc;
         text-transform: uppercase;
     }}
 
@@ -441,16 +395,15 @@ theme_css = f"""
         gap: 6px;
         padding: 5px 12px;
         margin-bottom: 10px;
-        background: rgba(0, 243, 255, 0.12);
-        border: 1px solid rgba(0, 243, 255, 0.35);
+        background: rgba(139, 92, 246, 0.15);
+        border: 1px solid rgba(139, 92, 246, 0.35);
         border-radius: 10px;
-        font-family: 'Cinzel', serif;
-        font-size: 0.65rem;
-        color: #00f3ff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.68rem;
+        color: #c084fc;
         font-weight: 700;
-        letter-spacing: 0.8px;
+        letter-spacing: 0.5px;
         text-transform: uppercase;
-        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
     }}
 </style>
 """
@@ -459,34 +412,34 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Controls
 with st.sidebar:
-    st.markdown("### 👑 Cyber-Luxe Core")
+    st.markdown("### 🌌 Portal Control")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem;'>Authenticate to unlock vault access.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem;'>Authenticate to access the neural network.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.74rem; color: #00f3ff;'>{user_email}</span>", unsafe_allow_html=True)
-        st.button("Lock Vault", on_click=st.logout, use_container_width=True)
+        st.write(f"<span style='font-size: 0.74rem; color: #c084fc;'>{user_email}</span>", unsafe_allow_html=True)
+        st.button("Disconnect Portal", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
         
-        show_settings = st.checkbox("⚙️ Luxe Config", value=st.session_state["show_settings_modal"])
+        show_settings = st.checkbox("⚙️ Portal Config", value=st.session_state["show_settings_modal"])
         if show_settings != st.session_state["show_settings_modal"]:
             st.session_state["show_settings_modal"] = show_settings
             st.rerun()
 
-        show_brain = st.checkbox("🧠 Memory Vault", value=st.session_state["show_brain_modal"])
+        show_brain = st.checkbox("🧠 Memory Bank", value=st.session_state["show_brain_modal"])
         if show_brain != st.session_state["show_brain_modal"]:
             st.session_state["show_brain_modal"] = show_brain
             st.rerun()
 
         st.markdown("---")
         
-        if st.button("➕ New Luxe Stream", use_container_width=True, type="primary"):
+        if st.button("➕ New Portal Stream", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Luxe Stream",
+                "title": "Portal Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -507,7 +460,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Luxe Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Portal Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -532,7 +485,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">⚙️ Cyber-Luxe Config & Layouts</h3>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1rem; color: #c084fc;">⚙️ Portal Engine Settings</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -543,18 +496,12 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
-
-        alignments = ["Neon Obsidian Vault", "Cyber Imperial Suite", "Emerald Cyber Matrix"]
-        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
-        align_index = alignments.index(current_align_pref) if current_align_pref in alignments else 0
-        alignment_choice_input = st.selectbox("Vault Alignment Theme", alignments, index=align_index, key="modal_align_select")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             if st.button("Apply Config", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
-                st.session_state[prefs_storage_key]["chat_alignment"] = alignment_choice_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
@@ -568,7 +515,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 14px; padding: 12px; margin-bottom: 12px;">
-                <h3 style="font-family: 'Cinzel', serif; margin-top: 0; font-size: 1rem; color: #00f3ff;">🧠 Neural Memory Vault</h3>
+                <h3 style="font-family: 'Space Grotesk', sans-serif; margin-top: 0; font-size: 1rem; color: #c084fc;">🧠 Neural Memory Bank</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -590,16 +537,15 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# 7. Main Canvas Header & Redesigned Sign-In Layout
+# 7. Main Canvas Header & Glassmorphic Sign-In Layout
 st.markdown(f"""
-    <div class="gemini-title-container">
-        <div class="gemini-title">Metaverse_AI</div>
-        <div class="gemini-subtitle">
+    <div class="portal-title-container">
+        <div class="portal-title">Metaverse_AI</div>
+        <div class="portal-subtitle">
             <span>Engine: {selected_model}</span>
             <span>•</span>
-            <span>Style: {current_alignment}</span>
+            <span>Style: Glassmorphic Portal</span>
             <span>•</span>
             <span>Lang: {lang_choice}</span>
         </div>
@@ -608,11 +554,11 @@ st.markdown(f"""
 
 if not is_logged_in:
     st.markdown("""
-        <div class="cyber-auth-container">
-            <div class="cyber-auth-icon">👑</div>
-            <div class="cyber-auth-title">METAVERSE_AI ELITE VAULT</div>
-            <div class="cyber-auth-desc">
-                Welcome to your next-gen cyber intelligence nexus. Authenticate securely via Google to initialize your personal workspace and unlock absolute power.
+        <div class="glass-auth-card">
+            <div class="glass-auth-badge">🌌</div>
+            <div class="glass-auth-title">ENTER THE NEURAL NEXUS</div>
+            <div class="glass-auth-desc">
+                Welcome to Metaverse_AI. Authenticate securely with your Google account to connect to the decentralized intelligence stream.
             </div>
         </div>
     """, unsafe_allow_html=True)
@@ -628,7 +574,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Chat & Animated Response Engine
+# 8. Realtime Chat & Response Engine
 prompt = st.chat_input("Enter your command or query...")
 
 if prompt:
@@ -648,7 +594,7 @@ if prompt:
                     <div class="ai-dot"></div>
                     <div class="ai-dot"></div>
                 </div>
-                <span class="ai-thinking-text">Processing Luxe Stream...</span>
+                <span class="ai-thinking-text">Processing Stream...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -692,12 +638,12 @@ if prompt:
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-replying-badge">👑 Luxe Transmission Active</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-replying-badge">🌌 Portal Active</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
             message_placeholder.markdown(
-                f"""<div class="ai-replying-badge">👑 Luxe Transmission Complete</div>\n\n{full_response}""",
+                f"""<div class="ai-replying-badge">🌌 Portal Transmission Complete</div>\n\n{full_response}""",
                 unsafe_allow_html=True
             )
             
