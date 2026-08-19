@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration with Adaptive Layout
 st.set_page_config(
     page_title="Metaverse_AI",
-    page_icon="✨",
+    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="auto"
 )
@@ -30,14 +30,14 @@ except Exception:
 
 storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_' )}"
+memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences
+# Initialize preferences with new futuristic cyber layout options
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
         "lang_choice": "English",
-        "chat_alignment": "Centered Hologram Card"
+        "chat_alignment": "Cyberpunk Neural Split"
     }
 
 # Initialize Memory Bank
@@ -46,14 +46,14 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Futuristic immersive UI with customizable multi-style chat alignments (Centered Hologram Card, Full-Width Cyber Stream, Split Workspace Grid)."
+        "Core Objective: Quantum-grade futuristic neural interface UI with advanced multi-style immersive alignments."
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "New chat",
+            "title": "New neural stream",
             "messages": []
         }
     }
@@ -74,56 +74,35 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# Retrieve current alignment setting
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
+# Retrieve current alignment preference
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Cyberpunk Neural Split")
 
-# Dynamic layout structure injection based on alignment preference
-if current_alignment == "Full-Width Cyber Stream":
+# Powerful New Alignment Styles Engine
+if current_alignment == "Cyberpunk Neural Split":
     desktop_container_css = """
         .block-container {
-            max-width: 100% !important;
-            padding-left: 3rem !important;
-            padding-right: 3rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 !important;
-        }
-        [data-testid="stMain"] > div {
-            background: rgba(13, 19, 38, 0.6) !important;
-            backdrop-filter: blur(20px) !important;
-            border: 1px solid rgba(56, 189, 248, 0.2) !important;
-            border-radius: 24px !important;
-            padding: 32px !important;
-            margin: 12px 0 !important;
-            width: 100% !important;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
-        }
-    """
-elif current_alignment == "Split Workspace Grid":
-    desktop_container_css = """
-        .block-container {
-            max-width: 1280px !important;
+            max-width: 1400px !important;
             padding-left: 2.5rem !important;
             padding-right: 2.5rem !important;
-            padding-top: 2rem !important;
+            padding-top: 1.5rem !important;
             padding-bottom: 7.5rem !important;
             margin: 0 auto !important;
         }
         [data-testid="stMain"] > div {
-            background: linear-gradient(135deg, rgba(13, 19, 38, 0.85) 0%, rgba(30, 27, 75, 0.85) 100%) !important;
-            backdrop-filter: blur(24px) !important;
-            border: 1px solid rgba(192, 132, 252, 0.3) !important;
-            border-radius: 36px !important;
-            padding: 42px !important;
+            background: linear-gradient(145deg, rgba(10, 15, 30, 0.92) 0%, rgba(20, 10, 35, 0.92) 100%) !important;
+            backdrop-filter: blur(28px) !important;
+            border: 1px solid rgba(236, 72, 153, 0.35) !important;
+            border-radius: 28px !important;
+            padding: 45px !important;
             margin: 16px auto !important;
             width: 100% !important;
-            box-shadow: 0 35px 90px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 0 50px rgba(236, 72, 153, 0.15), 0 25px 70px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(168, 85, 247, 0.1) !important;
         }
     """
-else: # Centered Hologram Card (Default)
+elif current_alignment == "Quantum Matrix Deck":
     desktop_container_css = """
         .block-container {
-            max-width: 980px !important;
+            max-width: 1100px !important;
             padding-left: 2rem !important;
             padding-right: 2rem !important;
             padding-top: 2rem !important;
@@ -131,21 +110,45 @@ else: # Centered Hologram Card (Default)
             margin: 0 auto !important;
         }
         [data-testid="stMain"] > div {
-            background: rgba(13, 19, 38, 0.75) !important;
+            background: rgba(3, 7, 18, 0.88) !important;
             backdrop-filter: blur(24px) !important;
-            border: 1px solid rgba(99, 102, 241, 0.2) !important;
-            border-radius: 32px !important;
+            border-left: 4px solid #06b6d4 !important;
+            border-top: 1px solid rgba(6, 182, 212, 0.3) !important;
+            border-right: 1px solid rgba(6, 182, 212, 0.3) !important;
+            border-bottom: 1px solid rgba(6, 182, 212, 0.3) !important;
+            border-radius: 20px !important;
             padding: 40px !important;
             margin: 16px auto !important;
             width: 100% !important;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+            box-shadow: 0 0 40px rgba(6, 182, 212, 0.2), inset 0 0 15px rgba(6, 182, 212, 0.05) !important;
+        }
+    """
+else: # Floating Neon Citadel (Default High-End Style)
+    desktop_container_css = """
+        .block-container {
+            max-width: 1000px !important;
+            padding-left: 2rem !important;
+            padding-right: 2rem !important;
+            padding-top: 2rem !important;
+            padding-bottom: 7.5rem !important;
+            margin: 0 auto !important;
+        }
+        [data-testid="stMain"] > div {
+            background: rgba(12, 10, 29, 0.82) !important;
+            backdrop-filter: blur(30px) !important;
+            border: 1px solid rgba(139, 92, 246, 0.35) !important;
+            border-radius: 36px !important;
+            padding: 42px !important;
+            margin: 16px auto !important;
+            width: 100% !important;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, 0.85), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
         }
     """
 
-# 3. ADVANCED FUTURISTIC UNIFIED STYLING
+# 3. HIGH-POWERED CYBER-FUTURISTIC STYLING ENGINE
 theme_css = f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
     html, body {{
         box-sizing: border-box;
@@ -161,9 +164,9 @@ theme_css = f"""
     }}
 
     .stApp {{
-        background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 60%, #020617 100%) !important;
+        background: radial-gradient(circle at 50% 0%, #170b3b 0%, #070913 65%, #010308 100%) !important;
         background-attachment: fixed !important;
-        color: #f8fafc !important;
+        color: #f1f5f9 !important;
         font-family: 'Plus Jakarta Sans', sans-serif;
         width: 100% !important;
     }}
@@ -190,10 +193,10 @@ theme_css = f"""
             width: 100% !important;
         }}
         .gemini-title {{
-            font-size: 1.6rem !important;
+            font-size: 1.5rem !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.75rem !important;
+            font-size: 0.72rem !important;
             margin-bottom: 16px !important;
         }}
         .stChatMessage {{
@@ -210,48 +213,52 @@ theme_css = f"""
     }}
 
     [data-testid="stSidebar"] {{
-        background-color: #030712 !important;
-        border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+        background-color: #02040a !important;
+        border-right: 1px solid rgba(236, 72, 153, 0.2) !important;
     }}
     
     [data-testid="stSidebar"] * {{
-        color: #f8fafc !important;
+        color: #f1f5f9 !important;
     }}
 
     .gemini-title {{
-        font-family: 'Outfit', sans-serif;
-        font-size: 2.5rem;
-        font-weight: 700;
-        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #38bdf8 100%);
+        font-family: 'Orbitron', sans-serif;
+        font-size: 2.3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #f472b6 0%, #a855f7 50%, #38bdf8 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 4px;
-        letter-spacing: -0.8px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.3));
     }}
     
     .gemini-subtitle {{
         color: #94a3b8;
-        font-size: 0.85rem;
-        margin-bottom: 28px;
-        font-weight: 500;
-        letter-spacing: 0.3px;
+        font-size: 0.82rem;
+        margin-bottom: 26px;
+        font-weight: 600;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
+        font-family: 'Orbitron', sans-serif;
     }}
 
     .stChatMessage {{
-        background: rgba(23, 32, 59, 0.7) !important;
-        backdrop-filter: blur(12px) !important;
-        border: 1px solid rgba(99, 102, 241, 0.2) !important;
-        border-radius: 22px !important;
-        padding: 22px !important;
+        background: rgba(18, 22, 45, 0.75) !important;
+        backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(168, 85, 247, 0.25) !important;
+        border-radius: 20px !important;
+        padding: 20px !important;
         margin-bottom: 18px !important;
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
         word-break: break-word !important;
         overflow-wrap: break-word !important;
         max-width: 100% !important;
     }}
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
-        color: #f8fafc !important;
+        color: #f1f5f9 !important;
         font-size: 0.96rem !important;
         line-height: 1.65 !important;
         word-break: break-word !important;
@@ -259,23 +266,26 @@ theme_css = f"""
     }}
 
     .stButton button {{
-        border-radius: 14px !important;
-        font-family: 'Outfit', sans-serif !important;
-        font-weight: 600 !important;
-        font-size: 0.84rem !important;
-        border: 1px solid rgba(99, 102, 241, 0.35) !important;
-        background: linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(49, 46, 129, 0.8)) !important;
-        color: #f8fafc !important;
+        border-radius: 12px !important;
+        font-family: 'Orbitron', sans-serif !important;
+        font-weight: 700 !important;
+        font-size: 0.76rem !important;
+        letter-spacing: 0.8px !important;
+        border: 1px solid rgba(236, 72, 153, 0.4) !important;
+        background: linear-gradient(135deg, rgba(88, 28, 135, 0.85), rgba(157, 23, 77, 0.85)) !important;
+        color: #f1f5f9 !important;
         width: 100% !important;
         padding: 10px 16px !important;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 4px 20px rgba(168, 85, 247, 0.3) !important;
         transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-transform: uppercase !important;
     }}
     
     .stButton button:hover {{
-        background: linear-gradient(135deg, rgba(49, 46, 129, 1), rgba(67, 56, 202, 1)) !important;
-        border-color: #818cf8 !important;
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+        background: linear-gradient(135deg, rgba(126, 34, 206, 1), rgba(219, 39, 119, 1)) !important;
+        border-color: #f472b6 !important;
+        box-shadow: 0 0 25px rgba(236, 72, 153, 0.6) !important;
+        transform: translateY(-1px);
     }}
 
     [data-testid="stChatInput"] {{
@@ -283,29 +293,29 @@ theme_css = f"""
     }}
 
     [data-testid="stChatInput"] textarea {{
-        background: rgba(15, 23, 42, 0.9) !important;
-        color: #f8fafc !important;
-        border: 1px solid rgba(99, 102, 241, 0.35) !important;
-        border-radius: 24px !important;
+        background: rgba(8, 12, 24, 0.95) !important;
+        color: #f1f5f9 !important;
+        border: 1px solid rgba(168, 85, 247, 0.4) !important;
+        border-radius: 20px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.96rem !important;
         padding: 16px 22px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(168, 85, 247, 0.1) !important;
     }}
 
     .sidebar-signature {{
         text-align: center;
-        font-family: 'Outfit', sans-serif;
-        font-size: 0.7rem;
-        color: #818cf8;
-        letter-spacing: 1.5px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.65rem;
+        color: #f472b6;
+        letter-spacing: 2px;
         padding: 14px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(99, 102, 241, 0.2);
-        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        border-top: 1px solid rgba(236, 72, 153, 0.25);
+        border-bottom: 1px solid rgba(236, 72, 153, 0.25);
         text-transform: uppercase;
-        background: rgba(99, 102, 241, 0.05);
+        background: rgba(236, 72, 153, 0.05);
     }}
 
     .ai-thinking-box {{
@@ -313,11 +323,12 @@ theme_css = f"""
         align-items: center;
         gap: 10px;
         padding: 14px 20px;
-        background: rgba(30, 27, 75, 0.6);
-        border: 1px solid rgba(99, 102, 241, 0.3);
-        border-radius: 18px;
+        background: rgba(88, 28, 135, 0.5);
+        border: 1px solid rgba(236, 72, 153, 0.35);
+        border-radius: 16px;
         width: fit-content;
         margin: 8px 0;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
     }}
 
     .ai-thinking-dots {{
@@ -330,12 +341,12 @@ theme_css = f"""
         width: 8px;
         height: 8px;
         border-radius: 50%;
-        background-color: #818cf8;
+        background-color: #f472b6;
         animation: aiDotBounce 1.4s infinite ease-in-out both;
     }}
 
     .ai-dot:nth-child(1) {{ animation-delay: -0.32s; }}
-    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #c084fc; }}
+    .ai-dot:nth-child(2) {{ animation-delay: -0.16s; background-color: #a855f7; }}
     .ai-dot:nth-child(3) {{ animation-delay: 0s; background-color: #38bdf8; }}
 
     @keyframes aiDotBounce {{
@@ -344,10 +355,12 @@ theme_css = f"""
     }}
 
     .ai-thinking-text {{
-        font-family: 'Outfit', sans-serif;
-        font-size: 0.88rem;
-        font-weight: 600;
-        color: #818cf8;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        color: #f472b6;
+        text-transform: uppercase;
     }}
 
     .ai-replying-badge {{
@@ -356,13 +369,15 @@ theme_css = f"""
         gap: 6px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(99, 102, 241, 0.15);
-        border: 1px solid rgba(99, 102, 241, 0.35);
-        border-radius: 14px;
-        font-family: 'Outfit', sans-serif;
-        font-size: 0.76rem;
-        color: #818cf8;
-        font-weight: 600;
+        background: rgba(168, 85, 247, 0.18);
+        border: 1px solid rgba(236, 72, 153, 0.4);
+        border-radius: 12px;
+        font-family: 'Orbitron', sans-serif;
+        font-size: 0.7rem;
+        color: #f472b6;
+        font-weight: 700;
+        letter-spacing: 0.8px;
+        text-transform: uppercase;
     }}
 </style>
 """
@@ -371,40 +386,40 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
 with st.sidebar:
-    st.markdown("### ✨ Metaverse_AI Nexus")
+    st.markdown("### ⚡ Metaverse_AI Core")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.81rem;'>Sign in with Google to unlock full workspace capabilities.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to activate quantum workspace sync.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem;'>{user_email}</span>", unsafe_allow_html=True)
-        st.button("Sign Out", on_click=st.logout, use_container_width=True)
+        st.write(f"<span style='font-size: 0.72rem; color: #a855f7;'>{user_email}</span>", unsafe_allow_html=True)
+        st.button("Disconnect Stream", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
         
-        show_settings = st.checkbox("⚙️ Settings & Models", value=st.session_state["show_settings_modal"])
+        show_settings = st.checkbox("⚙️ Neural Settings", value=st.session_state["show_settings_modal"])
         if show_settings != st.session_state["show_settings_modal"]:
             st.session_state["show_settings_modal"] = show_settings
             st.rerun()
 
-        show_brain = st.checkbox("🧠 Memory & Context", value=st.session_state["show_brain_modal"])
+        show_brain = st.checkbox("🧠 Memory Bank", value=st.session_state["show_brain_modal"])
         if show_brain != st.session_state["show_brain_modal"]:
             st.session_state["show_brain_modal"] = show_brain
             st.rerun()
 
         st.markdown("---")
         
-        if st.button("➕ New chat", use_container_width=True, type="primary"):
+        if st.button("➕ New Neural Stream", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "New chat",
+                "title": "New neural stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("### 💬 Recent chats")
+        st.markdown("### 💬 Active Streams")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.75, 0.25])
@@ -415,11 +430,11 @@ with st.sidebar:
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
             with col2:
-                if st.button("🗑️", key=f"del_{sid}", help="Delete chat", use_container_width=True):
+                if st.button("🗑️", key=f"del_{sid}", help="Terminate stream", use_container_width=True):
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "New chat", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "New neural stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -439,12 +454,12 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel (Including new alignment feature selector)
+# 5. Settings Modal Panel (High-powered UI Alignment Selection)
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Outfit', sans-serif; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
+                <h3 style="font-family: 'Orbitron', sans-serif; margin-top: 0; font-size: 1.05rem; color: #f472b6;">⚙️ Neural Settings & Layout Core</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -456,14 +471,14 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
 
-        alignments = ["Centered Hologram Card", "Full-Width Cyber Stream", "Split Workspace Grid"]
-        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
+        alignments = ["Cyberpunk Neural Split", "Quantum Matrix Deck", "Floating Neon Citadel"]
+        current_align_pref = st.session_state[prefs_storage_key].get("chat_alignment", "Cyberpunk Neural Split")
         align_index = alignments.index(current_align_pref) if current_align_pref in alignments else 0
-        alignment_choice_input = st.selectbox("Chat Container Alignment", alignments, index=align_index, key="modal_align_select")
+        alignment_choice_input = st.selectbox("Futuristic Alignment Style", alignments, index=align_index, key="modal_align_select")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
-            if st.button("Save Changes", use_container_width=True, type="primary"):
+            if st.button("Apply Config", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
                 st.session_state[prefs_storage_key]["chat_alignment"] = alignment_choice_input
@@ -480,7 +495,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Outfit', sans-serif; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
+                <h3 style="font-family: 'Orbitron', sans-serif; margin-top: 0; font-size: 1.05rem; color: #a855f7;">🧠 Quantum Memory Bank</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -502,18 +517,18 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
-current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Centered Hologram Card")
+current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Cyberpunk Neural Split")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Layout: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div style="border-radius: 24px; padding: 32px; text-align: center; margin-top: 20px; background: rgba(23, 32, 59, 0.4); border: 1px solid rgba(99, 102, 241, 0.2);">
-            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; margin-bottom: 12px;">Welcome to Metaverse_AI</h2>
-            <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; color: #94a3b8;">
-                Please sign in from the sidebar to activate your immersive workspace and begin your AI journey.
+        <div style="border-radius: 24px; padding: 32px; text-align: center; margin-top: 20px; background: rgba(18, 22, 45, 0.5); border: 1px solid rgba(236, 72, 153, 0.3);">
+            <h2 style="font-family: 'Orbitron', sans-serif; font-size: 1.25rem; margin-bottom: 12px; color: #f472b6;">Neural Link Required</h2>
+            <p style="font-size: 0.92rem; line-height: 1.6; margin-bottom: 24px; color: #94a3b8;">
+                Please sign in from the sidebar to establish your secure quantum link and initialize your workspace stream.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -525,8 +540,8 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Message Handling & Animated AI Reply Engine
-prompt = st.chat_input("Type your message here...")
+# 8. Realtime Message Handling & Animated Neural Reply Engine
+prompt = st.chat_input("Enter command or query into neural interface...")
 
 if prompt:
     if len(current_messages) == 0:
@@ -545,7 +560,7 @@ if prompt:
                     <div class="ai-dot"></div>
                     <div class="ai-dot"></div>
                 </div>
-                <span class="ai-thinking-text">Metaverse_AI is thinking...</span>
+                <span class="ai-thinking-text">Processing Neural Stream...</span>
             </div>
         """, unsafe_allow_html=True)
         
@@ -589,12 +604,12 @@ if prompt:
                 if chunk.text:
                     full_response += chunk.text
                     message_placeholder.markdown(
-                        f"""<div class="ai-replying-badge">✨ Metaverse_AI Replying...</div>\n\n{full_response}▌""",
+                        f"""<div class="ai-replying-badge">⚡ Neural Transmission Active</div>\n\n{full_response}▌""",
                         unsafe_allow_html=True
                     )
             
             message_placeholder.markdown(
-                f"""<div class="ai-replying-badge">✨ Metaverse_AI Response Complete</div>\n\n{full_response}""",
+                f"""<div class="ai-replying-badge">⚡ Neural Transmission Complete</div>\n\n{full_response}""",
                 unsafe_allow_html=True
             )
             
