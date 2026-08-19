@@ -178,8 +178,8 @@ theme_css = f"""
     @media (max-width: 768px) {{
         .block-container {{
             max-width: 100% !important;
-            padding-left: 10px !important;
-            padding-right: 10px !important;
+            padding-left: 8px !important;
+            padding-right: 8px !important;
             padding-top: 0.5rem !important;
             padding-bottom: 8rem !important;
             margin: 0 !important;
@@ -190,37 +190,42 @@ theme_css = f"""
             border: 1px solid rgba(0, 243, 255, 0.25) !important;
             border-top: 3px solid #00f3ff !important;
             border-radius: 14px !important;
-            padding: 12px 10px !important;
+            padding: 12px 6px !important;
             margin: 2px auto !important;
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7) !important;
             width: 100% !important;
         }}
         
-        /* Perfectly aligned & fluid scaling for mobile headers */
+        /* Fully centered and responsive mobile header alignment */
         .gemini-title-container {{
             text-align: center !important;
             width: 100% !important;
-            padding: 0 4px !important;
-            margin-bottom: 6px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 0 !important;
+            margin-bottom: 10px !important;
         }}
         .gemini-title {{
-            font-size: clamp(1.5rem, 6vw, 2.2rem) !important;
-            letter-spacing: 0.8px !important;
+            font-size: clamp(1.6rem, 7vw, 2.2rem) !important;
+            letter-spacing: 1px !important;
             line-height: 1.2 !important;
             text-align: center !important;
-            display: inline-block !important;
             width: 100% !important;
+            display: block !important;
+            margin: 0 auto !important;
         }}
         .gemini-subtitle {{
-            font-size: clamp(0.58rem, 2.5vw, 0.72rem) !important;
-            margin-bottom: 16px !important;
+            font-size: clamp(0.6rem, 2.8vw, 0.75rem) !important;
+            margin-bottom: 12px !important;
             letter-spacing: 0.5px !important;
             text-align: center !important;
-            padding: 0 4px !important;
             display: flex !important;
             flex-wrap: wrap !important;
             justify-content: center !important;
-            gap: 4px 8px !important;
+            align-items: center !important;
+            gap: 4px 6px !important;
             width: 100% !important;
         }}
         .stChatMessage {{
@@ -229,10 +234,6 @@ theme_css = f"""
             margin-bottom: 10px !important;
             width: 100% !important;
             word-break: break-word !important;
-        }}
-        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {{
-            font-size: 0.92rem !important;
-            line-height: 1.55 !important;
         }}
         [data-testid="stChatInput"] {{
             position: fixed !important;
