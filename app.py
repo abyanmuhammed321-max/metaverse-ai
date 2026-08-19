@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration with Adaptive Layout
+# 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse_AI",
     page_icon="👑",
@@ -35,7 +35,7 @@ memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').repl
 # Initialize preferences with the Neon Cyber-Luxe theme
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-3.1-flash-lite",
+        "selected_model": "gemini-2.5-flash",
         "lang_choice": "English",
         "chat_alignment": "Neon Obsidian Vault"
     }
@@ -46,14 +46,14 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Neon Cyber-Luxe styling blending elite luxury gold/neon cyan glows with immersive futuristic containers."
+        "Core Objective: High-performance Neon Cyber-Luxe styling blending elite luxury gold/neon cyan glows with futuristic cards."
     ]
 
 if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Luxe stream",
+            "title": "Luxe Stream",
             "messages": []
         }
     }
@@ -74,7 +74,6 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# Retrieve current alignment preference
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
 # Luxury Alignment Configurations
@@ -173,7 +172,6 @@ theme_css = f"""
 
     {desktop_container_css}
 
-    /* Mobile View Strict Responsive Adjustments */
     @media (max-width: 768px) {{
         .block-container {{
             padding-left: 10px !important;
@@ -387,7 +385,7 @@ theme_css = f"""
 
 st.markdown(theme_css, unsafe_allow_html=True)
 
-# 4. Sidebar Navigation & Feature Control
+# 4. Sidebar Navigation & Controls
 with st.sidebar:
     st.markdown("### 👑 Cyber-Luxe Core")
     
@@ -416,7 +414,7 @@ with st.sidebar:
         if st.button("➕ New Luxe Stream", use_container_width=True, type="primary"):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Luxe stream",
+                "title": "Luxe Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -437,7 +435,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Luxe stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Luxe Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -454,7 +452,7 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Settings Modal Panel
@@ -466,7 +464,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
             </div>
         """, unsafe_allow_html=True)
         
-        models_list = ["gemini-3.1-flash-lite", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro"]
+        models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-2.0-flash"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("Model Engine", models_list, index=model_index, key="modal_model_select")
 
@@ -518,16 +516,16 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
         st.markdown("---")
 
 # Refresh preferences
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# 7. Main Canvas Layout & Brand New Powerful Sign-In Gateway Page
+# 7. Main Canvas Header & New Powerful Sign-In Page UI
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
-    # Completely revamped, powerful futuristic sign-in card with luxury styling
+    # Futuristic, high-end neon luxury sign-in gateway
     st.markdown("""
         <div style="
             background: linear-gradient(135deg, rgba(16, 20, 32, 0.95) 0%, rgba(25, 15, 35, 0.95) 100%);
@@ -539,12 +537,12 @@ if not is_logged_in:
             margin-top: 30px;
             box-shadow: 0 0 60px rgba(0, 243, 255, 0.15), 0 25px 60px rgba(0, 0, 0, 0.8);
         ">
-            <div style="font-size: 3rem; margin-bottom: 16px;">🌌</div>
+            <div style="font-size: 3rem; margin-bottom: 16px;">👑</div>
             <h2 style="font-family: 'Cinzel', serif; font-size: 1.6rem; margin-bottom: 12px; color: #ffffff; letter-spacing: 1px;">
                 Welcome to Metaverse_AI Elite
             </h2>
             <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px; color: #94a3b8; max-width: 500px; margin-left: auto; margin-right: auto;">
-                Step into a high-performance cyber-luxe intelligence nexus. Authenticate via Google to initialize your secure session stream.
+                Step into an ultra-luxurious cyber intelligence nexus. Authenticate securely via Google to initialize your personal encrypted stream.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -561,7 +559,7 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
 
-# 8. Realtime Message Handling & Animated Reply Engine
+# 8. Realtime Chat & Animated Response Engine
 prompt = st.chat_input("Enter your command or query...")
 
 if prompt:
