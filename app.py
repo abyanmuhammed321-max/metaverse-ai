@@ -32,18 +32,12 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences
+# Initialize preferences (Dark/Light mode toggles removed entirely)
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
-        "lang_choice": "English",
-        "theme": "Dark"
+        "lang_choice": "English"
     }
-
-if "theme" not in st.session_state[prefs_storage_key]:
-    st.session_state[prefs_storage_key]["theme"] = "Dark"
-
-current_theme = st.session_state[prefs_storage_key]["theme"]
 
 # Initialize Memory Bank
 if memory_storage_key not in st.session_state:
@@ -51,7 +45,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Dual-optimized layout (Spacious PC container view with structured card alignment, and compact, scroll-safe mobile phone view)."
+        "Core Objective: Sleek, uniform futuristic immersive design with robust desktop container views and seamless full-width mobile phone sizing."
     ]
 
 if storage_key not in st.session_state:
@@ -79,494 +73,262 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 3. ADVANCED RESPONSIVE STYLING (New Way: PC Centered Card vs Mobile Full-Width Flow)
-if current_theme == "Light":
-    theme_css = """
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+# 3. ADVANCED FUTURISTIC UNIFIED STYLING (New Way & New Style - Light/Dark modes removed)
+theme_css = """
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-        html, body {
-            box-sizing: border-box;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: hidden !important;
-            margin: 0 !important;
-            padding: 0 !important;
-            -webkit-text-size-adjust: 100%;
-        }
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
+    html, body {
+        box-sizing: border-box;
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-text-size-adjust: 100%;
+    }
+    *, *:before, *:after {
+        box-sizing: inherit;
+    }
 
-        .stApp {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%) !important;
-            background-attachment: fixed !important;
-            color: #0f172a !important;
-            font-family: 'Google Sans', 'Inter', sans-serif;
-            width: 100% !important;
-        }
+    .stApp {
+        background: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #090d16 60%, #020617 100%) !important;
+        background-attachment: fixed !important;
+        color: #f8fafc !important;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        width: 100% !important;
+    }
 
-        /* PC View Layout Structure */
+    /* Desktop View Layout Structure: Centered Glass Card */
+    .block-container {
+        max-width: 980px !important;
+        width: 100% !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
+        padding-top: 2rem !important;
+        padding-bottom: 7.5rem !important;
+        margin: 0 auto !important;
+    }
+
+    [data-testid="stMain"] > div {
+        background: rgba(13, 19, 38, 0.75) !important;
+        backdrop-filter: blur(24px) !important;
+        -webkit-backdrop-filter: blur(24px) !important;
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        border-radius: 32px !important;
+        padding: 40px !important;
+        margin: 16px auto !important;
+        width: 100% !important;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* Mobile View Strict Responsive Adjustments */
+    @media (max-width: 768px) {
         .block-container {
-            max-width: 960px !important;
-            width: 100% !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
+            padding-left: 10px !important;
+            padding-right: 10px !important;
+            padding-top: 1rem !important;
+            padding-bottom: 8rem !important;
         }
-
         [data-testid="stMain"] > div {
-            background: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 28px !important;
-            padding: 36px !important;
-            margin: 12px auto !important;
-            width: 100% !important;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08) !important;
-        }
-
-        /* Mobile View Strict Responsive Adjustments */
-        @media (max-width: 768px) {
-            .block-container {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-                padding-top: 1rem !important;
-                padding-bottom: 8rem !important;
-            }
-            [data-testid="stMain"] > div {
-                background: transparent !important;
-                border: none !important;
-                border-radius: 0 !important;
-                padding: 12px !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-            }
-            .gemini-title {
-                font-size: 1.5rem !important;
-            }
-            .gemini-subtitle {
-                font-size: 0.72rem !important;
-                margin-bottom: 12px !important;
-            }
-            .stChatMessage {
-                padding: 12px !important;
-                border-radius: 14px !important;
-                margin-bottom: 10px !important;
-            }
-            [data-testid="stChatInput"] {
-                bottom: 6px !important;
-                left: 4px !important;
-                right: 4px !important;
-                width: calc(100% - 8px) !important;
-            }
-        }
-
-        [data-testid="stSidebar"] {
-            background-color: #ffffff !important;
-            border-right: 1px solid #e2e8f0 !important;
-        }
-        
-        [data-testid="stSidebar"] * {
-            color: #0f172a !important;
-        }
-
-        .gemini-title {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 2.3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #0284c7, #9333ea, #16a34a);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2px;
-            letter-spacing: -0.5px;
-        }
-        
-        .gemini-subtitle {
-            color: #475569;
-            font-size: 0.82rem;
-            margin-bottom: 24px;
-            font-weight: 500;
-            letter-spacing: 0.2px;
-        }
-
-        .stChatMessage {
-            background-color: #f8fafc !important;
-            border: 1px solid #e2e8f0 !important;
-            border-radius: 20px !important;
-            padding: 20px !important;
-            margin-bottom: 16px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02) !important;
-            word-break: break-word !important;
-            overflow-wrap: break-word !important;
-            max-width: 100% !important;
-        }
-
-        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
-            color: #0f172a !important;
-            font-size: 0.95rem !important;
-            line-height: 1.6 !important;
-            word-break: break-word !important;
-            overflow-wrap: break-word !important;
-        }
-
-        .stButton button {
-            border-radius: 14px !important;
-            font-family: 'Google Sans', sans-serif !important;
-            font-weight: 500 !important;
-            font-size: 0.82rem !important;
-            border: 1px solid #cbd5e1 !important;
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            width: 100% !important;
-            padding: 10px 14px !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03) !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        .stButton button:hover {
-            background-color: #f1f5f9 !important;
-            border-color: #0284c7 !important;
-        }
-
-        [data-testid="stChatInput"] {
-            padding: 0 4px 10px 4px !important;
-        }
-
-        [data-testid="stChatInput"] textarea {
-            background-color: #ffffff !important;
-            color: #0f172a !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 24px !important;
-            font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.95rem !important;
-            padding: 16px 20px !important;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.05) !important;
-        }
-
-        .sidebar-signature {
-            text-align: center;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.68rem;
-            color: #475569;
-            letter-spacing: 1.2px;
-            padding: 12px 4px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border-top: 1px solid #e2e8f0;
-            border-bottom: 1px solid #e2e8f0;
-            text-transform: uppercase;
-        }
-
-        .ai-thinking-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 18px;
-            background-color: #f1f5f9;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            width: fit-content;
-            margin: 8px 0;
-        }
-
-        .ai-thinking-dots {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
-
-        .ai-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: #0284c7;
-            animation: aiDotBounce 1.4s infinite ease-in-out both;
-        }
-
-        .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #9333ea; }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #16a34a; }
-
-        @keyframes aiDotBounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-            40% { transform: scale(1.3); opacity: 1; }
-        }
-
-        .ai-thinking-text {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #0284c7;
-        }
-
-        .ai-replying-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            margin-bottom: 10px;
-            background-color: #e0f2fe;
-            border: 1px solid #bae6fd;
-            border-radius: 14px;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.75rem;
-            color: #0369a1;
-        }
-    </style>
-    """
-else:
-    theme_css = """
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
-
-        html, body {
-            box-sizing: border-box;
-            width: 100% !important;
-            max-width: 100% !important;
-            overflow-x: hidden !important;
+            background: transparent !important;
+            backdrop-filter: none !important;
+            border: none !important;
+            border-radius: 0 !important;
+            padding: 10px !important;
             margin: 0 !important;
-            padding: 0 !important;
-            -webkit-text-size-adjust: 100%;
+            box-shadow: none !important;
         }
-        *, *:before, *:after {
-            box-sizing: inherit;
-        }
-
-        .stApp {
-            background: linear-gradient(135deg, #030712 0%, #0f172a 50%, #1e1b4b 100%) !important;
-            background-attachment: fixed !important;
-            color: #f8fafc !important;
-            font-family: 'Google Sans', 'Inter', sans-serif;
-            width: 100% !important;
-        }
-
-        /* PC View Layout Structure */
-        .block-container {
-            max-width: 960px !important;
-            width: 100% !important;
-            padding-left: 2rem !important;
-            padding-right: 2rem !important;
-            padding-top: 2rem !important;
-            padding-bottom: 7.5rem !important;
-            margin: 0 auto !important;
-        }
-
-        [data-testid="stMain"] > div {
-            background: rgba(15, 23, 42, 0.85) !important;
-            backdrop-filter: blur(16px) !important;
-            border: 1px solid rgba(56, 189, 248, 0.25) !important;
-            border-radius: 28px !important;
-            padding: 36px !important;
-            margin: 12px auto !important;
-            width: 100% !important;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6) !important;
-        }
-
-        /* Mobile View Strict Responsive Adjustments */
-        @media (max-width: 768px) {
-            .block-container {
-                padding-left: 10px !important;
-                padding-right: 10px !important;
-                padding-top: 1rem !important;
-                padding-bottom: 8rem !important;
-            }
-            [data-testid="stMain"] > div {
-                background: transparent !important;
-                border: none !important;
-                border-radius: 0 !important;
-                padding: 12px !important;
-                margin: 0 !important;
-                box-shadow: none !important;
-            }
-            .gemini-title {
-                font-size: 1.5rem !important;
-            }
-            .gemini-subtitle {
-                font-size: 0.72rem !important;
-                margin-bottom: 12px !important;
-            }
-            .stChatMessage {
-                padding: 12px !important;
-                border-radius: 14px !important;
-                margin-bottom: 10px !important;
-            }
-            [data-testid="stChatInput"] {
-                bottom: 6px !important;
-                left: 4px !important;
-                right: 4px !important;
-                width: calc(100% - 8px) !important;
-            }
-        }
-
-        [data-testid="stSidebar"] {
-            background-color: #020617 !important;
-            border-right: 1px solid rgba(56, 189, 248, 0.15) !important;
-        }
-        
-        [data-testid="stSidebar"] * {
-            color: #f8fafc !important;
-        }
-
         .gemini-title {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 2.3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #38bdf8, #c084fc, #34d399, #fb7185);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 2px;
-            letter-spacing: -0.5px;
+            font-size: 1.6rem !important;
         }
-        
         .gemini-subtitle {
-            color: #94a3b8;
-            font-size: 0.82rem;
-            margin-bottom: 24px;
-            font-weight: 500;
-            letter-spacing: 0.2px;
-        }
-
-        .stChatMessage {
-            background-color: rgba(30, 41, 59, 0.85) !important;
-            backdrop-filter: blur(10px) !important;
-            border: 1px solid rgba(56, 189, 248, 0.25) !important;
-            border-radius: 20px !important;
-            padding: 20px !important;
+            font-size: 0.75rem !important;
             margin-bottom: 16px !important;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
-            word-break: break-word !important;
-            overflow-wrap: break-word !important;
-            max-width: 100% !important;
         }
-
-        .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
-            color: #f8fafc !important;
-            font-size: 0.95rem !important;
-            line-height: 1.6 !important;
-            word-break: break-word !important;
-            overflow-wrap: break-word !important;
+        .stChatMessage {
+            padding: 14px !important;
+            border-radius: 16px !important;
+            margin-bottom: 12px !important;
         }
-
-        .stButton button {
-            border-radius: 14px !important;
-            font-family: 'Google Sans', sans-serif !important;
-            font-weight: 500 !important;
-            font-size: 0.82rem !important;
-            border: 1px solid rgba(56, 189, 248, 0.3) !important;
-            background-color: rgba(30, 41, 59, 0.9) !important;
-            color: #f8fafc !important;
-            width: 100% !important;
-            padding: 10px 14px !important;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
-            transition: all 0.2s ease !important;
-        }
-        
-        .stButton button:hover {
-            background-color: rgba(51, 65, 85, 1) !important;
-            border-color: #38bdf8 !important;
-        }
-
         [data-testid="stChatInput"] {
-            padding: 0 4px 10px 4px !important;
+            bottom: 6px !important;
+            left: 4px !important;
+            right: 4px !important;
+            width: calc(100% - 8px) !important;
         }
+    }
 
-        [data-testid="stChatInput"] textarea {
-            background-color: rgba(30, 41, 59, 0.9) !important;
-            color: #f8fafc !important;
-            border: 1px solid rgba(56, 189, 248, 0.3) !important;
-            border-radius: 24px !important;
-            font-family: 'Google Sans', sans-serif !important;
-            font-size: 0.95rem !important;
-            padding: 16px 20px !important;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5) !important;
-        }
+    [data-testid="stSidebar"] {
+        background-color: #030712 !important;
+        border-right: 1px solid rgba(99, 102, 241, 0.15) !important;
+    }
+    
+    [data-testid="stSidebar"] * {
+        color: #f8fafc !important;
+    }
 
-        .sidebar-signature {
-            text-align: center;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.68rem;
-            color: #94a3b8;
-            letter-spacing: 1.2px;
-            padding: 12px 4px;
-            margin-top: 20px;
-            margin-bottom: 20px;
-            border-top: 1px solid rgba(56, 189, 248, 0.15);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
-            text-transform: uppercase;
-        }
+    .gemini-title {
+        font-family: 'Outfit', sans-serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #818cf8 0%, #c084fc 50%, #38bdf8 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 4px;
+        letter-spacing: -0.8px;
+    }
+    
+    .gemini-subtitle {
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin-bottom: 28px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+    }
 
-        .ai-thinking-box {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 18px;
-            background-color: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 18px;
-            width: fit-content;
-            margin: 8px 0;
-        }
+    .stChatMessage {
+        background: rgba(23, 32, 59, 0.7) !important;
+        backdrop-filter: blur(12px) !important;
+        border: 1px solid rgba(99, 102, 241, 0.2) !important;
+        border-radius: 22px !important;
+        padding: 22px !important;
+        margin-bottom: 18px !important;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4) !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+        max-width: 100% !important;
+    }
 
-        .ai-thinking-dots {
-            display: flex;
-            gap: 5px;
-            align-items: center;
-        }
+    .stChatMessage p, .stChatMessage span, .stChatMessage div, .stMarkdown {
+        color: #f8fafc !important;
+        font-size: 0.96rem !important;
+        line-height: 1.65 !important;
+        word-break: break-word !important;
+        overflow-wrap: break-word !important;
+    }
 
-        .ai-dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background-color: #38bdf8;
-            animation: aiDotBounce 1.4s infinite ease-in-out both;
-        }
+    .stButton button {
+        border-radius: 14px !important;
+        font-family: 'Outfit', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.84rem !important;
+        border: 1px solid rgba(99, 102, 241, 0.35) !important;
+        background: linear-gradient(135deg, rgba(30, 27, 75, 0.8), rgba(49, 46, 129, 0.8)) !important;
+        color: #f8fafc !important;
+        width: 100% !important;
+        padding: 10px 16px !important;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    .stButton button:hover {
+        background: linear-gradient(135deg, rgba(49, 46, 129, 1), rgba(67, 56, 202, 1)) !important;
+        border-color: #818cf8 !important;
+        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+    }
 
-        .ai-dot:nth-child(1) { animation-delay: -0.32s; }
-        .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c084fc; }
-        .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #34d399; }
+    [data-testid="stChatInput"] {
+        padding: 0 4px 10px 4px !important;
+    }
 
-        @keyframes aiDotBounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
-            40% { transform: scale(1.3); opacity: 1; }
-        }
+    [data-testid="stChatInput"] textarea {
+        background: rgba(15, 23, 42, 0.9) !important;
+        color: #f8fafc !important;
+        border: 1px solid rgba(99, 102, 241, 0.35) !important;
+        border-radius: 24px !important;
+        font-family: 'Plus Jakarta Sans', sans-serif !important;
+        font-size: 0.96rem !important;
+        padding: 16px 22px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+    }
 
-        .ai-thinking-text {
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #38bdf8;
-        }
+    .sidebar-signature {
+        text-align: center;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.7rem;
+        color: #818cf8;
+        letter-spacing: 1.5px;
+        padding: 14px 4px;
+        margin-top: 24px;
+        margin-bottom: 24px;
+        border-top: 1px solid rgba(99, 102, 241, 0.2);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+        text-transform: uppercase;
+        background: rgba(99, 102, 241, 0.05);
+    }
 
-        .ai-replying-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            margin-bottom: 10px;
-            background-color: rgba(56, 189, 248, 0.15);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 14px;
-            font-family: 'Google Sans', sans-serif;
-            font-size: 0.75rem;
-            color: #38bdf8;
-        }
-    </style>
-    """
+    .ai-thinking-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 20px;
+        background: rgba(30, 27, 75, 0.6);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        border-radius: 18px;
+        width: fit-content;
+        margin: 8px 0;
+    }
+
+    .ai-thinking-dots {
+        display: flex;
+        gap: 6px;
+        align-items: center;
+    }
+
+    .ai-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #818cf8;
+        animation: aiDotBounce 1.4s infinite ease-in-out both;
+    }
+
+    .ai-dot:nth-child(1) { animation-delay: -0.32s; }
+    .ai-dot:nth-child(2) { animation-delay: -0.16s; background-color: #c084fc; }
+    .ai-dot:nth-child(3) { animation-delay: 0s; background-color: #38bdf8; }
+
+    @keyframes aiDotBounce {
+        0%, 80%, 100% { transform: scale(0); opacity: 0.4; }
+        40% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .ai-thinking-text {
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: #818cf8;
+    }
+
+    .ai-replying-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 14px;
+        margin-bottom: 12px;
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.35);
+        border-radius: 14px;
+        font-family: 'Outfit', sans-serif;
+        font-size: 0.76rem;
+        color: #818cf8;
+        font-weight: 600;
+    }
+</style>
+"""
 
 st.markdown(theme_css, unsafe_allow_html=True)
 
 # 4. Sidebar Navigation & Feature Control
 with st.sidebar:
-    st.markdown("### ✨ Metaverse_AI Workspace")
+    st.markdown("### ✨ Metaverse_AI Nexus")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.8rem;'>Sign in with Google to unlock all features and chats.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.81rem;'>Sign in with Google to unlock full workspace capabilities.</span>", unsafe_allow_html=True)
         st.button("🔑 Sign in with Google", on_click=st.login, use_container_width=True, type="primary")
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.75rem;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -627,12 +389,12 @@ if not api_key:
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
-# 5. Settings Modal Panel
+# 5. Settings Modal Panel (Light/Dark mode toggles removed completely)
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">⚙️ Settings & Preferences</h3>
+                <h3 style="font-family: 'Outfit', sans-serif; margin-top: 0; font-size: 1.1rem;">⚙️ Settings & Preferences</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -643,17 +405,12 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Japanese", "Chinese", "Arabic"]
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index, key="modal_lang_select")
-
-        themes_list = ["Dark", "Light"]
-        theme_index = themes_list.index(current_theme) if current_theme in themes_list else 0
-        theme_choice_input = st.radio("Interface Theme Mode", themes_list, index=theme_index, horizontal=True, key="modal_theme_radio")
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             if st.button("Save Changes", use_container_width=True, type="primary"):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
-                st.session_state[prefs_storage_key]["theme"] = theme_choice_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
@@ -667,7 +424,7 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
         st.markdown("""
             <div style="border-radius: 16px; padding: 16px; margin-bottom: 14px;">
-                <h3 style="font-family: 'Google Sans', sans-serif; margin-top: 0; font-size: 1.05rem;">🧠 Memory & Context</h3>
+                <h3 style="font-family: 'Outfit', sans-serif; margin-top: 0; font-size: 1.1rem;">🧠 Memory & Context</h3>
             </div>
         """, unsafe_allow_html=True)
         
@@ -689,18 +446,17 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
 # Refresh preferences
 selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
-current_theme = st.session_state[prefs_storage_key].get("theme", "Dark")
 
 # 7. Main Canvas Layout
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
-st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Theme: {current_theme} Mode • Language: {lang_choice}</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Mode: Futuristic Immersive • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div style="border-radius: 20px; padding: 24px; text-align: center; margin-top: 20px;">
-            <h2 style="font-family: 'Google Sans', sans-serif; font-size: 1.25rem; margin-bottom: 12px;">Welcome to Metaverse_AI</h2>
-            <p style="font-size: 0.9rem; line-height: 1.5; margin-bottom: 20px;">
-                Please sign in from the sidebar to access your workspace, start conversations, and interact with advanced AI features.
+        <div style="border-radius: 24px; padding: 32px; text-align: center; margin-top: 20px; background: rgba(23, 32, 59, 0.4); border: 1px solid rgba(99, 102, 241, 0.2);">
+            <h2 style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; margin-bottom: 12px;">Welcome to Metaverse_AI</h2>
+            <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 24px; color: #94a3b8;">
+                Please sign in from the sidebar to activate your immersive workspace and begin your AI journey.
             </p>
         </div>
     """, unsafe_allow_html=True)
