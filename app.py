@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="auto"
 )
 
-# Enforce flawless mobile scaling and viewport containment
+# Enforce strict mobile viewport containment and scaling
 st.markdown("""
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 """, unsafe_allow_html=True)
@@ -32,7 +32,7 @@ storage_key = f"metaverse_ai_sessions_{user_email.replace('@', '_at_').replace('
 prefs_storage_key = f"metaverse_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
 memory_storage_key = f"metaverse_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
-# Initialize preferences with Gemini 3.1 Flash Lite as the default engine
+# Initialize preferences with Gemini 3.1 Flash Lite as default
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
         "selected_model": "gemini-3.1-flash-lite",
@@ -46,7 +46,7 @@ if memory_storage_key not in st.session_state:
         "Creator and Master Developer: Abyan Muhammed",
         "Creator Display Rule: Only mention 'Made by Abyan Muhammed' when the user explicitly greets ('hello', 'hi', 'hey') or asks who built/made the AI.",
         "User signed in as Google Identity: " + user_display_name,
-        "Core Objective: Next-gen Neon Cyber-Luxe styling powered by Gemini 3.1 Flash Lite and higher models."
+        "Core Objective: Next-gen Neon Cyber-Luxe styling with optimized responsive mobile alignment."
     ]
 
 if storage_key not in st.session_state:
@@ -76,7 +76,7 @@ if "show_brain_modal" not in st.session_state:
 
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# Luxury Alignment Configurations
+# Luxury Alignment Configurations (Desktop vs Mobile handling)
 if current_alignment == "Neon Obsidian Vault":
     desktop_container_css = """
         .block-container {
@@ -144,13 +144,13 @@ else:
         }
     """
 
-# 3. NEON CYBER-LUXE STYLING ENGINE
+# 3. ULTIMATE RESPONSIVE & NEON CYBER-LUXE STYLING
 theme_css = f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    html, body {{
-        box-sizing: border-box;
+    html, body, [data-testid="stAppViewContainer"] {{
+        box-sizing: border-box !important;
         width: 100% !important;
         max-width: 100% !important;
         overflow-x: hidden !important;
@@ -158,6 +158,7 @@ theme_css = f"""
         padding: 0 !important;
         -webkit-text-size-adjust: 100%;
     }}
+
     *, *:before, *:after {{
         box-sizing: inherit;
     }}
@@ -168,45 +169,66 @@ theme_css = f"""
         color: #f1f5f9 !important;
         font-family: 'Plus Jakarta Sans', sans-serif;
         width: 100% !important;
+        overflow-x: hidden !important;
     }}
 
     {desktop_container_css}
 
+    /* Strict Mobile Screen Optimization (< 768px) */
     @media (max-width: 768px) {{
         .block-container {{
-            padding-left: 10px !important;
-            padding-right: 10px !important;
-            padding-top: 1rem !important;
-            padding-bottom: 8rem !important;
+            max-width: 100% !important;
+            padding-left: 12px !important;
+            padding-right: 12px !important;
+            padding-top: 0.8rem !important;
+            padding-bottom: 7rem !important;
             margin: 0 !important;
         }}
         [data-testid="stMain"] > div {{
-            background: transparent !important;
-            backdrop-filter: none !important;
-            border: none !important;
-            border-radius: 0 !important;
-            padding: 10px !important;
-            margin: 0 !important;
-            box-shadow: none !important;
+            background: rgba(12, 14, 20, 0.95) !important;
+            backdrop-filter: blur(20px) !important;
+            border: 1px solid rgba(0, 243, 255, 0.2) !important;
+            border-top: 3px solid #00f3ff !important;
+            border-radius: 16px !important;
+            padding: 14px !important;
+            margin: 4px auto !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
             width: 100% !important;
         }}
         .gemini-title {{
-            font-size: 1.6rem !important;
+            font-size: 1.5rem !important;
+            letter-spacing: 1px !important;
         }}
         .gemini-subtitle {{
-            font-size: 0.72rem !important;
-            margin-bottom: 16px !important;
+            font-size: 0.68rem !important;
+            margin-bottom: 14px !important;
+            letter-spacing: 0.8px !important;
         }}
         .stChatMessage {{
-            padding: 14px !important;
-            border-radius: 16px !important;
-            margin-bottom: 12px !important;
+            padding: 12px !important;
+            border-radius: 14px !important;
+            margin-bottom: 10px !important;
         }}
         [data-testid="stChatInput"] {{
-            bottom: 6px !important;
-            left: 4px !important;
-            right: 4px !important;
-            width: calc(100% - 8px) !important;
+            position: fixed !important;
+            bottom: 0px !important;
+            left: 0px !important;
+            right: 0px !important;
+            width: 100% !important;
+            padding: 8px 10px 12px 10px !important;
+            background: rgba(6, 8, 14, 0.95) !important;
+            backdrop-filter: blur(15px) !important;
+            z-index: 99999 !important;
+            border-top: 1px solid rgba(0, 243, 255, 0.25) !important;
+        }}
+        [data-testid="stChatInput"] textarea {{
+            font-size: 16px !important; /* Prevents auto-zoom on mobile safari/chrome */
+            padding: 12px 16px !important;
+            border-radius: 14px !important;
+        }}
+        .mobile-signin-card {{
+            padding: 24px 16px !important;
+            margin-top: 15px !important;
         }}
     }}
 
@@ -284,10 +306,6 @@ theme_css = f"""
         box-shadow: 0 0 25px rgba(0, 243, 255, 0.5) !important;
         color: #ffffff !important;
         transform: translateY(-1px);
-    }}
-
-    [data-testid="stChatInput"] {{
-        padding: 0 4px 10px 4px !important;
     }}
 
     [data-testid="stChatInput"] textarea {{
@@ -520,34 +538,33 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 current_alignment = st.session_state[prefs_storage_key].get("chat_alignment", "Neon Obsidian Vault")
 
-# 7. Main Canvas Header & Neon Sign-In Gateway Page
+# 7. Main Canvas Header & Responsive Sign-In Gateway
 st.markdown(f'<div class="gemini-title">Metaverse_AI</div>', unsafe_allow_html=True)
 st.markdown(f'<div class="gemini-subtitle">Engine: {selected_model} • Style: {current_alignment} • Language: {lang_choice}</div>', unsafe_allow_html=True)
 
 if not is_logged_in:
-    # Luxury neon-glow authentication card
     st.markdown("""
-        <div style="
+        <div class="mobile-signin-card" style="
             background: linear-gradient(135deg, rgba(16, 20, 32, 0.95) 0%, rgba(25, 15, 35, 0.95) 100%);
             border: 1px solid rgba(0, 243, 255, 0.35);
             border-top: 3px solid #00f3ff;
             border-radius: 28px;
-            padding: 48px 36px;
+            padding: 36px 20px;
             text-align: center;
-            margin-top: 30px;
-            box-shadow: 0 0 60px rgba(0, 243, 255, 0.15), 0 25px 60px rgba(0, 0, 0, 0.8);
+            margin-top: 20px;
+            box-shadow: 0 0 50px rgba(0, 243, 255, 0.15), 0 20px 50px rgba(0, 0, 0, 0.8);
         ">
-            <div style="font-size: 3rem; margin-bottom: 16px;">⚡</div>
-            <h2 style="font-family: 'Cinzel', serif; font-size: 1.6rem; margin-bottom: 12px; color: #ffffff; letter-spacing: 1px;">
+            <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
+            <h2 style="font-family: 'Cinzel', serif; font-size: 1.35rem; margin-bottom: 10px; color: #ffffff; letter-spacing: 0.8px;">
                 Welcome to Metaverse_AI Elite
             </h2>
-            <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 32px; color: #94a3b8; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <p style="font-size: 0.88rem; line-height: 1.5; margin-bottom: 24px; color: #94a3b8; max-width: 450px; margin-left: auto; margin-right: auto;">
                 Step into an ultra-luxurious cyber intelligence nexus powered by Gemini 3.1 Flash Lite. Authenticate via Google to initialize your secure session.
             </p>
         </div>
     """, unsafe_allow_html=True)
     
-    col_empty1, col_btn, col_empty2 = st.columns([1, 2, 1])
+    col_empty1, col_btn, col_empty2 = st.columns([0.2, 2.6, 0.2])
     with col_btn:
         st.write("")
         st.button("🔑 Authenticate with Google", on_click=st.login, use_container_width=True, type="primary")
