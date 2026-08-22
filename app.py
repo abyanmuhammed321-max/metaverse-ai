@@ -4,7 +4,7 @@ from google import genai
 from google.genai import errors
 from google.genai import types
 
-# 1. Page Configuration & Adaptive Layout
+# 1. Page Configuration & Layout
 st.set_page_config(
     page_title="Gemini",
     page_icon="✨",
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_master_v3_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_master_v3_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_master_v3_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_exact_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_exact_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_exact_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -70,11 +70,12 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. OFFICIAL GOOGLE GEMINI CSS STYLING
+# 2. EXACT OFFICIAL GOOGLE GEMINI STYLING
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
 
+    /* Global Canvas & Background */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
         background-color: #131314 !important;
         color: #e3e3e3 !important;
@@ -82,15 +83,17 @@ theme_css = """
         width: 100% !important;
     }
 
+    /* Central Layout Sizing matching Gemini App */
     .block-container {
         max-width: 820px !important;
-        padding-top: 2.5rem !important;
-        padding-bottom: 7.5rem !important;
+        padding-top: 3rem !important;
+        padding-bottom: 8rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
         margin: 0 auto !important;
     }
 
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #1e1f20 !important;
         border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -100,34 +103,36 @@ theme_css = """
         color: #e3e3e3 !important;
     }
 
+    /* Typography - Official Gemini Greeting Style */
     .gemini-header {
         text-align: left;
-        margin-bottom: 30px;
-        padding-left: 8px;
+        margin-bottom: 36px;
+        padding-left: 4px;
     }
 
     .gemini-greeting {
         font-family: 'Google Sans', sans-serif;
-        font-size: 2.3rem;
+        font-size: 2.6rem;
         font-weight: 500;
         background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
+        margin-bottom: 2px;
         letter-spacing: -0.5px;
     }
 
     .gemini-subgreeting {
-        font-size: 2.3rem;
+        font-size: 2.6rem;
         font-weight: 400;
         color: #444746;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
         letter-spacing: -0.5px;
     }
 
+    /* Clean Card Auth */
     .gemini-auth-card {
         background: #1e1f20;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 24px;
         padding: 44px 32px;
         text-align: center;
@@ -136,31 +141,24 @@ theme_css = """
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
     }
 
-    .gemini-auth-icon {
-        font-size: 2rem;
-        margin-bottom: 16px;
-        display: inline-block;
-        padding: 14px;
-        background: rgba(66, 133, 244, 0.12);
-        border-radius: 18px;
-        color: #8ab4f8;
-    }
-
+    /* Chat Messages UI */
     .stChatMessage {
-        background: #1e1f20 !important;
-        border: 1px solid rgba(255, 255, 255, 0.06) !important;
-        border-radius: 20px !important;
-        padding: 18px 24px !important;
-        margin-bottom: 16px !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0px !important;
+        padding: 12px 0px !important;
+        margin-bottom: 12px !important;
+        box-shadow: none !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
         color: #e3e3e3 !important;
-        font-size: 0.95rem !important;
-        line-height: 1.7 !important;
+        font-size: 0.96rem !important;
+        line-height: 1.75 !important;
+        font-family: 'Google Sans', sans-serif !important;
     }
 
+    /* Google Pill-Shaped Buttons */
     .stButton button {
         border-radius: 100px !important;
         font-family: 'Google Sans', sans-serif !important;
@@ -182,14 +180,15 @@ theme_css = """
         color: #ffffff !important;
     }
 
+    /* Floating Rounded Input Box */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
-        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 28px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 16px 22px !important;
+        padding: 16px 24px !important;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
     }
 
@@ -348,7 +347,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 5. Main Content Area
+# 5. Main Content Area & Layout
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div class="gemini-header">
@@ -367,7 +366,7 @@ else:
 if not is_logged_in:
     st.markdown("""
         <div class="gemini-auth-card">
-            <div class="gemini-auth-icon">✨</div>
+            <div style="font-size: 2rem; margin-bottom: 16px; display: inline-block; padding: 14px; background: rgba(66, 133, 244, 0.12); border-radius: 18px; color: #8ab4f8;">✨</div>
             <div style="font-size: 1.25rem; font-weight: 500; color: #e3e3e3; margin-bottom: 8px;">Welcome to Gemini</div>
             <div style="font-size: 0.9rem; color: #c4c7c5; line-height: 1.6; margin-bottom: 28px;">
                 Sign in with your Google account to start chatting with Gemini.
@@ -389,8 +388,8 @@ for message in current_messages:
         if "file_name" in message:
             st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 Attached: {message['file_name']}</span>", unsafe_allow_html=True)
 
-# 6. Optional File Upload Feature
-uploaded_file = st.file_uploader("Upload an image, document, or file to share with Gemini", type=["png", "jpg", "jpeg", "pdf", "txt", "csv"])
+# 6. File Attachment Support
+uploaded_file = st.file_uploader("Upload an image, document, or file", type=["png", "jpg", "jpeg", "pdf", "txt", "csv"])
 
 # 7. Chat Execution Pipeline
 prompt = st.chat_input("Enter a prompt here")
