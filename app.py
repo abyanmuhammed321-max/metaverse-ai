@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_master_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_master_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_master_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_exact_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_exact_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_exact_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -70,12 +70,12 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. COMPLETE PIXEL-PERFECT GEMINI DESIGN SYSTEM CSS
+# 2. PIXEL-ALIGNED GEMINI DESIGN SYSTEM STYLING
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
 
-    /* Global Dark Canvas Base */
+    /* Global Dark Canvas & Exact Backgrounds */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
         background-color: #131314 !important;
         color: #e3e3e3 !important;
@@ -83,21 +83,23 @@ theme_css = """
         width: 100% !important;
     }
 
-    /* Main Container Alignment */
+    /* Main Container Alignment & Padding matching Gemini Web */
     .block-container {
         max-width: 820px !important;
-        padding-top: 3.5rem !important;
-        padding-bottom: 9rem !important;
+        padding-top: 4rem !important;
+        padding-bottom: 9.5rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
         margin: 0 auto !important;
     }
 
-    /* Sidebar Exact Styling */
+    /* Sidebar Exact Alignment and Dark Theme */
     [data-testid="stSidebar"] {
         background-color: #1e1f20 !important;
         border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
-        padding-top: 1rem !important;
+        padding-top: 1.5rem !important;
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
     }
 
     [data-testid="stSidebar"] * {
@@ -108,7 +110,7 @@ theme_css = """
     /* Official Gemini Gradient Greeting Header */
     .gemini-header {
         text-align: left;
-        margin-bottom: 36px;
+        margin-bottom: 40px;
         padding-left: 4px;
     }
 
@@ -121,6 +123,7 @@ theme_css = """
         -webkit-text-fill-color: transparent;
         margin-bottom: 2px;
         letter-spacing: -0.5px;
+        line-height: 1.15;
     }
 
     .gemini-subgreeting {
@@ -129,27 +132,28 @@ theme_css = """
         color: #444746;
         margin-bottom: 0px;
         letter-spacing: -0.5px;
+        line-height: 1.15;
     }
 
-    /* Exact Google Sign-In Card */
+    /* Exact Google Auth Card Layout */
     .gemini-auth-card {
         background: #1e1f20;
         border: 1px solid rgba(255, 255, 255, 0.08);
         border-radius: 28px;
-        padding: 48px 36px;
+        padding: 50px 36px;
         text-align: center;
         max-width: 440px;
-        margin: 50px auto;
+        margin: 60px auto;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
     }
 
-    /* Chat Messages Alignment */
+    /* Chat Messages Alignment & Spacing */
     .stChatMessage {
         background: transparent !important;
         border: none !important;
         border-radius: 0px !important;
         padding: 16px 0px !important;
-        margin-bottom: 12px !important;
+        margin-bottom: 16px !important;
         box-shadow: none !important;
     }
 
@@ -160,7 +164,7 @@ theme_css = """
         font-family: 'Google Sans', sans-serif !important;
     }
 
-    /* Google Pill Buttons */
+    /* Google Pill Buttons Alignment */
     .stButton button {
         border-radius: 100px !important;
         font-family: 'Google Sans', sans-serif !important;
@@ -182,7 +186,7 @@ theme_css = """
         color: #ffffff !important;
     }
 
-    /* Floating Chat Input Box mimicking Gemini UI */
+    /* Floating Chat Box Input Styling */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
@@ -229,12 +233,12 @@ theme_css = """
 
 st.markdown(theme_css, unsafe_allow_html=True)
 
-# 3. Sidebar Panel UI Layout
+# 3. Sidebar Panel Alignment & Layout
 with st.sidebar:
-    st.markdown("<div style='font-size: 1.15rem; font-weight: 500; margin-bottom: 12px; padding-left: 4px;'>✨ Gemini</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-size: 1.15rem; font-weight: 500; margin-bottom: 14px; padding-left: 6px;'>✨ Gemini</div>", unsafe_allow_html=True)
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #c4c7c5;'>Sign in to start your session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #c4c7c5; padding-left: 6px;'>Sign in to start your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
@@ -264,7 +268,7 @@ with st.sidebar:
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("<div style='font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #8e918f; margin-top: 16px; margin-bottom: 8px;'>Recent Chats</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #8e918f; margin-top: 18px; margin-bottom: 8px; padding-left: 6px;'>Recent Chats</div>", unsafe_allow_html=True)
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.78, 0.22])
@@ -299,7 +303,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 4. Modals & Settings
+# 4. Modals & Settings Management
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("#### System Preferences")
@@ -349,7 +353,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 5. Main Screen Interactive Header
+# 5. Main Viewport & Header Layout Alignment
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div class="gemini-header">
@@ -393,7 +397,7 @@ for message in current_messages:
 # 6. File Attachments
 uploaded_file = st.file_uploader("Upload an image, document, or file", type=["png", "jpg", "jpeg", "pdf", "txt", "csv"])
 
-# 7. Prompt Input & Streaming Loop
+# 7. Prompt Execution & Real-time Streaming
 prompt = st.chat_input("Enter a prompt here")
 
 if prompt or uploaded_file:
@@ -476,4 +480,3 @@ if prompt or uploaded_file:
             message_placeholder.markdown(full_response)
 
         current_messages.append({"role": "model", "content": full_response})
-        
