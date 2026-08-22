@@ -1,4 +1,5 @@
 import uuid
+import time
 import streamlit as st
 from google import genai
 from google.genai import errors
@@ -430,6 +431,7 @@ if prompt:
         
         message_placeholder = st.empty()
         full_response = ""
+        animated_response = ""
         
         try:
             client = genai.Client(api_key=api_key)
@@ -462,11 +464,17 @@ if prompt:
             
             loader_placeholder.empty()
             
+            # Typewriter / Replaying Animation Stream Loop
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    message_placeholder.markdown(full_response + "▌")
+                    # Smoothly animate typing character by character or word by word
+                    for char in chunk.text:
+                        animated_response += char
+                        message_placeholder.markdown(animated_response + "▌")
+                        time.sleep(0.005) # Adjust typing speed here (lower = faster)
             
+            # Final output rendering without cursor
             message_placeholder.markdown(full_response)
             
         except errors.APIError as e:
