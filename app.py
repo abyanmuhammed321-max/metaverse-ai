@@ -447,6 +447,7 @@ if prompt:
         
         message_placeholder = st.empty()
         full_response = ""
+        animated_display_text = ""
         
         try:
             client = genai.Client(api_key=api_key)
@@ -479,15 +480,20 @@ if prompt:
             
             loader_placeholder.empty()
             
-            # Iconical Glowing Typewriter Replay Animation
+            # Medium-Speed Iconic Word/Character Staggered Replay Animation
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Render with animated custom neon cursor block
-                    message_placeholder.markdown(full_response + '<span class="iconical-cursor"></span>', unsafe_allow_html=True)
-                    time.sleep(0.008)  # Natural typing rhythm
+                    # Medium speed pacing loop with glowing iconical cursor
+                    while len(animated_display_text) < len(full_response):
+                        diff_len = len(full_response) - len(animated_display_text)
+                        step = max(1, diff_len // 3)  # Smooth medium batch scaling
+                        animated_display_text = full_response[:len(animated_display_text) + step]
+                        message_placeholder.markdown(animated_display_text + '<span class="iconical-cursor"></span>', unsafe_allow_html=True)
+                        time.sleep(0.035)  # Perfectly tuned medium typing speed
             
-            # Final clean render without active typing cursor block
+            # Catch any trailing characters and complete render
+            animated_display_text = full_response
             message_placeholder.markdown(full_response)
             
         except errors.APIError as e:
