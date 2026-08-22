@@ -468,7 +468,7 @@ if prompt:
             ]
             
             config = types.GenerateContentConfig(
-                system_instruction=system_initial_instruction := system_instruction
+                system_instruction=system_instruction
             )
             
             response_stream = client.models.generate_content_stream(
