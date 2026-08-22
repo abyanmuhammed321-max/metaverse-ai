@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_ui_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_ui_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_ui_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_master_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_master_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_master_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -69,7 +69,7 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. OFFICIAL GEMINI-INSPIRED UI/UX STYLING
+# 2. OFFICIAL GEMINI-INSPIRED UI/UX & STYLING
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap');
@@ -82,7 +82,7 @@ theme_css = """
     }
 
     .block-container {
-        max-width: 840px !important;
+        max-width: 820px !important;
         padding-top: 3rem !important;
         padding-bottom: 7rem !important;
         padding-left: 2rem !important;
