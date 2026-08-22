@@ -64,6 +64,12 @@ if current_sid not in st.session_state[storage_key]:
 
 current_session_data = st.session_state[storage_key][current_sid]
 
+if "show_settings_modal" not in st.session_state:
+    st.session_state["show_settings_modal"] = False
+
+if "show_brain_modal" not in st.session_state:
+    st.session_state["show_brain_modal"] = False
+
 # 2. METAVERSE AI STYLING WITH BACKGROUND & REPLY ANIMATIONS
 theme_css = """
 <style>
@@ -105,7 +111,7 @@ theme_css = """
         margin: 0 auto !important;
     }
 
-    /* Minimal Clean Sidebar */
+    /* Sidebar Styling */
     [data-testid="stSidebar"] {
         background-color: #070910 !important;
         border-right: 1px solid rgba(0, 242, 254, 0.12) !important;
@@ -154,7 +160,7 @@ theme_css = """
         margin-bottom: 12px !important;
     }
 
-    /* AI Reply Text Animation applied to assistant chat box */
+    /* AI Reply Text Animation */
     [data-testid="stChatMessage"]:nth-child(even) {
         animation: replyFadeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
@@ -247,6 +253,18 @@ with st.sidebar:
             
         st.markdown("---")
         
+        show_settings = st.checkbox("⚙️ AI Settings", value=st.session_state["show_settings_modal"])
+        if show_settings != st.session_state["show_settings_modal"]:
+            st.session_state["show_settings_modal"] = show_settings
+            st.rerun()
+
+        show_brain = st.checkbox("🧠 Memory Core", value=st.session_state["show_brain_modal"])
+        if show_brain != st.session_state["show_brain_modal"]:
+            st.session_state["show_brain_modal"] = show_brain
+            st.rerun()
+
+        st.markdown("---")
+        
         if st.button("➕ New Quantum Stream", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
@@ -291,7 +309,61 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 4. Main Viewport Header
+# 4. Settings & Memory Modals
+if is_logged_in and st.session_state.get("show_settings_modal", False):
+    with st.container():
+        st.markdown("#### ⚙️ AI Settings & Preferences")
+        models_list = [
+            "gemini-3.1-flash-lite", 
+            "gemini-3.1-pro-preview", 
+            "gemini-2.5-flash"
+        ]
+        model_index = models_list.index(selected_model) if selected_model in models_list else 0
+        selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
+
+        languages = ["English", "Malayalam", "Hindi", "Spanish", "French", "German", "Arabic", "Chinese", "Japanese"]
+        lang_index = languages.index(lang_choice) if lang_choice in languages else 0
+        lang_choice_input = st.selectbox("Response Language", languages, index=lang_index)
+        
+        use_search_input = st.checkbox("Enable Quantum Web Search Grounding", value=use_search)
+        
+        col_s1, col_s2 = st.columns(2)
+        with col_s1:
+            if st.button("Save Settings", use_container_width=True):
+                st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
+                st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
+                st.session_state[prefs_storage_key]["use_search"] = use_search_input
+                st.session_state["show_settings_modal"] = False
+                st.rerun()
+        with col_s2:
+            if st.button("Cancel", use_container_width=True):
+                st.session_state["show_settings_modal"] = False
+                st.rerun()
+        st.markdown("---")
+
+if is_logged_in and st.session_state.get("show_brain_modal", False):
+    with st.container():
+        st.markdown("#### 🧠 Memory Core Vault")
+        memory_list = st.session_state[memory_storage_key]
+        for idx, mem in enumerate(memory_list):
+            col_m1, col_m2 = st.columns([0.82, 0.18])
+            with col_m1:
+                st.code(mem, language="text")
+            with col_m2:
+                if st.button("✕", key=f"del_mem_{idx}", use_container_width=True):
+                    memory_list.pop(idx)
+                    st.rerun()
+
+        if st.button("Close Memory Core", use_container_width=True):
+            st.session_state["show_brain_modal"] = False
+            st.rerun()
+        st.markdown("---")
+
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.1-flash-lite")
+lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+use_search = st.session_state[prefs_storage_key].get("use_search", True)
+
+# 5. Main Viewport Header
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div style="margin-bottom: 35px; padding-left: 4px;">
@@ -332,10 +404,10 @@ for message in current_messages:
         if "file_name" in message:
             st.markdown(f"<span style='font-size:0.72rem; color:#00f2fe;'>📎 {message['file_name']}</span>", unsafe_allow_html=True)
 
-# 5. File Upload
+# 6. File Upload
 uploaded_file = st.file_uploader("Upload document or image artifact", type=["png", "jpg", "jpeg", "pdf", "txt", "csv", "py"])
 
-# 6. Prompt Execution & Streaming Pipeline with Reply Animation
+# 7. Prompt Execution & Streaming Pipeline with Reply Animation
 prompt = st.chat_input("Message Metaverse AI...")
 
 if prompt or uploaded_file:
