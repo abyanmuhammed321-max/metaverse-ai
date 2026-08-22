@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_exact_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_exact_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_exact_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_clone_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_clone_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_clone_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -70,12 +70,12 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. EXACT OFFICIAL GOOGLE GEMINI STYLING
+# 2. EXACT OFFICIAL GOOGLE GEMINI CSS & STYLING
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
 
-    /* Global Canvas & Background */
+    /* Global Dark Background & Canvas */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
         background-color: #131314 !important;
         color: #e3e3e3 !important;
@@ -83,13 +83,13 @@ theme_css = """
         width: 100% !important;
     }
 
-    /* Central Layout Sizing matching Gemini App */
+    /* Container Spacing matching web app */
     .block-container {
         max-width: 820px !important;
-        padding-top: 3rem !important;
-        padding-bottom: 8rem !important;
-        padding-left: 2rem !important;
-        padding-right: 2rem !important;
+        padding-top: 3.5rem !important;
+        padding-bottom: 9rem !important;
+        padding-left: 2.5rem !important;
+        padding-right: 2.5rem !important;
         margin: 0 auto !important;
     }
 
@@ -103,7 +103,7 @@ theme_css = """
         color: #e3e3e3 !important;
     }
 
-    /* Typography - Official Gemini Greeting Style */
+    /* Official Gemini Gradient Greeting Header */
     .gemini-header {
         text-align: left;
         margin-bottom: 36px;
@@ -112,7 +112,7 @@ theme_css = """
 
     .gemini-greeting {
         font-family: 'Google Sans', sans-serif;
-        font-size: 2.6rem;
+        font-size: 2.8rem;
         font-weight: 500;
         background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
         -webkit-background-clip: text;
@@ -122,14 +122,14 @@ theme_css = """
     }
 
     .gemini-subgreeting {
-        font-size: 2.6rem;
+        font-size: 2.8rem;
         font-weight: 400;
         color: #444746;
         margin-bottom: 0px;
         letter-spacing: -0.5px;
     }
 
-    /* Clean Card Auth */
+    /* Clean Card Auth Container */
     .gemini-auth-card {
         background: #1e1f20;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -141,19 +141,19 @@ theme_css = """
         box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
     }
 
-    /* Chat Messages UI */
+    /* Chat Messages Layout */
     .stChatMessage {
         background: transparent !important;
         border: none !important;
         border-radius: 0px !important;
-        padding: 12px 0px !important;
+        padding: 14px 0px !important;
         margin-bottom: 12px !important;
         box-shadow: none !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
         color: #e3e3e3 !important;
-        font-size: 0.96rem !important;
+        font-size: 0.98rem !important;
         line-height: 1.75 !important;
         font-family: 'Google Sans', sans-serif !important;
     }
@@ -180,14 +180,14 @@ theme_css = """
         color: #ffffff !important;
     }
 
-    /* Floating Rounded Input Box */
+    /* Floating Chat Input Box mimicking Gemini */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
         border: 1px solid rgba(255, 255, 255, 0.15) !important;
         border-radius: 28px !important;
         font-family: 'Google Sans', sans-serif !important;
-        font-size: 0.95rem !important;
+        font-size: 0.98rem !important;
         padding: 16px 24px !important;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
     }
@@ -347,7 +347,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 5. Main Content Area & Layout
+# 5. Main Content Header
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div class="gemini-header">
