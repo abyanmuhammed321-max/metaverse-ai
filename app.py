@@ -70,17 +70,17 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. AURORA BOREALIS CYBER-GLASS STYLING
+# 2. NEON BLUE & VIOLET CYBER-GLASS STYLING
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: #050508 !important;
+        background: #030308 !important;
         background-image: 
-            radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
-            radial-gradient(at 90% 10%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-            radial-gradient(at 50% 90%, rgba(147, 51, 234, 0.12) 0px, transparent 50%) !important;
+            radial-gradient(at 15% 15%, rgba(59, 130, 246, 0.16) 0px, transparent 55%),
+            radial-gradient(at 85% 15%, rgba(147, 51, 234, 0.18) 0px, transparent 55%),
+            radial-gradient(at 50% 85%, rgba(79, 70, 229, 0.14) 0px, transparent 55%) !important;
         color: #f3f4f6 !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         width: 100% !important;
@@ -96,22 +96,22 @@ theme_css = """
     }
 
     [data-testid="stSidebar"] {
-        background-color: #07080c !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+        background-color: #05050b !important;
+        border-right: 1px solid rgba(139, 92, 246, 0.15) !important;
     }
 
     [data-testid="stSidebar"] * {
         color: #e5e7eb !important;
     }
 
-    @keyframes auroraFlow {
+    @keyframes neonPulse {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
     @keyframes cursorGlow {
-        0%, 100% { opacity: 1; text-shadow: 0 0 10px #34d399, 0 0 20px #60a5fa; }
+        0%, 100% { opacity: 1; text-shadow: 0 0 12px #3b82f6, 0 0 24px #a855f7; }
         50% { opacity: 0.2; text-shadow: none; }
     }
 
@@ -124,36 +124,38 @@ theme_css = """
         font-family: 'Space Grotesk', sans-serif;
         font-size: 2.8rem;
         font-weight: 700;
-        background: linear-gradient(270deg, #34d399, #60a5fa, #c084fc, #34d399);
+        background: linear-gradient(270deg, #60a5fa, #a855f7, #3b82f6, #c084fc);
         background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: auroraFlow 8s ease infinite;
+        animation: neonPulse 7s ease infinite;
         margin-bottom: 6px;
         letter-spacing: -0.5px;
+        filter: drop-shadow(0 0 25px rgba(168, 85, 247, 0.35));
     }
 
     .aurora-subtitle {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.75rem;
         font-weight: 500;
-        color: #9ca3af;
+        color: #a78bfa;
         letter-spacing: 3px;
         text-transform: uppercase;
+        text-shadow: 0 0 10px rgba(167, 139, 250, 0.4);
     }
 
     /* Floating Glass Auth Card */
     .aurora-auth-card {
-        background: rgba(18, 20, 28, 0.65);
+        background: rgba(15, 15, 26, 0.7);
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(139, 92, 246, 0.25);
         border-radius: 28px;
         padding: 48px 36px;
         text-align: center;
         max-width: 460px;
         margin: 40px auto;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(168, 85, 247, 0.2), 0 0 30px rgba(59, 130, 246, 0.15);
     }
 
     .aurora-auth-icon {
@@ -161,9 +163,10 @@ theme_css = """
         margin-bottom: 16px;
         display: inline-block;
         padding: 16px;
-        background: rgba(96, 165, 250, 0.1);
+        background: rgba(147, 51, 234, 0.15);
         border-radius: 22px;
-        border: 1px solid rgba(96, 165, 250, 0.2);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        box-shadow: 0 0 20px rgba(147, 51, 234, 0.25);
     }
 
     .aurora-auth-heading {
@@ -183,14 +186,14 @@ theme_css = """
 
     /* Glass Chat Bubbles */
     .stChatMessage {
-        background: rgba(18, 20, 28, 0.55) !important;
+        background: rgba(15, 15, 26, 0.6) !important;
         backdrop-filter: blur(16px) !important;
         -webkit-backdrop-filter: blur(16px) !important;
-        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        border: 1px solid rgba(139, 92, 246, 0.2) !important;
         border-radius: 20px !important;
         padding: 20px 24px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(59, 130, 246, 0.05) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
@@ -199,55 +202,61 @@ theme_css = """
         line-height: 1.7 !important;
     }
 
-    /* Smooth Modern Buttons */
+    /* Smooth Neon Buttons */
     .stButton button {
         border-radius: 14px !important;
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 600 !important;
         font-size: 0.8rem !important;
         letter-spacing: 0.5px !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%) !important;
+        border: 1px solid rgba(139, 92, 246, 0.35) !important;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%) !important;
         color: #ffffff !important;
         padding: 12px 24px !important;
         width: 100% !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        box-shadow: 0 4px 20px rgba(147, 51, 234, 0.25) !important;
         transition: all 0.25s ease !important;
     }
 
     .stButton button:hover {
-        background: linear-gradient(135deg, rgba(96, 165, 250, 0.25) 0%, rgba(52, 211, 153, 0.25) 100%) !important;
-        border-color: rgba(96, 165, 250, 0.4) !important;
-        box-shadow: 0 6px 25px rgba(96, 165, 250, 0.2) !important;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.35) 0%, rgba(168, 85, 247, 0.35) 100%) !important;
+        border-color: rgba(168, 85, 247, 0.7) !important;
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.5), inset 0 0 10px rgba(59, 130, 246, 0.3) !important;
         transform: translateY(-1px);
     }
 
     /* Fixed Chat Input */
     [data-testid="stChatInput"] textarea {
-        background: rgba(14, 16, 23, 0.9) !important;
+        background: rgba(10, 10, 18, 0.95) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(139, 92, 246, 0.35) !important;
         border-radius: 18px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 16px 20px !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(59, 130, 246, 0.12) !important;
+    }
+
+    [data-testid="stChatInput"] textarea:focus {
+        border-color: rgba(168, 85, 247, 0.8) !important;
+        box-shadow: 0 0 25px rgba(168, 85, 247, 0.35) !important;
     }
 
     .sidebar-signature {
         text-align: center;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.65rem;
-        color: #9ca3af;
+        color: #a78bfa;
         letter-spacing: 2px;
         padding: 16px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        border-bottom: 1px solid rgba(139, 92, 246, 0.2);
         text-transform: uppercase;
-        background: rgba(255, 255, 255, 0.01);
+        background: rgba(147, 51, 234, 0.03);
         font-weight: 600;
+        text-shadow: 0 0 10px rgba(167, 139, 250, 0.3);
     }
 
     .aurora-badge {
@@ -256,26 +265,28 @@ theme_css = """
         gap: 8px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(52, 211, 153, 0.08);
-        border: 1px solid rgba(52, 211, 153, 0.2);
+        background: rgba(147, 51, 234, 0.12);
+        border: 1px solid rgba(168, 85, 247, 0.35);
         border-radius: 10px;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.65rem;
-        color: #34d399;
+        color: #c084fc;
         font-weight: 600;
         letter-spacing: 1px;
         text-transform: uppercase;
+        box-shadow: 0 0 15px rgba(147, 51, 234, 0.2);
     }
 
     .iconical-cursor {
         display: inline-block;
         width: 10px;
         height: 18px;
-        background: linear-gradient(180deg, #34d399, #60a5fa);
+        background: linear-gradient(180deg, #3b82f6, #a855f7);
         margin-left: 4px;
         vertical-align: middle;
         animation: cursorGlow 0.8s infinite ease-in-out;
         border-radius: 2px;
+        box-shadow: 0 0 10px #3b82f6, 0 0 18px #a855f7;
     }
 </style>
 """
@@ -287,11 +298,11 @@ with st.sidebar:
     st.markdown("### ✨ Aurora Nexus")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #9ca3af;'>Sign in to start your session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #a78bfa;'>Sign in to start your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #34d399;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #c084fc;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -411,7 +422,7 @@ if not is_logged_in:
             <div class="aurora-auth-icon">✨</div>
             <div class="aurora-auth-heading">Welcome to Metaverse AI</div>
             <div class="aurora-auth-text">
-                Authenticate with Google to unlock glass-morphic AI chat streams, memory vaults, and multi-model support.
+                Authenticate with Google to unlock electric blue & violet neon glass chat streams and advanced memory vaults.
             </div>
     """, unsafe_allow_html=True)
     
@@ -442,7 +453,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="aurora-badge">✨ Generating Response Core...</div>
+            <div class="aurora-badge">✨ Generating Neon Core...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
@@ -480,19 +491,17 @@ if prompt:
             
             loader_placeholder.empty()
             
-            # Medium-Speed Iconic Word/Character Staggered Replay Animation
+            # Medium-Speed Neon Blue & Violet Replay Animation
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Medium speed pacing loop with glowing iconical cursor
                     while len(animated_display_text) < len(full_response):
                         diff_len = len(full_response) - len(animated_display_text)
-                        step = max(1, diff_len // 3)  # Smooth medium batch scaling
+                        step = max(1, diff_len // 3)
                         animated_display_text = full_response[:len(animated_display_text) + step]
                         message_placeholder.markdown(animated_display_text + '<span class="iconical-cursor"></span>', unsafe_allow_html=True)
-                        time.sleep(0.035)  # Perfectly tuned medium typing speed
+                        time.sleep(0.035)  # Medium natural typing speed
             
-            # Catch any trailing characters and complete render
             animated_display_text = full_response
             message_placeholder.markdown(full_response)
             
