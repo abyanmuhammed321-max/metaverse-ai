@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="✨",
+    page_icon="🌌",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"aurora_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"aurora_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"aurora_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"quantum_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"quantum_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"quantum_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Aurora Stream",
+            "title": "Quantum Stream",
             "messages": []
         }
     }
@@ -69,18 +69,18 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. AURORA BOREALIS CYBER-GLASS STYLING
+# 2. OBSIDIAN QUANTUM & LIQUID NEON GLASS STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: #050508 !important;
+        background: #030407 !important;
         background-image: 
-            radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
-            radial-gradient(at 90% 10%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
-            radial-gradient(at 50% 90%, rgba(147, 51, 234, 0.12) 0px, transparent 50%) !important;
-        color: #f3f4f6 !important;
+            radial-gradient(circle at 15% 10%, rgba(99, 102, 241, 0.12) 0px, transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.1) 0px, transparent 45%),
+            radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.05) 0px, transparent 60%) !important;
+        color: #f1f5f9 !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         width: 100% !important;
     }
@@ -95,72 +95,72 @@ theme_css = """
     }
 
     [data-testid="stSidebar"] {
-        background-color: #07080c !important;
-        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
+        background-color: #05070c !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
 
     [data-testid="stSidebar"] * {
-        color: #e5e7eb !important;
+        color: #e2e8f0 !important;
     }
 
-    @keyframes auroraFlow {
+    @keyframes quantumPulse {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
         100% { background-position: 0% 50%; }
     }
 
-    .aurora-header {
+    .quantum-header {
         text-align: center;
-        margin-bottom: 36px;
+        margin-bottom: 38px;
     }
 
-    .aurora-title {
+    .quantum-title {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 2.8rem;
         font-weight: 700;
-        background: linear-gradient(270deg, #34d399, #60a5fa, #c084fc, #34d399);
+        background: linear-gradient(270deg, #818cf8, #c084fc, #38bdf8, #818cf8);
         background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: auroraFlow 8s ease infinite;
+        animation: quantumPulse 9s ease infinite;
         margin-bottom: 6px;
         letter-spacing: -0.5px;
     }
 
-    .aurora-subtitle {
+    .quantum-subtitle {
         font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: #9ca3af;
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: #94a3b8;
         letter-spacing: 3px;
         text-transform: uppercase;
     }
 
-    /* Floating Glass Auth Card */
-    .aurora-auth-card {
-        background: rgba(18, 20, 28, 0.65);
-        backdrop-filter: blur(24px);
-        -webkit-backdrop-filter: blur(24px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 28px;
+    /* Quantum Glass Auth Card */
+    .quantum-auth-card {
+        background: rgba(13, 17, 28, 0.75);
+        backdrop-filter: blur(28px);
+        -webkit-backdrop-filter: blur(28px);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        border-radius: 26px;
         padding: 48px 36px;
         text-align: center;
         max-width: 460px;
         margin: 40px auto;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .aurora-auth-icon {
-        font-size: 2rem;
+    .quantum-auth-icon {
+        font-size: 2.2rem;
         margin-bottom: 16px;
         display: inline-block;
         padding: 16px;
-        background: rgba(96, 165, 250, 0.1);
-        border-radius: 22px;
-        border: 1px solid rgba(96, 165, 250, 0.2);
+        background: rgba(129, 140, 248, 0.1);
+        border-radius: 20px;
+        border: 1px solid rgba(129, 140, 248, 0.25);
     }
 
-    .aurora-auth-heading {
+    .quantum-auth-heading {
         font-family: 'Space Grotesk', sans-serif;
         font-size: 1.3rem;
         font-weight: 700;
@@ -168,94 +168,94 @@ theme_css = """
         margin-bottom: 8px;
     }
 
-    .aurora-auth-text {
+    .quantum-auth-text {
         font-size: 0.9rem;
-        color: #9ca3af;
+        color: #94a3b8;
         line-height: 1.6;
         margin-bottom: 30px;
     }
 
-    /* Glass Chat Bubbles */
+    /* Liquid Glass Chat Bubbles */
     .stChatMessage {
-        background: rgba(18, 20, 28, 0.55) !important;
-        backdrop-filter: blur(16px) !important;
-        -webkit-backdrop-filter: blur(16px) !important;
+        background: rgba(13, 17, 28, 0.65) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
         border: 1px solid rgba(255, 255, 255, 0.06) !important;
         border-radius: 20px !important;
         padding: 20px 24px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
-        color: #e5e7eb !important;
+        color: #e2e8f0 !important;
         font-size: 0.95rem !important;
         line-height: 1.7 !important;
     }
 
-    /* Smooth Modern Buttons */
+    /* Modern Elevated Buttons */
     .stButton button {
         border-radius: 14px !important;
         font-family: 'Space Grotesk', sans-serif !important;
         font-weight: 600 !important;
         font-size: 0.8rem !important;
         letter-spacing: 0.5px !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
-        background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        background: linear-gradient(135deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.02) 100%) !important;
         color: #ffffff !important;
         padding: 12px 24px !important;
         width: 100% !important;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
-        transition: all 0.25s ease !important;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
 
     .stButton button:hover {
-        background: linear-gradient(135deg, rgba(96, 165, 250, 0.25) 0%, rgba(52, 211, 153, 0.25) 100%) !important;
-        border-color: rgba(96, 165, 250, 0.4) !important;
-        box-shadow: 0 6px 25px rgba(96, 165, 250, 0.2) !important;
+        background: linear-gradient(135deg, rgba(129, 140, 248, 0.25) 0%, rgba(192, 132, 252, 0.25) 100%) !important;
+        border-color: rgba(129, 140, 248, 0.4) !important;
+        box-shadow: 0 8px 25px rgba(129, 140, 248, 0.25) !important;
         transform: translateY(-1px);
     }
 
     /* Fixed Chat Input */
     [data-testid="stChatInput"] textarea {
-        background: rgba(14, 16, 23, 0.9) !important;
+        background: rgba(10, 13, 22, 0.95) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
         border-radius: 18px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 16px 20px !important;
-        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7) !important;
     }
 
     .sidebar-signature {
         text-align: center;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.65rem;
-        color: #9ca3af;
+        color: #818cf8;
         letter-spacing: 2px;
         padding: 16px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(255, 255, 255, 0.06);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        border-top: 1px solid rgba(255, 255, 255, 0.05);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         text-transform: uppercase;
-        background: rgba(255, 255, 255, 0.01);
+        background: rgba(129, 140, 248, 0.03);
         font-weight: 600;
     }
 
-    .aurora-badge {
+    .quantum-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(52, 211, 153, 0.08);
-        border: 1px solid rgba(52, 211, 153, 0.2);
+        background: rgba(129, 140, 248, 0.08);
+        border: 1px solid rgba(129, 140, 248, 0.2);
         border-radius: 10px;
         font-family: 'Space Grotesk', sans-serif;
         font-size: 0.65rem;
-        color: #34d399;
+        color: #818cf8;
         font-weight: 600;
         letter-spacing: 1px;
         text-transform: uppercase;
@@ -267,14 +267,14 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### ✨ Aurora Nexus")
+    st.markdown("### 🌌 Quantum Nexus")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #9ca3af;'>Sign in to start your session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #94a3b8;'>Sign in to start your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #34d399;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #818cf8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -291,10 +291,10 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Aurora Stream", use_container_width=True):
+        if st.button("➕ New Quantum Stream", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Aurora Stream",
+                "title": "Quantum Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -314,7 +314,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Aurora Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Quantum Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -382,19 +382,19 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Main Content Area
 st.markdown(f"""
-    <div class="aurora-header">
-        <div class="aurora-title">Metaverse AI</div>
-        <div class="aurora-subtitle">{selected_model} &bull; {lang_choice}</div>
+    <div class="quantum-header">
+        <div class="quantum-title">Metaverse AI</div>
+        <div class="quantum-subtitle">{selected_model} &bull; {lang_choice}</div>
     </div>
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div class="aurora-auth-card">
-            <div class="aurora-auth-icon">✨</div>
-            <div class="aurora-auth-heading">Welcome to Metaverse AI</div>
-            <div class="aurora-auth-text">
-                Authenticate with Google to unlock glass-morphic AI chat streams, memory vaults, and multi-model support.
+        <div class="quantum-auth-card">
+            <div class="quantum-auth-icon">🌌</div>
+            <div class="quantum-auth-heading">Welcome to Metaverse AI</div>
+            <div class="quantum-auth-text">
+                Authenticate with Google to unlock liquid glass AI chat streams, memory vaults, and multi-model support.
             </div>
     """, unsafe_allow_html=True)
     
@@ -425,7 +425,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="aurora-badge">✨ Generating Response...</div>
+            <div class="quantum-badge">🌌 Synthesizing Response...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
