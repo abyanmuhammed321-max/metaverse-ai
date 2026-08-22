@@ -27,14 +27,15 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"official_gemini_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"official_gemini_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"official_gemini_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_master_v3_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_master_v3_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_master_v3_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
-        "selected_model": "gemini-3.5-flash-lite",
-        "lang_choice": "English"
+        "selected_model": "gemini-2.5-flash",
+        "lang_choice": "English",
+        "use_search": True
     }
 
 if memory_storage_key not in st.session_state:
@@ -124,7 +125,6 @@ theme_css = """
         letter-spacing: -0.5px;
     }
 
-    /* Google Card Auth Style */
     .gemini-auth-card {
         background: #1e1f20;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -146,7 +146,6 @@ theme_css = """
         color: #8ab4f8;
     }
 
-    /* Exact Gemini Message Bubbles */
     .stChatMessage {
         background: #1e1f20 !important;
         border: 1px solid rgba(255, 255, 255, 0.06) !important;
@@ -162,7 +161,6 @@ theme_css = """
         line-height: 1.7 !important;
     }
 
-    /* Google-styled Rounded Buttons */
     .stButton button {
         border-radius: 100px !important;
         font-family: 'Google Sans', sans-serif !important;
@@ -184,7 +182,6 @@ theme_css = """
         color: #ffffff !important;
     }
 
-    /* Gemini Floating Chat Input Box */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
@@ -297,14 +294,15 @@ if not api_key:
     st.error("⚠️ GEMINI_API_KEY configuration missing in `.streamlit/secrets.toml`.")
     st.stop()
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
 # 4. Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
         st.markdown("#### System Preferences")
-        models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
+        models_list = ["gemini-2.5-flash", "gemini-2.5-pro", "gemini-3.5-flash-lite"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
 
@@ -312,11 +310,14 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index)
         
+        use_search_input = st.checkbox("Enable Google Search Grounding", value=use_search)
+        
         col_s1, col_s2 = st.columns(2)
         with col_s1:
             if st.button("Apply Changes", use_container_width=True):
                 st.session_state[prefs_storage_key]["selected_model"] = selected_model_input
                 st.session_state[prefs_storage_key]["lang_choice"] = lang_choice_input
+                st.session_state[prefs_storage_key]["use_search"] = use_search_input
                 st.session_state["show_settings_modal"] = False
                 st.rerun()
         with col_s2:
@@ -343,8 +344,9 @@ if is_logged_in and st.session_state.get("show_brain_modal", False):
             st.rerun()
         st.markdown("---")
 
-selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-3.5-flash-lite")
+selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemini-2.5-flash")
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
+use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
 # 5. Main Content Area
 if is_logged_in and len(current_session_data["messages"]) == 0:
@@ -384,17 +386,29 @@ current_messages = current_session_data["messages"]
 for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
+        if "file_name" in message:
+            st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 Attached: {message['file_name']}</span>", unsafe_allow_html=True)
 
-# 6. Chat Execution Pipeline
+# 6. Optional File Upload Feature
+uploaded_file = st.file_uploader("Upload an image, document, or file to share with Gemini", type=["png", "jpg", "jpeg", "pdf", "txt", "csv"])
+
+# 7. Chat Execution Pipeline
 prompt = st.chat_input("Enter a prompt here")
 
-if prompt:
+if prompt or uploaded_file:
+    prompt_text = prompt if prompt else "Analyze this uploaded file."
     if len(current_messages) == 0:
-        current_session_data["title"] = prompt[:16]
+        current_session_data["title"] = prompt_text[:16]
 
-    current_messages.append({"role": "user", "content": prompt})
+    user_msg_data = {"role": "user", "content": prompt_text}
+    if uploaded_file:
+        user_msg_data["file_name"] = uploaded_file.name
+
+    current_messages.append(user_msg_data)
     with st.chat_message("user"):
-        st.markdown(prompt)
+        st.markdown(prompt_text)
+        if uploaded_file:
+            st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 Attached: {uploaded_file.name}</span>", unsafe_allow_html=True)
 
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
@@ -419,18 +433,26 @@ if prompt:
                 f"MEMORY VAULT:\n{memories_str}"
             )
             
-            chat_history_formatted = [
-                {"role": m["role"], "parts": [{"text": m["content"]}]} 
-                for m in current_messages
-            ]
+            contents_payload = []
+            if uploaded_file:
+                bytes_data = uploaded_file.getvalue()
+                contents_payload.append(types.Part.from_bytes(
+                    data=bytes_data,
+                    mime_type=uploaded_file.type
+                ))
+            
+            contents_payload.append(prompt_text)
+            
+            tools_config = [types.Tool(google_search=types.GoogleSearch())] if use_search else None
             
             config = types.GenerateContentConfig(
-                system_instruction=system_instruction
+                system_instruction=system_instruction,
+                tools=tools_config
             )
             
             response_stream = client.models.generate_content_stream(
                 model=selected_model,
-                contents=chat_history_formatted,
+                contents=contents_payload,
                 config=config
             )
             
