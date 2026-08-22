@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_clone_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_clone_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_clone_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"gemini_real_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"gemini_real_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"gemini_real_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -70,12 +70,12 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. EXACT OFFICIAL GOOGLE GEMINI CSS & STYLING
+# 2. EXACT OFFICIAL GOOGLE GEMINI STYLING & UI OVERRIDES
 theme_css = """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
 
-    /* Global Dark Background & Canvas */
+    /* Global Background Canvas */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
         background-color: #131314 !important;
         color: #e3e3e3 !important;
@@ -83,17 +83,17 @@ theme_css = """
         width: 100% !important;
     }
 
-    /* Container Spacing matching web app */
+    /* Main Container Sizing */
     .block-container {
         max-width: 820px !important;
         padding-top: 3.5rem !important;
         padding-bottom: 9rem !important;
-        padding-left: 2.5rem !important;
-        padding-right: 2.5rem !important;
+        padding-left: 2rem !important;
+        padding-right: 2rem !important;
         margin: 0 auto !important;
     }
 
-    /* Sidebar Styling */
+    /* Sidebar Exact Look */
     [data-testid="stSidebar"] {
         background-color: #1e1f20 !important;
         border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -103,7 +103,7 @@ theme_css = """
         color: #e3e3e3 !important;
     }
 
-    /* Official Gemini Gradient Greeting Header */
+    /* Gemini Header & Greeting */
     .gemini-header {
         text-align: left;
         margin-bottom: 36px;
@@ -129,7 +129,7 @@ theme_css = """
         letter-spacing: -0.5px;
     }
 
-    /* Clean Card Auth Container */
+    /* Auth Card Style */
     .gemini-auth-card {
         background: #1e1f20;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -158,7 +158,7 @@ theme_css = """
         font-family: 'Google Sans', sans-serif !important;
     }
 
-    /* Google Pill-Shaped Buttons */
+    /* Google Button Styling */
     .stButton button {
         border-radius: 100px !important;
         font-family: 'Google Sans', sans-serif !important;
@@ -180,7 +180,7 @@ theme_css = """
         color: #ffffff !important;
     }
 
-    /* Floating Chat Input Box mimicking Gemini */
+    /* Floating Chat Box */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
@@ -347,7 +347,7 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 use_search = st.session_state[prefs_storage_key].get("use_search", True)
 
-# 5. Main Content Header
+# 5. Main Screen Header
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div class="gemini-header">
@@ -388,10 +388,10 @@ for message in current_messages:
         if "file_name" in message:
             st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 Attached: {message['file_name']}</span>", unsafe_allow_html=True)
 
-# 6. File Attachment Support
+# 6. File Attachments
 uploaded_file = st.file_uploader("Upload an image, document, or file", type=["png", "jpg", "jpeg", "pdf", "txt", "csv"])
 
-# 7. Chat Execution Pipeline
+# 7. Prompt Execution Loop
 prompt = st.chat_input("Enter a prompt here")
 
 if prompt or uploaded_file:
@@ -474,3 +474,4 @@ if prompt or uploaded_file:
             message_placeholder.markdown(full_response)
 
         current_messages.append({"role": "model", "content": full_response})
+        
