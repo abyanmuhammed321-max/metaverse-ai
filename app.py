@@ -110,6 +110,11 @@ theme_css = """
         100% { background-position: 0% 50%; }
     }
 
+    @keyframes cursorGlow {
+        0%, 100% { opacity: 1; text-shadow: 0 0 10px #34d399, 0 0 20px #60a5fa; }
+        50% { opacity: 0.2; text-shadow: none; }
+    }
+
     .aurora-header {
         text-align: center;
         margin-bottom: 36px;
@@ -260,6 +265,17 @@ theme_css = """
         font-weight: 600;
         letter-spacing: 1px;
         text-transform: uppercase;
+    }
+
+    .iconical-cursor {
+        display: inline-block;
+        width: 10px;
+        height: 18px;
+        background: linear-gradient(180deg, #34d399, #60a5fa);
+        margin-left: 4px;
+        vertical-align: middle;
+        animation: cursorGlow 0.8s infinite ease-in-out;
+        border-radius: 2px;
     }
 </style>
 """
@@ -426,12 +442,11 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="aurora-badge">✨ Generating Response...</div>
+            <div class="aurora-badge">✨ Generating Response Core...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
         full_response = ""
-        animated_response = ""
         
         try:
             client = genai.Client(api_key=api_key)
@@ -453,7 +468,7 @@ if prompt:
             ]
             
             config = types.GenerateContentConfig(
-                system_instruction=system_instruction
+                system_instruction=system_initial_instruction := system_instruction
             )
             
             response_stream = client.models.generate_content_stream(
@@ -464,17 +479,15 @@ if prompt:
             
             loader_placeholder.empty()
             
-            # Typewriter / Replaying Animation Stream Loop
+            # Iconical Glowing Typewriter Replay Animation
             for chunk in response_stream:
                 if chunk.text:
                     full_response += chunk.text
-                    # Smoothly animate typing character by character or word by word
-                    for char in chunk.text:
-                        animated_response += char
-                        message_placeholder.markdown(animated_response + "▌")
-                        time.sleep(0.005) # Adjust typing speed here (lower = faster)
+                    # Render with animated custom neon cursor block
+                    message_placeholder.markdown(full_response + '<span class="iconical-cursor"></span>', unsafe_allow_html=True)
+                    time.sleep(0.008)  # Natural typing rhythm
             
-            # Final output rendering without cursor
+            # Final clean render without active typing cursor block
             message_placeholder.markdown(full_response)
             
         except errors.APIError as e:
