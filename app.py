@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="🔮",
+    page_icon="✨",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -49,7 +49,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Quantum Stream",
+            "title": "New Chat",
             "messages": []
         }
     }
@@ -70,10 +70,10 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. METAVERSE AI STYLING WITH BACKGROUND & REPLY ANIMATIONS
+# 2. ICONIC GEMINI-INSPIRED BRAND STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Outfit:wght@300;400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
 
     @keyframes backgroundFluid {
         0% { background-position: 0% 50%; }
@@ -82,157 +82,160 @@ theme_css = """
     }
 
     @keyframes replyFadeSlide {
-        0% { opacity: 0; transform: translateY(12px); filter: blur(4px); }
+        0% { opacity: 0; transform: translateY(14px); filter: blur(3px); }
         100% { opacity: 1; transform: translateY(0); filter: blur(0px); }
     }
 
-    @keyframes textGlow {
-        0% { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
-        50% { color: #a855f7; text-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
-        100% { color: #00f2fe; text-shadow: 0 0 10px rgba(0, 242, 254, 0.4); }
+    @keyframes geminiGlow {
+        0% { filter: hue-rotate(0deg); }
+        50% { filter: hue-rotate(45deg); }
+        100% { filter: hue-rotate(0deg); }
     }
 
-    /* Animated Dynamic Background */
+    /* Iconic Clean Background with Animated Gradient Mesh */
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: linear-gradient(135deg, #030408, #0a0e1a, #06050a, #0f0814) !important;
+        background: linear-gradient(135deg, #131518, #1a1e26, #121824, #181422) !important;
         background-size: 400% 400% !important;
-        animation: backgroundFluid 18s ease infinite !important;
-        color: #f3f4f6 !important;
-        font-family: 'Outfit', sans-serif !important;
+        animation: backgroundFluid 20s ease infinite !important;
+        color: #e3e3e3 !important;
+        font-family: 'Inter', sans-serif !important;
         width: 100% !important;
     }
 
     .block-container {
-        max-width: 820px !important;
-        padding-top: 4rem !important;
-        padding-bottom: 9.5rem !important;
+        max-width: 840px !important;
+        padding-top: 4.5rem !important;
+        padding-bottom: 10rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
         margin: 0 auto !important;
     }
 
-    /* Sidebar Styling */
+    /* Sleek Sidebar */
     [data-testid="stSidebar"] {
-        background-color: #070910 !important;
-        border-right: 1px solid rgba(0, 242, 254, 0.12) !important;
+        background-color: #171a21 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
         padding-top: 1.5rem !important;
-        padding-left: 0.6rem !important;
-        padding-right: 0.6rem !important;
+        padding-left: 0.8rem !important;
+        padding-right: 0.8rem !important;
     }
 
     [data-testid="stSidebar"] * {
-        color: #f3f4f6 !important;
-        font-family: 'Outfit', sans-serif !important;
+        color: #e3e3e3 !important;
+        font-family: 'Inter', sans-serif !important;
     }
 
-    .metaverse-greeting {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 2.6rem;
+    /* Iconic Brand Typography */
+    .brand-title {
+        font-family: 'Google Sans', sans-serif;
+        font-size: 2.8rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #00f2fe, #a855f7, #ec4899);
+        background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 4px;
+        margin-bottom: 6px;
+        letter-spacing: -0.5px;
     }
 
-    .metaverse-subgreeting {
+    .brand-subheading {
         font-size: 1.15rem;
-        color: #9ca3af;
+        color: #9aa0a6;
         font-weight: 400;
     }
 
-    .metaverse-auth-card {
-        background: rgba(10, 14, 24, 0.85);
-        border: 1px solid rgba(0, 242, 254, 0.25);
-        backdrop-filter: blur(25px);
-        border-radius: 24px;
-        padding: 45px 30px;
+    .gemini-auth-card {
+        background: rgba(26, 30, 38, 0.85);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(20px);
+        border-radius: 28px;
+        padding: 50px 35px;
         text-align: center;
-        max-width: 420px;
+        max-width: 440px;
         margin: 50px auto;
-        box-shadow: 0 15px 45px rgba(0,0,0,0.6);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
     }
 
     .stChatMessage {
         background: transparent !important;
         border: none !important;
-        padding: 14px 0px !important;
-        margin-bottom: 12px !important;
+        padding: 16px 0px !important;
+        margin-bottom: 14px !important;
     }
 
-    /* AI Reply Text Animation */
+    /* AI Reply Fade-in Animation */
     [data-testid="stChatMessage"]:nth-child(even) {
-        animation: replyFadeSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        animation: replyFadeSlide 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
-        color: #f3f4f6 !important;
+        color: #e3e3e3 !important;
         font-size: 1rem !important;
-        line-height: 1.75 !important;
-        font-family: 'Outfit', sans-serif !important;
+        line-height: 1.8 !important;
+        font-family: 'Inter', sans-serif !important;
     }
 
+    /* Rounded Pill Buttons */
     .stButton button {
-        border-radius: 12px !important;
-        font-family: 'Orbitron', sans-serif !important;
+        border-radius: 24px !important;
+        font-family: 'Google Sans', sans-serif !important;
         font-weight: 500 !important;
-        font-size: 0.72rem !important;
-        letter-spacing: 1px !important;
-        border: 1px solid rgba(0, 242, 254, 0.3) !important;
-        background: rgba(12, 17, 29, 0.9) !important;
-        color: #00f2fe !important;
-        padding: 10px 20px !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.3px !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
+        background: rgba(32, 38, 49, 0.9) !important;
+        color: #8ab4f8 !important;
+        padding: 10px 22px !important;
         width: 100% !important;
-        transition: all 0.25s ease !important;
+        transition: all 0.2s ease !important;
     }
 
     .stButton button:hover {
-        background: rgba(0, 242, 254, 0.2) !important;
-        border-color: #00f2fe !important;
+        background: rgba(138, 180, 248, 0.15) !important;
+        border-color: #8ab4f8 !important;
         color: #ffffff !important;
-        box-shadow: 0 0 20px rgba(0, 242, 254, 0.35) !important;
+        box-shadow: 0 0 15px rgba(138, 180, 248, 0.2) !important;
     }
 
+    /* Modern Chat Input Box */
     [data-testid="stChatInput"] textarea {
-        background: rgba(9, 13, 22, 0.95) !important;
-        color: #f3f4f6 !important;
-        border: 1px solid rgba(0, 242, 254, 0.35) !important;
-        border-radius: 20px !important;
-        font-family: 'Outfit', sans-serif !important;
+        background: rgba(22, 27, 34, 0.95) !important;
+        color: #ffffff !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 28px !important;
+        font-family: 'Inter', sans-serif !important;
         font-size: 1rem !important;
-        padding: 16px 22px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
+        padding: 16px 24px !important;
+        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6) !important;
     }
 
     .sidebar-signature {
         text-align: center;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.6rem;
-        letter-spacing: 2px;
-        padding: 14px 4px;
-        margin-top: 20px;
+        font-family: 'Google Sans', sans-serif;
+        font-size: 0.65rem;
+        letter-spacing: 2.5px;
+        padding: 16px 6px;
+        margin-top: 24px;
         margin-bottom: 20px;
-        border-top: 1px solid rgba(0, 242, 254, 0.15);
-        border-bottom: 1px solid rgba(0, 242, 254, 0.15);
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         text-transform: uppercase;
-        background: rgba(0, 242, 254, 0.04);
-        animation: textGlow 5s infinite;
+        background: linear-gradient(135deg, rgba(66, 133, 244, 0.05), rgba(155, 114, 203, 0.05));
+        color: #8ab4f8 !important;
         font-weight: 700;
     }
 
-    .metaverse-badge {
+    .gemini-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 6px 14px;
-        margin-bottom: 12px;
-        background: rgba(0, 242, 254, 0.08);
-        border: 1px solid rgba(0, 242, 254, 0.35);
-        border-radius: 10px;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.65rem;
-        color: #00f2fe;
-        animation: textGlow 4s infinite;
+        margin-bottom: 14px;
+        background: rgba(138, 180, 248, 0.08);
+        border: 1px solid rgba(138, 180, 248, 0.25);
+        border-radius: 16px;
+        font-family: 'Google Sans', sans-serif;
+        font-size: 0.72rem;
+        color: #8ab4f8;
     }
 </style>
 """
@@ -241,14 +244,14 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel Layout
 with st.sidebar:
-    st.markdown("<div style='font-family: Orbitron; font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; padding-left: 6px; color: #00f2fe;'>🔮 Metaverse AI</div>", unsafe_allow_html=True)
+    st.markdown("<div style='font-family: Google Sans; font-size: 1.15rem; font-weight: 700; margin-bottom: 14px; padding-left: 6px; color: #8ab4f8;'>✨ Metaverse AI</div>", unsafe_allow_html=True)
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #9ca3af; padding-left: 6px;'>Sign in to start session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #9aa0a6; padding-left: 6px;'>Sign in to start session.</span>", unsafe_allow_html=True)
         st.button("Connect with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #00f2fe;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #8ab4f8;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Disconnect", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -265,21 +268,21 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Quantum Stream", use_container_width=True):
+        if st.button("➕ New Chat", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Quantum Stream",
+                "title": "New Chat",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("<div style='font-family: Orbitron; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1.5px; color: #9ca3af; margin-top: 16px; margin-bottom: 6px; padding-left: 6px;'>Recent Streams</div>", unsafe_allow_html=True)
+        st.markdown("<div style='font-family: Google Sans; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.2px; color: #9aa0a6; margin-top: 18px; margin-bottom: 8px; padding-left: 6px;'>Recent Chats</div>", unsafe_allow_html=True)
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.78, 0.22])
             with col1:
-                display_title = sdata["title"][:15] + ("..." if len(sdata["title"]) > 15 else "")
+                display_title = sdata["title"][:16] + ("..." if len(sdata["title"]) > 16 else "")
                 if st.button(display_title, key=f"sel_{sid}", use_container_width=True):
                     st.session_state[f"{storage_key}_current_sid"] = sid
                     st.rerun()
@@ -288,7 +291,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Quantum Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "New Chat", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -312,7 +315,7 @@ use_search = st.session_state[prefs_storage_key].get("use_search", True)
 # 4. Settings & Memory Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
-        st.markdown("#### ⚙️ AI Settings & Preferences")
+        st.markdown("#### ⚙️ AI Configuration & Model Settings")
         models_list = [
             "gemini-3.1-flash-lite", 
             "gemini-3.1-pro-preview", 
@@ -325,7 +328,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
         lang_index = languages.index(lang_choice) if lang_choice in languages else 0
         lang_choice_input = st.selectbox("Response Language", languages, index=lang_index)
         
-        use_search_input = st.checkbox("Enable Quantum Web Search Grounding", value=use_search)
+        use_search_input = st.checkbox("Enable Google Search Grounding", value=use_search)
         
         col_s1, col_s2 = st.columns(2)
         with col_s1:
@@ -367,25 +370,25 @@ use_search = st.session_state[prefs_storage_key].get("use_search", True)
 if is_logged_in and len(current_session_data["messages"]) == 0:
     st.markdown(f"""
         <div style="margin-bottom: 35px; padding-left: 4px;">
-            <div class="metaverse-greeting">Hello, {user_display_name}</div>
-            <div class="metaverse-subgreeting">What quantum dimension shall we explore today?</div>
+            <div class="brand-title">Hello, {user_display_name}</div>
+            <div class="brand-subheading">What would you like to create or explore today?</div>
         </div>
     """, unsafe_allow_html=True)
 else:
     st.markdown(f"""
         <div style="margin-bottom: 25px; padding-left: 4px;">
-            <div style="font-family: Orbitron; font-size: 1.6rem; font-weight: 700; color: #00f2fe;">Metaverse AI</div>
-            <div style="font-size: 0.72rem; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">{selected_model} &bull; Active</div>
+            <div style="font-family: Google Sans; font-size: 1.6rem; font-weight: 700; color: #8ab4f8;">Metaverse AI</div>
+            <div style="font-size: 0.75rem; color: #9aa0a6; text-transform: uppercase; letter-spacing: 1px;">{selected_model} &bull; Ready</div>
         </div>
     """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div class="metaverse-auth-card">
-            <div style="font-size: 2.2rem; margin-bottom: 16px; color: #00f2fe;">🔮</div>
-            <div style="font-family: Orbitron; font-size: 1.25rem; font-weight: 700; color: #f3f4f6; margin-bottom: 6px;">Metaverse AI</div>
-            <div style="font-size: 0.9rem; color: #9ca3af; line-height: 1.5; margin-bottom: 25px;">
-                Connect with Google to activate Gemini intelligence.
+        <div class="gemini-auth-card">
+            <div style="font-size: 2.5rem; margin-bottom: 16px; color: #8ab4f8;">✨</div>
+            <div style="font-family: Google Sans; font-size: 1.35rem; font-weight: 700; color: #ffffff; margin-bottom: 8px;">Metaverse AI</div>
+            <div style="font-size: 0.95rem; color: #9aa0a6; line-height: 1.6; margin-bottom: 28px;">
+                Connect with Google to unlock Gemini intelligence.
             </div>
     """, unsafe_allow_html=True)
     
@@ -402,18 +405,18 @@ for message in current_messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
         if "file_name" in message:
-            st.markdown(f"<span style='font-size:0.72rem; color:#00f2fe;'>📎 {message['file_name']}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 {message['file_name']}</span>", unsafe_allow_html=True)
 
 # 6. File Upload
-uploaded_file = st.file_uploader("Upload document or image artifact", type=["png", "jpg", "jpeg", "pdf", "txt", "csv", "py"])
+uploaded_file = st.file_uploader("Upload file or image", type=["png", "jpg", "jpeg", "pdf", "txt", "csv", "py"])
 
 # 7. Prompt Execution & Streaming Pipeline with Reply Animation
-prompt = st.chat_input("Message Metaverse AI...")
+prompt = st.chat_input("Ask Metaverse AI...")
 
 if prompt or uploaded_file:
-    prompt_text = prompt if prompt else "Analyze this uploaded file."
+    prompt_text = prompt if prompt else "Analyze this file."
     if len(current_messages) == 0:
-        current_session_data["title"] = prompt_text[:16]
+        current_session_data["title"] = prompt_text[:18]
 
     user_msg_data = {"role": "user", "content": prompt_text}
     if uploaded_file:
@@ -423,12 +426,12 @@ if prompt or uploaded_file:
     with st.chat_message("user"):
         st.markdown(prompt_text)
         if uploaded_file:
-            st.markdown(f"<span style='font-size:0.72rem; color:#00f2fe;'>📎 {uploaded_file.name}</span>", unsafe_allow_html=True)
+            st.markdown(f"<span style='font-size:0.75rem; color:#8ab4f8;'>📎 {uploaded_file.name}</span>", unsafe_allow_html=True)
 
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="metaverse-badge">🔮 Metaverse AI is thinking...</div>
+            <div class="gemini-badge">✨ Metaverse AI is thinking...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
