@@ -6,7 +6,7 @@ from google.genai import types
 
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
-    page_title="Metaverse AI",
+    page_title="Gemini",
     page_icon="✨",
     layout="centered",
     initial_sidebar_state="auto"
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"gemini_master_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"gemini_master_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"gemini_master_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"official_gemini_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"official_gemini_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"official_gemini_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Gemini Stream",
+            "title": "New Chat",
             "messages": []
         }
     }
@@ -69,10 +69,10 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. OFFICIAL GEMINI-INSPIRED UI/UX & STYLING
+# 2. OFFICIAL GOOGLE GEMINI CSS STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:wght@300;400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
         background-color: #131314 !important;
@@ -83,8 +83,8 @@ theme_css = """
 
     .block-container {
         max-width: 820px !important;
-        padding-top: 3rem !important;
-        padding-bottom: 7rem !important;
+        padding-top: 2.5rem !important;
+        padding-bottom: 7.5rem !important;
         padding-left: 2rem !important;
         padding-right: 2rem !important;
         margin: 0 auto !important;
@@ -100,31 +100,31 @@ theme_css = """
     }
 
     .gemini-header {
-        text-align: center;
-        margin-bottom: 35px;
+        text-align: left;
+        margin-bottom: 30px;
+        padding-left: 8px;
     }
 
-    .gemini-title {
+    .gemini-greeting {
         font-family: 'Google Sans', sans-serif;
-        font-size: 2.7rem;
-        font-weight: 700;
+        font-size: 2.3rem;
+        font-weight: 500;
         background: linear-gradient(90deg, #4285f4, #9b72cb, #d96570);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         letter-spacing: -0.5px;
     }
 
-    .gemini-subtitle {
-        font-family: 'Google Sans', sans-serif;
-        font-size: 0.78rem;
-        font-weight: 500;
-        color: #8e918f;
-        letter-spacing: 2px;
-        text-transform: uppercase;
+    .gemini-subgreeting {
+        font-size: 2.3rem;
+        font-weight: 400;
+        color: #444746;
+        margin-bottom: 8px;
+        letter-spacing: -0.5px;
     }
 
-    /* Clean Card Auth */
+    /* Google Card Auth Style */
     .gemini-auth-card {
         background: #1e1f20;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -146,44 +146,30 @@ theme_css = """
         color: #8ab4f8;
     }
 
-    .gemini-auth-heading {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: #e3e3e3;
-        margin-bottom: 8px;
-    }
-
-    .gemini-auth-text {
-        font-size: 0.9rem;
-        color: #c4c7c5;
-        line-height: 1.6;
-        margin-bottom: 28px;
-    }
-
-    /* Gemini Pill-Shaped / Soft Chat Bubbles */
+    /* Exact Gemini Message Bubbles */
     .stChatMessage {
         background: #1e1f20 !important;
         border: 1px solid rgba(255, 255, 255, 0.06) !important;
         border-radius: 20px !important;
-        padding: 18px 22px !important;
+        padding: 18px 24px !important;
         margin-bottom: 16px !important;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
         color: #e3e3e3 !important;
         font-size: 0.95rem !important;
-        line-height: 1.65 !important;
+        line-height: 1.7 !important;
     }
 
-    /* Google Styled Rounded Buttons */
+    /* Google-styled Rounded Buttons */
     .stButton button {
         border-radius: 100px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-weight: 500 !important;
         font-size: 0.82rem !important;
         letter-spacing: 0.3px !important;
-        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border: 1px solid rgba(255, 255, 255, 0.12) !important;
         background: #28292a !important;
         color: #e3e3e3 !important;
         padding: 10px 22px !important;
@@ -198,15 +184,15 @@ theme_css = """
         color: #ffffff !important;
     }
 
-    /* Gemini Floating Chat Input */
+    /* Gemini Floating Chat Input Box */
     [data-testid="stChatInput"] textarea {
         background: #1e1f20 !important;
         color: #e3e3e3 !important;
         border: 1px solid rgba(255, 255, 255, 0.12) !important;
-        border-radius: 24px !important;
+        border-radius: 28px !important;
         font-family: 'Google Sans', sans-serif !important;
         font-size: 0.95rem !important;
-        padding: 16px 20px !important;
+        padding: 16px 22px !important;
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4) !important;
     }
 
@@ -239,7 +225,6 @@ theme_css = """
         font-size: 0.68rem;
         color: #8ab4f8;
         font-weight: 500;
-        letter-spacing: 0.5px;
     }
 </style>
 """
@@ -248,7 +233,7 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### ✨ Gemini Nexus")
+    st.markdown("### ✨ Gemini")
     
     if not is_logged_in:
         st.write("<span style='font-size: 0.82rem; color: #c4c7c5;'>Sign in to start your session.</span>", unsafe_allow_html=True)
@@ -272,16 +257,16 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Gemini Stream", use_container_width=True):
+        if st.button("➕ New Chat", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Gemini Stream",
+                "title": "New Chat",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
             st.rerun()
             
-        st.markdown("### Active Streams")
+        st.markdown("### Recent")
         
         for sid, sdata in list(st.session_state[storage_key].items()):
             col1, col2 = st.columns([0.75, 0.25])
@@ -295,7 +280,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Gemini Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "New Chat", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -362,20 +347,28 @@ selected_model = st.session_state[prefs_storage_key].get("selected_model", "gemi
 lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Main Content Area
-st.markdown(f"""
-    <div class="gemini-header">
-        <div class="gemini-title">Metaverse AI</div>
-        <div class="gemini-subtitle">{selected_model} &bull; {lang_choice}</div>
-    </div>
-""", unsafe_allow_html=True)
+if is_logged_in and len(current_session_data["messages"]) == 0:
+    st.markdown(f"""
+        <div class="gemini-header">
+            <div class="gemini-greeting">Hello, {user_display_name}</div>
+            <div class="gemini-subgreeting">How can I help you today?</div>
+        </div>
+    """, unsafe_allow_html=True)
+else:
+    st.markdown(f"""
+        <div class="gemini-header">
+            <div class="gemini-greeting" style="font-size: 1.8rem;">Gemini</div>
+            <div style="font-size: 0.75rem; color: #8e918f; text-transform: uppercase; letter-spacing: 1px;">{selected_model} &bull; {lang_choice}</div>
+        </div>
+    """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
         <div class="gemini-auth-card">
             <div class="gemini-auth-icon">✨</div>
-            <div class="gemini-auth-heading">Welcome to Metaverse AI</div>
-            <div class="gemini-auth-text">
-                Authenticate with Google to unlock official Gemini-grade chat streams, memory vaults, and multi-model support.
+            <div style="font-size: 1.25rem; font-weight: 500; color: #e3e3e3; margin-bottom: 8px;">Welcome to Gemini</div>
+            <div style="font-size: 0.9rem; color: #c4c7c5; line-height: 1.6; margin-bottom: 28px;">
+                Sign in with your Google account to start chatting with Gemini.
             </div>
     """, unsafe_allow_html=True)
     
@@ -393,7 +386,7 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 6. Chat Execution Pipeline
-prompt = st.chat_input("Ask or command anything...")
+prompt = st.chat_input("Enter a prompt here")
 
 if prompt:
     if len(current_messages) == 0:
@@ -406,7 +399,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="gemini-badge">✨ Generating Response...</div>
+            <div class="gemini-badge">✨ Gemini is thinking...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
@@ -417,7 +410,7 @@ if prompt:
             
             memories_str = "\n".join([f"- {m}" for m in st.session_state[memory_storage_key]])
             system_instruction = (
-                f"You are Metaverse AI, built on Google architecture. Respond in {lang_choice}.\n"
+                f"You are Gemini, built by Google. Respond in {lang_choice}.\n"
                 f"USER PROFILE:\n- Name: {user_display_name}\n- Email: {user_email}\n\n"
                 f"STRICT CREATOR DIRECTIVE:\n"
                 f"- Creator and Architect: Abyan Muhammed.\n"
