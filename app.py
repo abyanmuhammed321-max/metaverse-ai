@@ -7,7 +7,7 @@ from google.genai import types
 # 1. Page Configuration & Adaptive Layout
 st.set_page_config(
     page_title="Metaverse AI",
-    page_icon="⚡",
+    page_icon="✨",
     layout="centered",
     initial_sidebar_state="auto"
 )
@@ -27,9 +27,9 @@ except Exception:
     user_email = "default_guest_user"
     user_display_name = "User"
 
-storage_key = f"animated_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
-prefs_storage_key = f"animated_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
-memory_storage_key = f"animated_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
+storage_key = f"aurora_ai_sessions_{user_email.replace('@', '_at_').replace('.', '_')}"
+prefs_storage_key = f"aurora_ai_prefs_{user_email.replace('@', '_at_').replace('.', '_')}"
+memory_storage_key = f"aurora_ai_memory_{user_email.replace('@', '_at_').replace('.', '_')}"
 
 if prefs_storage_key not in st.session_state:
     st.session_state[prefs_storage_key] = {
@@ -48,7 +48,7 @@ if storage_key not in st.session_state:
     first_sid = str(uuid.uuid4())
     st.session_state[storage_key] = {
         first_sid: {
-            "title": "Prism Stream",
+            "title": "Aurora Stream",
             "messages": []
         }
     }
@@ -69,20 +69,24 @@ if "show_settings_modal" not in st.session_state:
 if "show_brain_modal" not in st.session_state:
     st.session_state["show_brain_modal"] = False
 
-# 2. CYBER-NEON ANIMATED STYLING
+# 2. AURORA BOREALIS CYBER-GLASS STYLING
 theme_css = """
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 
     html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
-        background: radial-gradient(circle at 50% 0%, #0a0b10 0%, #030406 60%, #010203 100%) !important;
-        color: #f8fafc !important;
+        background: #050508 !important;
+        background-image: 
+            radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+            radial-gradient(at 90% 10%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+            radial-gradient(at 50% 90%, rgba(147, 51, 234, 0.12) 0px, transparent 50%) !important;
+        color: #f3f4f6 !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         width: 100% !important;
     }
 
     .block-container {
-        max-width: 880px !important;
+        max-width: 860px !important;
         padding-top: 3.5rem !important;
         padding-bottom: 7.5rem !important;
         padding-left: 2rem !important;
@@ -91,194 +95,170 @@ theme_css = """
     }
 
     [data-testid="stSidebar"] {
-        background-color: #030406 !important;
-        border-right: 1px solid rgba(0, 243, 255, 0.2) !important;
+        background-color: #07080c !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.06) !important;
     }
 
     [data-testid="stSidebar"] * {
-        color: #f1f5f9 !important;
+        color: #e5e7eb !important;
     }
 
-    /* Animated Neon Gradient Keyframes */
-    @keyframes neonGlowShift {
-        0% {
-            background-position: 0% 50%;
-        }
-        50% {
-            background-position: 100% 50%;
-        }
-        100% {
-            background-position: 0% 50%;
-        }
+    @keyframes auroraFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
     }
 
-    .cyber-header {
+    .aurora-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 36px;
     }
 
-    .cyber-animated-title {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 2.6rem;
-        font-weight: 900;
-        background: linear-gradient(270deg, #00f3ff, #b026ff, #00ff66, #00f3ff);
+    .aurora-title {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.8rem;
+        font-weight: 700;
+        background: linear-gradient(270deg, #34d399, #60a5fa, #c084fc, #34d399);
         background-size: 300% 300%;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        animation: neonGlowShift 6s ease infinite;
-        margin-bottom: 8px;
-        letter-spacing: 2px;
-        filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.4));
+        animation: auroraFlow 8s ease infinite;
+        margin-bottom: 6px;
+        letter-spacing: -0.5px;
     }
 
-    .cyber-subtitle {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.72rem;
-        font-weight: 700;
-        color: #00f3ff;
-        letter-spacing: 4px;
+    .aurora-subtitle {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #9ca3af;
+        letter-spacing: 3px;
         text-transform: uppercase;
-        opacity: 0.9;
-        text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
     }
 
-    /* Holographic Glass Auth Card */
-    .cyber-auth-card {
-        background: rgba(8, 11, 18, 0.85);
-        backdrop-filter: blur(30px);
-        border: 1px solid rgba(0, 243, 255, 0.35);
-        border-radius: 24px;
+    /* Floating Glass Auth Card */
+    .aurora-auth-card {
+        background: rgba(18, 20, 28, 0.65);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 28px;
         padding: 48px 36px;
         text-align: center;
-        max-width: 480px;
+        max-width: 460px;
         margin: 40px auto;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 243, 255, 0.15);
-        position: relative;
-        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
 
-    .cyber-auth-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #00f3ff, transparent);
-    }
-
-    .cyber-auth-icon {
-        font-size: 2.2rem;
-        margin-bottom: 18px;
+    .aurora-auth-icon {
+        font-size: 2rem;
+        margin-bottom: 16px;
         display: inline-block;
         padding: 16px;
-        background: rgba(0, 243, 255, 0.08);
-        border-radius: 20px;
-        border: 1px solid rgba(0, 243, 255, 0.3);
-        box-shadow: 0 0 25px rgba(0, 243, 255, 0.3);
+        background: rgba(96, 165, 250, 0.1);
+        border-radius: 22px;
+        border: 1px solid rgba(96, 165, 250, 0.2);
     }
 
-    .cyber-auth-heading {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 1.2rem;
+    .aurora-auth-heading {
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.3rem;
         font-weight: 700;
         color: #ffffff;
-        margin-bottom: 10px;
-        letter-spacing: 1px;
+        margin-bottom: 8px;
     }
 
-    .cyber-auth-text {
+    .aurora-auth-text {
         font-size: 0.9rem;
-        color: #94a3b8;
+        color: #9ca3af;
         line-height: 1.6;
-        margin-bottom: 32px;
+        margin-bottom: 30px;
     }
 
-    /* Cyber-Neon Chat Bubbles */
+    /* Glass Chat Bubbles */
     .stChatMessage {
-        background: rgba(8, 11, 18, 0.82) !important;
-        backdrop-filter: blur(20px) !important;
-        border: 1px solid rgba(0, 243, 255, 0.25) !important;
-        border-radius: 18px !important;
-        padding: 20px 22px !important;
-        margin-bottom: 18px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        background: rgba(18, 20, 28, 0.55) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.06) !important;
+        border-radius: 20px !important;
+        padding: 20px 24px !important;
+        margin-bottom: 16px !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
     }
 
     .stChatMessage p, .stChatMessage span, .stChatMessage div {
-        color: #f1f5f9 !important;
-        font-size: 0.96rem !important;
+        color: #e5e7eb !important;
+        font-size: 0.95rem !important;
         line-height: 1.7 !important;
     }
 
-    /* Animated Gradient Buttons */
+    /* Smooth Modern Buttons */
     .stButton button {
-        border-radius: 12px !important;
-        font-family: 'Orbitron', sans-serif !important;
-        font-weight: 700 !important;
-        font-size: 0.72rem !important;
-        letter-spacing: 1.5px !important;
-        border: 1px solid rgba(0, 243, 255, 0.5) !important;
-        background: linear-gradient(135deg, #00f3ff 0%, #0066ff 100%) !important;
-        color: #030406 !important;
+        border-radius: 14px !important;
+        font-family: 'Space Grotesk', sans-serif !important;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+        letter-spacing: 0.5px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.02) 100%) !important;
+        color: #ffffff !important;
         padding: 12px 24px !important;
         width: 100% !important;
-        box-shadow: 0 6px 25px rgba(0, 243, 255, 0.35) !important;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.25s ease !important;
     }
 
     .stButton button:hover {
-        background: linear-gradient(135deg, #ffffff 0%, #00f3ff 100%) !important;
-        border-color: #ffffff !important;
-        box-shadow: 0 10px 30px rgba(0, 243, 255, 0.6) !important;
-        transform: translateY(-2px);
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.25) 0%, rgba(52, 211, 153, 0.25) 100%) !important;
+        border-color: rgba(96, 165, 250, 0.4) !important;
+        box-shadow: 0 6px 25px rgba(96, 165, 250, 0.2) !important;
+        transform: translateY(-1px);
     }
 
     /* Fixed Chat Input */
     [data-testid="stChatInput"] textarea {
-        background: rgba(8, 11, 18, 0.95) !important;
+        background: rgba(14, 16, 23, 0.9) !important;
         color: #ffffff !important;
-        border: 1px solid rgba(0, 243, 255, 0.35) !important;
-        border-radius: 16px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 18px !important;
         font-family: 'Plus Jakarta Sans', sans-serif !important;
         font-size: 0.95rem !important;
         padding: 16px 20px !important;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6) !important;
     }
 
     .sidebar-signature {
         text-align: center;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.58rem;
-        color: #00f3ff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.65rem;
+        color: #9ca3af;
         letter-spacing: 2px;
-        padding: 18px 4px;
+        padding: 16px 4px;
         margin-top: 24px;
         margin-bottom: 24px;
-        border-top: 1px solid rgba(0, 243, 255, 0.2);
-        border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         text-transform: uppercase;
-        background: rgba(0, 243, 255, 0.04);
-        font-weight: 700;
-        text-shadow: 0 0 8px rgba(0, 243, 255, 0.4);
+        background: rgba(255, 255, 255, 0.01);
+        font-weight: 600;
     }
 
-    .cyber-status-badge {
+    .aurora-badge {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
+        gap: 8px;
         padding: 6px 14px;
         margin-bottom: 12px;
-        background: rgba(0, 243, 255, 0.1);
-        border: 1px solid rgba(0, 243, 255, 0.3);
-        border-radius: 8px;
-        font-family: 'Orbitron', sans-serif;
-        font-size: 0.6rem;
-        color: #00f3ff;
-        font-weight: 700;
+        background: rgba(52, 211, 153, 0.08);
+        border: 1px solid rgba(52, 211, 153, 0.2);
+        border-radius: 10px;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 0.65rem;
+        color: #34d399;
+        font-weight: 600;
         letter-spacing: 1px;
         text-transform: uppercase;
-        text-shadow: 0 0 8px rgba(0, 243, 255, 0.5);
     }
 </style>
 """
@@ -287,14 +267,14 @@ st.markdown(theme_css, unsafe_allow_html=True)
 
 # 3. Sidebar Panel
 with st.sidebar:
-    st.markdown("### ⚡ Cyber Nexus")
+    st.markdown("### ✨ Aurora Nexus")
     
     if not is_logged_in:
-        st.write("<span style='font-size: 0.82rem; color: #94a3b8;'>Authenticate to initialize your session.</span>", unsafe_allow_html=True)
+        st.write("<span style='font-size: 0.82rem; color: #9ca3af;'>Sign in to start your session.</span>", unsafe_allow_html=True)
         st.button("Sign in with Google", on_click=st.login, use_container_width=True)
     else:
         st.success(f"**{user_display_name}**")
-        st.write(f"<span style='font-size: 0.76rem; color: #00f3ff;'>{user_email}</span>", unsafe_allow_html=True)
+        st.write(f"<span style='font-size: 0.76rem; color: #34d399;'>{user_email}</span>", unsafe_allow_html=True)
         st.button("Sign Out", on_click=st.logout, use_container_width=True)
             
         st.markdown("---")
@@ -311,10 +291,10 @@ with st.sidebar:
 
         st.markdown("---")
         
-        if st.button("➕ New Cyber Stream", use_container_width=True):
+        if st.button("➕ New Aurora Stream", use_container_width=True):
             new_sid = str(uuid.uuid4())
             st.session_state[storage_key][new_sid] = {
-                "title": "Prism Stream",
+                "title": "Aurora Stream",
                 "messages": []
             }
             st.session_state[f"{storage_key}_current_sid"] = new_sid
@@ -334,7 +314,7 @@ with st.sidebar:
                     del st.session_state[storage_key][sid]
                     if not st.session_state[storage_key]:
                         fresh_sid = str(uuid.uuid4())
-                        st.session_state[storage_key][fresh_sid] = {"title": "Prism Stream", "messages": []}
+                        st.session_state[storage_key][fresh_sid] = {"title": "Aurora Stream", "messages": []}
                         st.session_state[f"{storage_key}_current_sid"] = fresh_sid
                     else:
                         st.session_state[f"{storage_key}_current_sid"] = list(st.session_state[storage_key].keys())[0]
@@ -357,7 +337,7 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 # 4. Modals
 if is_logged_in and st.session_state.get("show_settings_modal", False):
     with st.container():
-        st.markdown("#### Cyber Configuration")
+        st.markdown("#### System Preferences")
         models_list = ["gemini-3.5-flash-lite", "gemini-3.1-flash-lite", "gemini-2.5-flash", "gemini-2.5-pro"]
         model_index = models_list.index(selected_model) if selected_model in models_list else 0
         selected_model_input = st.selectbox("AI Model Core", models_list, index=model_index)
@@ -381,7 +361,7 @@ if is_logged_in and st.session_state.get("show_settings_modal", False):
 
 if is_logged_in and st.session_state.get("show_brain_modal", False):
     with st.container():
-        st.markdown("#### Cyber Memory Vault")
+        st.markdown("#### Memory Vault")
         memory_list = st.session_state[memory_storage_key]
         for idx, mem in enumerate(memory_list):
             col_m1, col_m2 = st.columns([0.82, 0.18])
@@ -402,19 +382,19 @@ lang_choice = st.session_state[prefs_storage_key].get("lang_choice", "English")
 
 # 5. Main Content Area
 st.markdown(f"""
-    <div class="cyber-header">
-        <div class="cyber-animated-title">Metaverse AI</div>
-        <div class="cyber-subtitle">{selected_model} &bull; {lang_choice}</div>
+    <div class="aurora-header">
+        <div class="aurora-title">Metaverse AI</div>
+        <div class="aurora-subtitle">{selected_model} &bull; {lang_choice}</div>
     </div>
 """, unsafe_allow_html=True)
 
 if not is_logged_in:
     st.markdown("""
-        <div class="cyber-auth-card">
-            <div class="cyber-auth-icon">⚡</div>
-            <div class="cyber-auth-heading">Enter the Cyber Gateway</div>
-            <div class="cyber-auth-text">
-                Authenticate with Google to unlock animated neon intelligence, persistent memory vaults, and luxury cyber streams.
+        <div class="aurora-auth-card">
+            <div class="aurora-auth-icon">✨</div>
+            <div class="aurora-auth-heading">Welcome to Metaverse AI</div>
+            <div class="aurora-auth-text">
+                Authenticate with Google to unlock glass-morphic AI chat streams, memory vaults, and multi-model support.
             </div>
     """, unsafe_allow_html=True)
     
@@ -432,7 +412,7 @@ for message in current_messages:
         st.markdown(message["content"])
 
 # 6. Chat Execution Pipeline
-prompt = st.chat_input("Command the cyber intelligence...")
+prompt = st.chat_input("Ask or command anything...")
 
 if prompt:
     if len(current_messages) == 0:
@@ -445,7 +425,7 @@ if prompt:
     with st.chat_message("assistant"):
         loader_placeholder = st.empty()
         loader_placeholder.markdown("""
-            <div class="cyber-status-badge">⚡ Synthesizing Cyber Output...</div>
+            <div class="aurora-badge">✨ Generating Response...</div>
         """, unsafe_allow_html=True)
         
         message_placeholder = st.empty()
